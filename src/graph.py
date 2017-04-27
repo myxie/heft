@@ -3,19 +3,91 @@
 
 
 import networkx as nx
-from heft import Task
+from task import Task
 from draw import draw_graph
+from random import randint
+from helper import run_random_dag
+import matplotlib.pyplot as plt
+import time
+
+class HeftGraph(object):
+
+    def __init__(self, nodes, processors):
+        """
+        Initialise the variables required for a graph
+
+        :param nodes: The number of nodes in the graph
+        :param processors: The number of processors available
+        """
+        self.comp_matrix = []
+        self.comm_matrix = [] 
+        self.graph = random_task_dag(nodes, 2*nodes) 
+
+    def _comp_matrix(self, nodes, processors):
+        """
+        Function that generates a random cost matrix for a number of tasks
+        """
+        return []
+
+    def _comm_matrix(self):
+        return []
+
+    def _graph_init(self):
+        """
+        This takes a graph of n-nodes and edges and initialise
+        """
+        test = _comm_matrix()
+        return -1
+
+
+def random_dag(nodes, edges):
+    """Generate a random Directed Acyclic Graph (DAG) with a given number of nodes and edges.
+    Modified from source: http://ipyparallel.readthedocs.io/en/latest/dag_dependencies.html
+    """
+    G = nx.DiGraph()
+    count = 0
+    for i in range(nodes):
+        G.add_node(i)
+    while edges > 0:
+        a = randint(0,nodes-1)
+        b=a
+        while b==a:
+            b = randint(0,nodes-1)
+        G.add_edge(a,b)
+        if nx.is_directed_acyclic_graph(G):
+            edges -= 1
+        else:
+            # we closed a loop!
+            G.remove_edge(a,b)
+    return G
+
+def random_task_dag(nodes, edges):
+    """Generate a random Directed Acyclic Graph (DAG) with a given number of nodes and edges.
+    Modified from source: http://ipyparallel.readthedocs.io/en/latest/dag_dependencies.html
+    """
+    G = nx.DiGraph()
+    count = 0
+    for i in range(nodes):
+        G.add_node(Task(i))
+    while edges > 0:
+        a = Task(randint(0,nodes-1))
+        b=a
+        while b==a:
+            b = Task(randint(0,nodes-1))
+        G.add_edge(a,b)
+        if nx.is_directed_acyclic_graph(G):
+            edges -= 1
+        else:
+            # we closed a loop!
+            G.remove_edge(a,b)
+    return G
+
 
 if __name__ == '__main__':
     """
     Working with graphs
     """
-    task_1 = Task(1) 
-    task_2 = Task(2)
-    task_3 = Task(3)
-    digraph = nx.DiGraph()
-    digraph.add_weighted_edges_from([(task_1, task_2, 2),(task_1,task_3,4)])
-    # print digraph.successors(task_1)[0].tid
-    draw_graph(digraph)
-
+    G = random_task_dag(10,10)  
+    nx.draw(G, with_labels=True)
+    plt.show()
         

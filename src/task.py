@@ -15,7 +15,6 @@ class Task(object):
 
     def __repr__(self):
         return str(self.tid)
-
     """
     To utilise the NetworkX graph library, we need to make the node structure hashable  
     Implementation adapted from: http://stackoverflow.com/a/12076539        
