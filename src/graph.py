@@ -10,6 +10,8 @@ from helper import run_random_dag
 import matplotlib.pyplot as plt
 import time
 
+
+
 class HeftGraph(object):
 
     def __init__(self, nodes, processors):
@@ -20,8 +22,8 @@ class HeftGraph(object):
         :param processors: The number of processors available
         """
         self.comp_matrix = []
-        self.comm_matrix = [] 
-        self.graph = random_task_dag(nodes, 2*nodes) 
+        self.comm_matrix = []
+        self.graph = [] #random_task_dag()
 
     def _comp_matrix(self, nodes, processors):
         """
@@ -44,6 +46,7 @@ def random_dag(nodes, edges):
     """Generate a random Directed Acyclic Graph (DAG) with a given number of nodes and edges.
     Modified from source: http://ipyparallel.readthedocs.io/en/latest/dag_dependencies.html
     """
+    #TODO Add weights in the random DAG
     G = nx.DiGraph()
     count = 0
     for i in range(nodes):
@@ -61,12 +64,16 @@ def random_dag(nodes, edges):
             G.remove_edge(a,b)
     return G
 
+
 def random_task_dag(nodes, edges):
     """Generate a random Directed Acyclic Graph (DAG) with a given number of nodes and edges.
     Modified from source: http://ipyparallel.readthedocs.io/en/latest/dag_dependencies.html
     """
+    #TODO Add weights in the random DAG
     G = nx.DiGraph()
     count = 0
+    if nodes is 1:
+        return G
     for i in range(nodes):
         G.add_node(Task(i))
     while edges > 0:
@@ -87,7 +94,8 @@ if __name__ == '__main__':
     """
     Working with graphs
     """
-    G = random_task_dag(10,10)  
-    nx.draw(G, with_labels=True)
-    plt.show()
+    hg = HeftGraph(1,2)
+    G = random_task_dag(1,2)  
+    #nx.draw(G, with_labels=True)
+    #plt.show()
         
