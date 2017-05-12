@@ -1,6 +1,9 @@
 """
 An ugly file with miscelaneous functions
 """
+from graph import random_dag
+import matplotlib.pyplot as plt
+import time
 
 def run_random_dag():
 

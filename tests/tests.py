@@ -5,7 +5,8 @@ unittest runner for the heft.py code
 import sys
 import unittest
 from src.task import Task
-from src.heft import rank_up
+from src.heft import Heft
+from src.graph import random_comp_matrix,init_tasks
 
 import networkx as nx
 
@@ -25,6 +26,8 @@ class TestTaskMethods(unittest.TestCase):
         a = Task(57)
         hashval = hash(57)
         self.assertTrue(hashval == a.__hash__())
+
+class TestGraphMethods(unittest.TestCase):
 
     def test_task_networkx_add_edges(self):
         a = Task(1) 
@@ -47,9 +50,20 @@ class TestTaskMethods(unittest.TestCase):
         edges = digraph.edges()
         self.assertFalse(edge in edges)
 
+    def test_init_tasks(self):
+        a = Task(0) 
+        b = Task(1)
+        c = Task(2)
+        d = Task(3)
+        matrix = random_comp_matrix(3,5,20) 
+        val = matrix[1]
+        digraph = nx.DiGraph()       
+        digraph.add_nodes_from([a,b,c,d])
+        init_tasks(digraph, matrix)
+        node = digraph.nodes()[1]
+        self.assertEquals(node.comp_cost is val)
 
-
-
+@unittest.skip("Skipping Heft Until re-organise class structure")
 class TestHeftMethods(unittest.TestCase):
 
     def test_rank_no_successors(self):

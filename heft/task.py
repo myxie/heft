@@ -8,10 +8,10 @@ class Task(object):
         self.tid = tid # task id - this is unique
         self.comp_cost = comp_cost # List of computation cost on each processor 
         self.ave_comp = -1 # average computation cost
-        self.ave_comm = -1 # average communication cost 
+#       self.ave_comm = -1 # I do not think this is necessary 
         self.rank = -1 # This is updated during the 'Task Prioritisation' phase 
-        self.start = 0 
-        self.finish = 0 
+        self.est = 0 
+        self.eft = 0 
 
     def __repr__(self):
         return str(self.tid)
