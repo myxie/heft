@@ -63,9 +63,20 @@ class TestGraphMethods(unittest.TestCase):
         node = digraph.nodes()[1]
         self.assertEquals(node.comp_cost is val)
 
-@unittest.skip("Skipping Heft Until re-organise class structure")
 class TestHeftMethods(unittest.TestCase):
+    
+    def setUp(self):
+        nodes = 5
+        edges = 10 
+        num_processors=3
+        comp_matrix = random_comp_matrix(processors,nodes,100)
+        comm_matrix = random_comm_matrix(nodes, 50)
+        processors = create_processors(num_processors)
+        graph = random_task_dag(nodes, edges)
+          
+        self.heft = 
 
+    @unittest.skip("Skipping Heft Until re-organise class structure")
     def test_rank_no_successors(self):
         G = nx.DiGraph()
         T1 = Task(1)
@@ -75,6 +86,7 @@ class TestHeftMethods(unittest.TestCase):
         self.assertTrue(T1.rank == 5)
         #TODO Add a few tasks to the digraph and choose one with and without successors
 
+    @unittest.skip("Skipping Heft Until re-organise class structure")
     def test_rank_one_successor(self):
         G = nx.DiGraph()
         T1 = Task(1)
@@ -87,6 +99,8 @@ class TestHeftMethods(unittest.TestCase):
         rank_up(T1,G)
         self.assertTrue(T2.rank == 7)
         self.assertTrue(T1.rank == 17)
+    
+    @unittest.skip("Skipping Heft Until re-organise class structure")
 
     def test_rank_multiple_successors(self):
         G = nx.DiGraph()
@@ -112,6 +126,8 @@ class TestHeftMethods(unittest.TestCase):
 
 
     def test_another_heft_thing(self):
+        heft = Heft()
+
         return -1
 
 """

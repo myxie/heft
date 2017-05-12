@@ -61,8 +61,10 @@ class Heft(object):
         return cost 
 
     def ave_comp_cost(node):
-
-        return -1 
+        cost = node.comp_cost 
+        ave_cost = sum(cost) / float(len(cost))
+        node.ave_comp = ave_cost
+        return ave_cost
 
     def calc_eft(graph):
         return -1
@@ -87,7 +89,7 @@ class Heft(object):
 
             longest_rank = max(longest_rank, comm_cost(node,successor)+ successor.rank)
 
-        node.rank = node.ave_comp + longest_rank
+        node.rank = ave_comp_cost(node) + longest_rank
         print node.rank
 
     def rank_sort_tasks(graph):
