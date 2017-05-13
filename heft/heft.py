@@ -46,8 +46,10 @@ class Heft(object):
         self.graph = graph
         self.comm_matrix = comm
         self.comp_matrix = comp
+        #print self.graph.nodes()[0].comp_cost        
+        self.rank_up(self.graph.nodes()[0])
 
-    def ave_comm_cost(node,successor):
+    def ave_comm_cost(self,node,successor):
         """
         Returns the 'average' communication cost, which is just 
         the cost in the matrix. Not sure how the ave. in the 
@@ -57,22 +59,17 @@ class Heft(object):
         :params successor: Node with which the starting node is communicating
         """
 
-        cost = self.comm_matrix[node][successor]
+        cost = self.comm_matrix[node.tid][successor.tid]
         return cost 
 
-    def ave_comp_cost(node):
-        cost = node.comp_cost 
-        ave_cost = sum(cost) / float(len(cost))
-        node.ave_comp = ave_cost
-        return ave_cost
-
-    def calc_eft(graph):
-        return -1
+    def ave_comp_cost(self,tid):
+        comp = self.comp_matrix[tid]
+        return sum(comp)/len(comp)
 
     def calc_est(graph):
         return -1
 
-    def rank_up(node):
+    def rank_up(self,node):
         """
         Upward ranking heuristic outlined in Topcuoglu, Hariri & Wu (2002)
         Closely modelled off 'cal_up_rank' function at: 
@@ -83,16 +80,17 @@ class Heft(object):
         """
         longest_rank = 0
         for successor in self.graph.successors(node):
-            print successor
+#           print successor
             if successor.rank is -1:
-                rank_up(successor)
+                self.rank_up(successor)
 
-            longest_rank = max(longest_rank, comm_cost(node,successor)+ successor.rank)
+            longest_rank = max(longest_rank, self.ave_comm_cost(node,successor)+ successor.rank)
 
-        node.rank = ave_comp_cost(node) + longest_rank
-        print node.rank
+        node.ave_comp = self.ave_comp_cost(node.tid)
+        node.rank = node.ave_comp + longest_rank
+        node.rank
 
-    def rank_sort_tasks(graph):
+    def rank_sort_tasks(self):
         """
         Model from this: http://stackoverflow.com/questions/403421/
         how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
@@ -102,15 +100,20 @@ class Heft(object):
         Sort Tasks by rank provided. According to Topcuolgu et al.(2002), 
         this is a topological order of tasks
         """
-        return -1 
+        nodes = self.graph.nodes()
+        nodes.sort(key=lambda x: x.rank, reverse=True)
 
-    def top_sort_tasks(graph):
+        return nodes
+    
+
+    def top_sort_tasks(self):
         """
         Use networkx library built-in topological sort function to generate a sorted
         list of tasks based on precedence constraints. This is to test whether or 
         not the ranking heuristic is any better than a topological sort approach
         """
-        return -1
+        sort_list=nx.topological_sort(self.graph)
+        return sort_list
 
     def insertion_policy(graph):
         """
@@ -118,7 +121,7 @@ class Heft(object):
         in Tocuoglu et al.(2002)
         """
         return -1
-
+    
 
 # if __name__ == '__main__':
   

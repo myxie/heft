@@ -1,12 +1,12 @@
 #!/usr/bin/enb
 """
-unittest runner for the heft.py code 
-"""
+unittest runner for the heft.py code """
 import sys
 import unittest
-from src.task import Task
-from src.heft import Heft
-from src.graph import random_comp_matrix,init_tasks
+from heft.task import Task
+from heft.heft import Heft
+from heft.graph import random_comm_matrix, random_comp_matrix,init_tasks,\
+create_processors,random_task_dag
 
 import networkx as nx
 
@@ -61,20 +61,40 @@ class TestGraphMethods(unittest.TestCase):
         digraph.add_nodes_from([a,b,c,d])
         init_tasks(digraph, matrix)
         node = digraph.nodes()[1]
-        self.assertEquals(node.comp_cost is val)
+        self.assertEquals(node.comp_cost, val)
 
 class TestHeftMethods(unittest.TestCase):
     
     def setUp(self):
-        nodes = 5
-        edges = 10 
-        num_processors=3
-        comp_matrix = random_comp_matrix(processors,nodes,100)
-        comm_matrix = random_comm_matrix(nodes, 50)
+        num_nodes = 4
+        num_processors=1
         processors = create_processors(num_processors)
-        graph = random_task_dag(nodes, edges)
-          
-        self.heft = 
+        nodes = [Task(x) for x in range(num_nodes)]
+        comm_matrix = {0:[0,1,1,0],1:[0,0,0,2],2:[0,0,0,2],3:[0,0,0,0]}
+        comp_matrix = {0:[4],1:[6],2:[9],3:[3]}
+
+        """
+        Calc. rank by hand is a pain; the hard work is done here
+        1 processor
+        Task A = 0, Task B = 1 etc. 
+        A comp_cost = 4
+        B comp_cost = 6
+        C comp_cost = 9
+        D comp_cost = 3
+        A->B; A->C; B->D; C->D
+        """
+
+        graph = nx.DiGraph()
+        graph.add_nodes_from(nodes)
+        init_tasks(graph,comp_matrix)
+        graph.add_edge(nodes[0],nodes[1]) #A->B
+        graph.add_edge(nodes[0],nodes[2]) #A->C
+        graph.add_edge(nodes[1],nodes[3]) #B->D
+        graph.add_edge(nodes[2],nodes[3]) #C->D
+        self.heft = Heft(graph, comm_matrix, comp_matrix)
+
+    def tearDown(self):
+        return -1
 
     @unittest.skip("Skipping Heft Until re-organise class structure")
     def test_rank_no_successors(self):
@@ -100,40 +120,56 @@ class TestHeftMethods(unittest.TestCase):
         self.assertTrue(T2.rank == 7)
         self.assertTrue(T1.rank == 17)
     
-    @unittest.skip("Skipping Heft Until re-organise class structure")
 
     def test_rank_multiple_successors(self):
-        G = nx.DiGraph()
-        T1 = Task(1)
-        T1.ave_comp = 4
-        G.add_node(T1)
-        T2 = Task(2)
-        T2.ave_comp = 6
-        G.add_node(T2)
-        G.add_edge(T1,T2)
-        T3 = Task(3)
-        T3.ave_comp = 9
-        G.add_node(T3)
-        G.add_edge(T1,T3)
-        T4 = Task(4)
-        T4.ave_comp = 3
+        nodeA = self.heft.graph.nodes()[0]
+        nodeD = self.heft.graph.nodes()[3]
+        self.heft.rank_up(nodeD) 
+        self.heft.rank_up(nodeA) 
+        self.assertTrue(nodeD.rank == 3)
+        self.assertTrue(nodeA.rank == 19)
+    @unittest.skip("Skipping Heft Until re-organise class structure")
 
-        G.add_edge(T2,T4)
-        G.add_edge(T3, T4)
-        rank_up(T1,G)
-        self.assertTrue(T4.rank == 3)
-        self.assertTrue(T1.rank == 26)
+    def test_ave_comm(self):
+        graph = self.heft.graph
+        nodes = graph.nodes()
+        cost = self.heft.ave_comm_cost(nodes[0],nodes[1])
 
+    def test_ave_comp(self):
+        print 'Test ave_comp'
+        nodeA = Task(1)
+        nodeA.comp_cost = [3,2,1]
+        print self.heft.ave_comp_cost(nodeA.tid)
+    @unittest.skip("Skipping Heft Until re-organise class structure")
 
-    def test_another_heft_thing(self):
-        heft = Heft()
+    def test_top_sort(self):
+        graph = self.heft.graph
+        nodes = graph.nodes()
+        sorted_nodes = self.heft.top_sort_tasks()
+        #or node in sorted_nodes:
+        #   print node.rank
+    @unittest.skip("Skipping Heft Until re-organise class structure")
+    
+    def test_rank_sort(self):
+        sorted_nodes = self.heft.rank_sort_tasks()
+        #or node in sorted_nodes:
+        #   print 'rank ' + str(node.rank)
 
-        return -1
+class TestMoreHeftMethods(unittest.TestCase):
 
-"""
-class TestGraphMethods(unittest.TestCase):
-
-    def test_graph_thing(self):
-        return -1
-
-"""
+    def test_random_rank(self):
+        num_nodes = 10
+        num_edges = 20
+        num_processors = 3
+        #processors = create_processors(num_processors) 
+        comp_matrix = random_comp_matrix(num_processors, num_nodes, 30)
+        comm_matrix= random_comm_matrix(num_nodes, 10)
+        graphy = random_task_dag(num_nodes, num_edges)
+        init_tasks(graphy, comp_matrix) 
+        """
+        for task in graphy.nodes():
+            print task.comp_cost
+            """
+        heft_g = Heft(graphy, comm_matrix, comp_matrix)
+        nodeA = heft_g.graph.nodes()[0]
+        print nodeA.rank 

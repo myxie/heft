@@ -49,37 +49,17 @@ def random_comm_matrix(nodes, cost):
     for x in range(nodes):
         communication_matrix[x] = [0] + random.sample(range(cost),nodes-1)
 
-    return commuincation_matrix
+    return communication_matrix
 
-def random_dag(nodes, edges):
-    """Generate a random Directed Acyclic Graph (DAG) with a given number of nodes and edges.
-    Modified from source: http://ipyparallel.readthedocs.io/en/latest/dag_dependencies.html
-    """
-    #TODO Add weights in the random DAG
-
-    G = nx.DiGraph()
-    count = 0
-    for i in range(nodes):
-        G.add_node(i)
-    while edges > 0:
-        a = randint(0,nodes-1)
-        b=a
-        while b==a:
-            b = randint(0,nodes-1)
-        G.add_edge(a,b)
-        if nx.is_directed_acyclic_graph(G):
-            edges -= 1
-        else:
-            # we closed a loop!
-            G.remove_edge(a,b)
-    return G
-
+def init_tasks(graph, comp_matrix):
+    for task in graph:
+         task.comp_cost = comp_matrix[task.tid]    
+ 
 
 def random_task_dag(nodes, edges):
     """Generate a random Directed Acyclic Graph (DAG) with a given number of nodes and edges.
     Modified from source: http://ipyparallel.readthedocs.io/en/latest/dag_dependencies.html
     """
-    #TODO Add weights in the random DAG
     graph = nx.DiGraph()
     count = 0
     if nodes is 1:
@@ -87,10 +67,10 @@ def random_task_dag(nodes, edges):
     for i in range(nodes):
         graph.add_node(Task(i))
     while edges > 0:
-        a = Task(randint(0,nodes-1))
+        a = Task(random.randint(0,nodes-1))
         b=a
         while b==a:
-            b = Task(randint(0,nodes-1))
+            b = Task(random.randint(0,nodes-1))
         graph.add_edge(a,b)
         if nx.is_directed_acyclic_graph(graph):
             edges -= 1
@@ -98,11 +78,6 @@ def random_task_dag(nodes, edges):
             # we closed a loop!
             graph.remove_edge(a,b)
     return graph
-
-def init_tasks(graph, comp_matrix):
-    for task in graph:
-         task.comp_cost = comp_matrix[task.tid]    
-    
 
 if __name__ == "__main__":
     """
