@@ -66,9 +66,6 @@ class Heft(object):
         comp = self.comp_matrix[tid]
         return sum(comp)/len(comp)
 
-    def calc_est(graph):
-        return -1
-
     def rank_up(self,node):
         """
         Upward ranking heuristic outlined in Topcuoglu, Hariri & Wu (2002)
@@ -114,6 +111,13 @@ class Heft(object):
         """
         sort_list=nx.topological_sort(self.graph)
         return sort_list
+    
+    def calc_est(self,node):
+        """
+        Calculate the Estimated Start Time of a node on a given processor
+        """
+        return -1 
+
 
     def insertion_policy(graph):
         """

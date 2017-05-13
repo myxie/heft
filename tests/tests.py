@@ -23,7 +23,7 @@ class TestTaskMethods(unittest.TestCase):
         self.assertFalse(a == b)
 
     def test_task_hash(self):
-        a = Task(57)
+        a = Task(57) 
         hashval = hash(57)
         self.assertTrue(hashval == a.__hash__())
 
@@ -128,7 +128,7 @@ class TestHeftMethods(unittest.TestCase):
         self.heft.rank_up(nodeA) 
         self.assertTrue(nodeD.rank == 3)
         self.assertTrue(nodeA.rank == 19)
-    @unittest.skip("Skipping Heft Until re-organise class structure")
+    #@unittest.skip("Skipping Heft Until re-organise class structure")
 
     def test_ave_comm(self):
         graph = self.heft.graph
@@ -140,20 +140,20 @@ class TestHeftMethods(unittest.TestCase):
         nodeA = Task(1)
         nodeA.comp_cost = [3,2,1]
         print self.heft.ave_comp_cost(nodeA.tid)
-    @unittest.skip("Skipping Heft Until re-organise class structure")
+    #@unittest.skip("Skipping Heft Until re-organise class structure")
 
     def test_top_sort(self):
         graph = self.heft.graph
         nodes = graph.nodes()
         sorted_nodes = self.heft.top_sort_tasks()
-        #or node in sorted_nodes:
-        #   print node.rank
-    @unittest.skip("Skipping Heft Until re-organise class structure")
+        for node in sorted_nodes:
+           print node.rank
+    #@unittest.skip("Skipping Heft Until re-organise class structure")
     
     def test_rank_sort(self):
         sorted_nodes = self.heft.rank_sort_tasks()
-        #or node in sorted_nodes:
-        #   print 'rank ' + str(node.rank)
+        for node in sorted_nodes:
+           print 'rank ' + str(node.rank)
 
 class TestMoreHeftMethods(unittest.TestCase):
 
