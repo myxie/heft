@@ -52,8 +52,6 @@ class TestGraphMethods(unittest.TestCase):
 
     def test_random_comm_matrix(self):
         matrix = random_comm_matrix(4,10)
-        for row in matrix:
-            print row
 
     def test_init_tasks(self):
         a = Task(0) 
@@ -141,28 +139,19 @@ class TestHeftMethods(unittest.TestCase):
         cost = self.heft.ave_comm_cost(nodes[0],nodes[1])
 
     def test_ave_comp(self):
-        print 'Test ave_comp'
         nodeA = Task(1)
         nodeA.comp_cost = [3,2,1]
-        print self.heft.ave_comp_cost(nodeA.tid)
+        #print self.heft.ave_comp_cost(nodeA.tid)
     #@unittest.skip("Skipping Heft Until re-organise class structure")
 
     def test_top_sort(self):
         graph = self.heft.graph
         nodes = graph.nodes()
         sorted_nodes = self.heft.top_sort_tasks()
-        print sorted_nodes
-        for node in sorted_nodes:
-           print node.rank
-    #@unittest.skip("Skipping Heft Until re-organise class structure")
     
     def test_rank_sort(self):
         sorted_nodes = self.heft.rank_sort_tasks()
-        print sorted_nodes
-        for node in sorted_nodes:
-           print 'rank ' + str(node.rank)
     
-
     def test_calc_est(self):
         print self.heft.processors
         known_est_nodeA = 0
@@ -180,5 +169,13 @@ class TestMoreHeftMethods(unittest.TestCase):
         graphy = random_task_dag(num_nodes, num_edges)
         init_tasks(graphy, comp_matrix) 
         heft_g = Heft(graphy, comm_matrix, comp_matrix,processors)
-        nodeA = heft_g.graph.nodes()[0]
-        print nodeA.rank 
+        nodeB = heft_g.graph.nodes()[1]
+        print '***Predecessors***'
+        print heft_g.graph.predecessors(nodeB)
+        print '***Comms***'
+        for row in comm_matrix:
+            print row
+        print '***Comp***'
+        print comp_matrix
+        print '***EST***'
+        print heft_g.calc_est(nodeB,1)
