@@ -50,6 +50,11 @@ class TestGraphMethods(unittest.TestCase):
         edges = digraph.edges()
         self.assertFalse(edge in edges)
 
+    def test_random_comm_matrix(self):
+        matrix = random_comm_matrix(4,10)
+        for row in matrix:
+            print row
+
     def test_init_tasks(self):
         a = Task(0) 
         b = Task(1)
@@ -91,7 +96,7 @@ class TestHeftMethods(unittest.TestCase):
         graph.add_edge(nodes[0],nodes[2]) #A->C
         graph.add_edge(nodes[1],nodes[3]) #B->D
         graph.add_edge(nodes[2],nodes[3]) #C->D
-        self.heft = Heft(graph, comm_matrix, comp_matrix)
+        self.heft = Heft(graph, comm_matrix, comp_matrix,processors)
 
     def tearDown(self):
         return -1
@@ -146,14 +151,22 @@ class TestHeftMethods(unittest.TestCase):
         graph = self.heft.graph
         nodes = graph.nodes()
         sorted_nodes = self.heft.top_sort_tasks()
+        print sorted_nodes
         for node in sorted_nodes:
            print node.rank
     #@unittest.skip("Skipping Heft Until re-organise class structure")
     
     def test_rank_sort(self):
         sorted_nodes = self.heft.rank_sort_tasks()
+        print sorted_nodes
         for node in sorted_nodes:
            print 'rank ' + str(node.rank)
+    
+
+    def test_calc_est(self):
+        print self.heft.processors
+        known_est_nodeA = 0
+        known_est_nodeC = 0
 
 class TestMoreHeftMethods(unittest.TestCase):
 
@@ -161,15 +174,11 @@ class TestMoreHeftMethods(unittest.TestCase):
         num_nodes = 10
         num_edges = 20
         num_processors = 3
-        #processors = create_processors(num_processors) 
+        processors = create_processors(num_processors) 
         comp_matrix = random_comp_matrix(num_processors, num_nodes, 30)
         comm_matrix= random_comm_matrix(num_nodes, 10)
         graphy = random_task_dag(num_nodes, num_edges)
         init_tasks(graphy, comp_matrix) 
-        """
-        for task in graphy.nodes():
-            print task.comp_cost
-            """
-        heft_g = Heft(graphy, comm_matrix, comp_matrix)
+        heft_g = Heft(graphy, comm_matrix, comp_matrix,processors)
         nodeA = heft_g.graph.nodes()[0]
         print nodeA.rank 

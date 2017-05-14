@@ -31,7 +31,7 @@ def random_comp_matrix(processors, nodes, cost):
 
     for x in range(nodes):
         computation_matrix[x] = random.sample(range(cost),processors)
-
+    
     return computation_matrix
 
 
@@ -44,11 +44,11 @@ def random_comm_matrix(nodes, cost):
     """
     
     # For each processor, we have a list of nodes with communication costs 
-    communication_matrix = dict()
-
-    for x in range(nodes):
-        communication_matrix[x] = [0] + random.sample(range(cost),nodes-1)
-
+    #communication_matrix = dict()
+    communication_matrix = [[0 for x in range(nodes)] for x in range(nodes)] 
+    for x in range(nodes-1):
+        communication_matrix[x][x+1]=random.randint(0,cost)
+        communication_matrix[x+1][x]=communication_matrix[x][x+1]
     return communication_matrix
 
 def init_tasks(graph, comp_matrix):

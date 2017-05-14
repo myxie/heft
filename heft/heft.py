@@ -42,10 +42,11 @@ C(i,k) = 0 when pn = pm.
 """
 
 class Heft(object):
-    def __init__(self, graph, comm, comp):
+    def __init__(self, graph, comm, comp,processors):
         self.graph = graph
         self.comm_matrix = comm
         self.comp_matrix = comp
+        self.processors = processors 
         #print self.graph.nodes()[0].comp_cost        
         self.rank_up(self.graph.nodes()[0])
 
