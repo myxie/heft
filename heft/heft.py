@@ -113,12 +113,24 @@ class Heft(object):
         sort_list=nx.topological_sort(self.graph)
         return sort_list
     
-    def calc_est(self,node):
+    def calc_est(self,node,processor):
         """
         Calculate the Estimated Start Time of a node on a given processor
         """
-        return -1 
+        
+        est = 0 # If the node does not have predecessors
+        predecessors = self.graph.predecessors(node)
+        for pretask in predecessors:
+            if pretask.processor != processor: # If task isn't on the same processor
+                comm_cost = self.comm_matrix[pretask.tid][node.tid]
+            else:
+                comm_cost = 0 # task is on the same processor, communication cost is 0
 
+            tmp =  self.comp_matrix[node.tid][processor] + comm_cost
+            if tmp > est:
+                est = tmp
+
+        return est
 
     def insertion_policy(graph):
         """
