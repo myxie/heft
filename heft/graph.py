@@ -47,8 +47,10 @@ def random_comm_matrix(nodes, cost):
     #communication_matrix = dict()
     communication_matrix = [[0 for x in range(nodes)] for x in range(nodes)] 
     for x in range(nodes-1):
-        communication_matrix[x][x+1]=random.randint(0,cost)
-        communication_matrix[x+1][x]=communication_matrix[x][x+1]
+        for y in range(x+1,nodes):
+            communication_matrix[x][y]=random.randint(0,cost)
+            communication_matrix[y][x]=communication_matrix[x][y]
+
     return communication_matrix
 
 def init_tasks(graph, comp_matrix):
