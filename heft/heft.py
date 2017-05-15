@@ -198,6 +198,9 @@ class Heft(object):
         
 
         return r_sorted, self.processors,makespan
+
+    def makespan(self):
+        return self.insertion_policy()[2]
                 
     def display_schedule(self):
         retval = self.insertion_policy() 
