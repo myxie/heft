@@ -113,7 +113,7 @@ class Heft(object):
         sort_list=nx.topological_sort(self.graph)
         return sort_list
     
-    def calc_est(self,node,processor_num):
+    def calc_est(self,node,processor_num,task_list):
         """
         Calculate the Estimated Start Time of a node on a given processor
         """
@@ -126,11 +126,15 @@ class Heft(object):
             else:
                 comm_cost = 0 # task is on the same processor, communication cost is 0
 
-            tmp = pretask.aft  + comm_cost
-            if tmp > est:
+            # self.graph.predecessors is not being updated in insertion_policy;
+            # need to use the tasks that are being updated to get the right results
+            index = task_list.index(pretask)
+            aft = task_list[index].aft
+            tmp = aft  + comm_cost
+            if tmp >= est:
                 est = tmp
 
-        processor = self.processors[processor_num]
+        processor = self.processors[processor_num] # return the list of allocated tasks
         available_slots = []
         if len(processor) == 0:
             return est # Nothing in the time slots yet, so the earliest start time is whenever
@@ -139,16 +143,69 @@ class Heft(object):
                 # For each start/finish time tuple that exists in the processor
                 if x == 0:
                     if processor[0][0] != 0: #If the start time of the first tuple is not 0
-                        available_slots.apped((0,processor[0][0]) # add a start time tuple
-    
-        return est
+                        available_slots.append((0,processor[0][0]))# add a 0-current_start time tuple
+                    else:
+                        continue
+                else: 
+                    # Append the finish time of the previous slot and the start time of this slot
+                    available_slots.append((processor[x-1][1],processor[x][0]))
+            
+            # Add a very large number to the final time slot available, so we have a gap after 
+            available_slots.append((processor[len(processor)-1][1],10000))
 
-    def insertion_policy(graph):
+        for avail in available_slots:
+            if est < avail[0] and avail[0]+ self.comp_matrix[node.tid][processor_num] <= avail[1]:
+                return avail[0]
+            if est >= avail[0] and est + self.comp_matrix[node.tid][processor_num] <= avail[1]:
+               return est 
+
+        return est
+    
+
+    def insertion_policy(self):
         """
         Allocate tasks to processors following the insertion based policy outline 
         in Tocuoglu et al.(2002)
         """
-        return -1
+        nodes = self.graph.nodes()
+        r_sorted = self.top_sort_tasks()
+        makespan = 0
+        for task in r_sorted:
+            if task == r_sorted[0]:
+                w = min(self.comp_matrix[task.tid])
+                p = self.comp_matrix[task.tid].index(w)
+                task.processor = p
+                task.ast = 0
+                task.aft = w
+                self.processors[p].append((task.ast,task.aft,str(task.tid)))
+            else:
+                aft = 10000 # a big number
+                for processor in range(len(self.processors)):
+                    # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
+                    est = self.calc_est(task, processor,r_sorted)
+                    if est + self.comp_matrix[task.tid][processor] < aft:
+                        aft = est + self.comp_matrix[task.tid][processor]
+                        p = processor
+    
+                task.processor = p
+                task.ast = aft - self.comp_matrix[task.tid][p]
+                task.aft = aft
+                print 'aft: ' + str(task.aft)
+                if task.aft >= makespan:
+                   makespan = task.aft
+                self.processors[p].append((task.ast, task.aft,str(task.tid)))
+                self.processors[p].sort(key=lambda x: x[0])
+        
+
+        return r_sorted, self.processors,makespan
+                
+    def display_schedule(self):
+        retval = self.insertion_policy() 
+        r_sorted = retval[0]
+        processors = retval[1]
+        makespan = retval[2]
+        return retval
+        
     
 
 # if __name__ == '__main__':
