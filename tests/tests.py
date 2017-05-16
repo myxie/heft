@@ -151,6 +151,8 @@ class TestHeftMethods(unittest.TestCase):
     
     def test_rank_sort(self):
         sorted_nodes = self.heft.rank_sort_tasks()
+        for node in sorted_nodes:
+            print 'Node-id: ' + str(node.tid) + ' rank: ' + str(node.rank)
     
     def test_calc_est(self):
         print self.heft.processors
@@ -165,7 +167,7 @@ class TestHeftMethods(unittest.TestCase):
         print retval[1]
          
 class TestMoreHeftMethods(unittest.TestCase):
-    unittest.skip("Skipping Heft Until re-organise class structure")
+    @unittest.skip("Skipping Heft Until re-organise class structure")
 
     def test_random_rank(self):
         num_nodes = 10

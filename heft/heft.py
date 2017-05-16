@@ -89,7 +89,7 @@ class Heft(object):
         node.rank
 
     def rank_sort_tasks(self):
-        """
+        """ 
         Model from this: http://stackoverflow.com/questions/403421/
         how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
 
