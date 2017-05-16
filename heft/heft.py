@@ -47,6 +47,7 @@ class Heft(object):
         self.comm_matrix = comm
         self.comp_matrix = comp
         self.processors = processors 
+        self.top_processors = processors # for topological sort comparison
         #print self.graph.nodes()[0].comp_cost        
         self.rank_up(self.graph.nodes()[0])
 
@@ -86,7 +87,6 @@ class Heft(object):
 
         node.ave_comp = self.ave_comp_cost(node.tid)
         node.rank = node.ave_comp + longest_rank
-        node.rank
 
     def rank_sort_tasks(self):
         """ 
@@ -168,6 +168,42 @@ class Heft(object):
         in Tocuoglu et al.(2002)
         """
         nodes = self.graph.nodes()
+        r_sorted = self.rank_sort_tasks()
+        makespan = 0
+        for task in r_sorted:
+            if task == r_sorted[0]:
+                w = min(self.comp_matrix[task.tid])
+                p = self.comp_matrix[task.tid].index(w)
+                task.processor = p
+                task.ast = 0
+                task.aft = w
+                self.processors[p].append((task.ast,task.aft,str(task.tid)))
+            else:
+                aft = 10000 # a big number
+                for processor in range(len(self.processors)):
+                    # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
+                    est = self.calc_est(task, processor,r_sorted)
+                    if est + self.comp_matrix[task.tid][processor] < aft:
+                        aft = est + self.comp_matrix[task.tid][processor]
+                        p = processor
+    
+                task.processor = p
+                task.ast = aft - self.comp_matrix[task.tid][p]
+                task.aft = aft
+                #print 'aft: ' + str(task.aft)
+                if task.aft >= makespan:
+                   makespan = task.aft
+                self.processors[p].append((task.ast, task.aft,str(task.tid)))
+                self.processors[p].sort(key=lambda x: x[0])
+
+        return r_sorted, self.processors, makespan
+
+    def insertion_policy(self):
+        """
+        Allocate tasks to processors following the insertion based policy outline 
+        in Tocuoglu et al.(2002)
+        """
+        nodes = self.graph.nodes()
         r_sorted = self.top_sort_tasks()
         makespan = 0
         for task in r_sorted:
@@ -190,18 +226,59 @@ class Heft(object):
                 task.processor = p
                 task.ast = aft - self.comp_matrix[task.tid][p]
                 task.aft = aft
-                print 'aft: ' + str(task.aft)
+                #print 'aft: ' + str(task.aft)
                 if task.aft >= makespan:
                    makespan = task.aft
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0])
-        
 
-        return r_sorted, self.processors,makespan
+        return r_sorted, self.processors, makespan
+
+    def insertion_policy_top(self):
+        """
+        Allocate tasks to processors following the insertion based policy outline 
+        in Tocuoglu et al.(2002)
+        """
+        nodes = self.graph.nodes()
+        t_sorted = self.top_sort_tasks()
+        makespan = 0
+        for task in t_sorted:
+            if task == t_sorted[0]:
+                w = min(self.comp_matrix[task.tid])
+                p = self.comp_matrix[task.tid].index(w)
+                task.processor = p
+                task.ast = 0
+                task.aft = w
+                self.processors[p].append((task.ast,task.aft,str(task.tid)))
+            else:
+                aft = 10000 # a big number
+                for processor in range(len(self.processors)):
+                    # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
+                    est = self.calc_est(task, processor,t_sorted)
+                    if est + self.comp_matrix[task.tid][processor] < aft:
+                        aft = est + self.comp_matrix[task.tid][processor]
+                        p = processor
+    
+                task.processor = p
+                task.ast = aft - self.comp_matrix[task.tid][p]
+                task.aft = aft
+                #print 'aft: ' + str(task.aft)
+                if task.aft >= makespan:
+                   makespan = task.aft
+                self.processors[p].append((task.ast, task.aft,str(task.tid)))
+                self.processors[p].sort(key=lambda x: x[0])
+
+        return t_sorted, self.processors, makespan
+
+
 
     def makespan(self):
-        return self.insertion_policy()[2]
-                
+        rank =  self.insertion_policy()[2]
+        return rank
+    def top_makespan(self):
+        top = self.insertion_policy_top()[2]
+        return top
+           
     def display_schedule(self):
         retval = self.insertion_policy() 
         r_sorted = retval[0]
