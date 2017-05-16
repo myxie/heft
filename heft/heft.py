@@ -50,6 +50,12 @@ class Heft(object):
         self.top_processors = processors # for topological sort comparison
         #print self.graph.nodes()[0].comp_cost        
         self.rank_up(self.graph.nodes()[0])
+        self.rank_sort = self.rank_sort_tasks()
+        self.top_sort = self.top_sort_tasks()
+        #print 'top_sort ' + str(self.top_sort)
+        for node in self.graph.nodes():
+            print 'node ' + str(node.tid) + 'rank ' + str(node.rank)
+        print 'rank_sort ' + str(self.rank_sort)
 
     def ave_comm_cost(self,node,successor):
         """
@@ -100,6 +106,7 @@ class Heft(object):
         """
         nodes = self.graph.nodes()
         nodes.sort(key=lambda x: x.rank, reverse=True)
+        print nodes
 
         return nodes
     
@@ -161,50 +168,14 @@ class Heft(object):
 
         return est
     
-
     def insertion_policy(self):
         """
         Allocate tasks to processors following the insertion based policy outline 
         in Tocuoglu et al.(2002)
         """
         nodes = self.graph.nodes()
-        r_sorted = self.rank_sort_tasks()
-        makespan = 0
-        for task in r_sorted:
-            if task == r_sorted[0]:
-                w = min(self.comp_matrix[task.tid])
-                p = self.comp_matrix[task.tid].index(w)
-                task.processor = p
-                task.ast = 0
-                task.aft = w
-                self.processors[p].append((task.ast,task.aft,str(task.tid)))
-            else:
-                aft = 10000 # a big number
-                for processor in range(len(self.processors)):
-                    # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
-                    est = self.calc_est(task, processor,r_sorted)
-                    if est + self.comp_matrix[task.tid][processor] < aft:
-                        aft = est + self.comp_matrix[task.tid][processor]
-                        p = processor
-    
-                task.processor = p
-                task.ast = aft - self.comp_matrix[task.tid][p]
-                task.aft = aft
-                #print 'aft: ' + str(task.aft)
-                if task.aft >= makespan:
-                   makespan = task.aft
-                self.processors[p].append((task.ast, task.aft,str(task.tid)))
-                self.processors[p].sort(key=lambda x: x[0])
-
-        return r_sorted, self.processors, makespan
-
-    def insertion_policy(self):
-        """
-        Allocate tasks to processors following the insertion based policy outline 
-        in Tocuoglu et al.(2002)
-        """
-        nodes = self.graph.nodes()
-        r_sorted = self.top_sort_tasks()
+        r_sorted = self.rank_sort
+        print 'r_sorted ' + str(r_sorted)
         makespan = 0
         for task in r_sorted:
             if task == r_sorted[0]:
@@ -240,7 +211,8 @@ class Heft(object):
         in Tocuoglu et al.(2002)
         """
         nodes = self.graph.nodes()
-        t_sorted = self.top_sort_tasks()
+        t_sorted = self.top_sort
+        print 't_sorted ' + str(t_sorted)
         makespan = 0
         for task in t_sorted:
             if task == t_sorted[0]:
@@ -273,10 +245,18 @@ class Heft(object):
 
 
     def makespan(self):
-        rank =  self.insertion_policy()[2]
+       
+        val =  self.insertion_policy()
+        sort = val[0]
+        #print 'rank '+str(sort)
+        rank = val[2]
         return rank
+
     def top_makespan(self):
-        top = self.insertion_policy_top()[2]
+        val = self.insertion_policy_top()
+        sort = [0]
+        #print 'top ' + str(sort)
+        top = val[2]
         return top
            
     def display_schedule(self):
