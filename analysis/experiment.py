@@ -53,22 +53,22 @@ def run_random_heft():
     and adds each makespan onto a list 
     """
     nodes_init=10
-    nodes_final=11
+    nodes_final=101
     makespan_list = [] 
     top_make_list = []
     num_processor = 2
     for n in range(nodes_init, nodes_final, 10):
-        g = random_task_dag(n,n)
+        g = random_task_dag(n,2*n)
         p = create_processors(num_processor)
         comp = random_comp_matrix(num_processor,n,20)
         comm = random_comm_matrix(n,10)
         heft = Heft(g,comm,comp,p)
-#       makespan = heft.makespan()
-#       topmakespan=heft.top_makespan()
-#       makespan_list.append(makespan)
-#       top_make_list.append(topmakespan)
+        makespan = heft.makespan()
+        topmakespan=heft.top_makespan()
+        makespan_list.append(makespan)
+        top_make_list.append(topmakespan)
     return makespan_list,top_make_list
 
 if __name__ == '__main__':
-#    setup_graph()
+    #setup_graph()
     print run_random_heft()

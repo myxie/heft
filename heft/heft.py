@@ -49,13 +49,16 @@ class Heft(object):
         self.processors = processors 
         self.top_processors = processors # for topological sort comparison
         #print self.graph.nodes()[0].comp_cost        
-        self.rank_up(self.graph.nodes()[0])
+        #nodeA = self.graph.nodes()[0]
+        for node in self.graph.nodes():
+            self.rank_up(node)
+        
         self.rank_sort = self.rank_sort_tasks()
         self.top_sort = self.top_sort_tasks()
-        #print 'top_sort ' + str(self.top_sort)
-        for node in self.graph.nodes():
-            print 'node ' + str(node.tid) + 'rank ' + str(node.rank)
-        print 'rank_sort ' + str(self.rank_sort)
+        print 'top_sort ' + str(self.top_sort)
+        #for node in self.graph.nodes():
+        #    print 'node ' + str(node.tid) + 'rank ' + str(node.rank)
+        #print 'rank_sort ' + str(self.rank_sort)
 
     def ave_comm_cost(self,node,successor):
         """
@@ -117,7 +120,8 @@ class Heft(object):
         list of tasks based on precedence constraints. This is to test whether or 
         not the ranking heuristic is any better than a topological sort approach
         """
-        sort_list=nx.topological_sort(self.graph)
+        sort_list=nx.topological_sort(self.graph,reverse=True)
+        
         return sort_list
     
     def calc_est(self,node,processor_num,task_list):
@@ -210,9 +214,9 @@ class Heft(object):
         Allocate tasks to processors following the insertion based policy outline 
         in Tocuoglu et al.(2002)
         """
-        nodes = self.graph.nodes()
         t_sorted = self.top_sort
         print 't_sorted ' + str(t_sorted)
+        self.processors = self.top_processors #reset processors
         makespan = 0
         for task in t_sorted:
             if task == t_sorted[0]:
@@ -248,14 +252,14 @@ class Heft(object):
        
         val =  self.insertion_policy()
         sort = val[0]
-        #print 'rank '+str(sort)
+        print 'rank '+str(sort)
         rank = val[2]
         return rank
 
     def top_makespan(self):
         val = self.insertion_policy_top()
-        sort = [0]
-        #print 'top ' + str(sort)
+        sort = val[0]
+        print 'top ' + str(sort)
         top = val[2]
         return top
            

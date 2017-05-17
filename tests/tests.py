@@ -127,7 +127,7 @@ class TestHeftMethods(unittest.TestCase):
     def test_rank_multiple_successors(self):
         nodeA = self.heft.graph.nodes()[0]
         nodeD = self.heft.graph.nodes()[3]
-        self.heft.rank_up(nodeD) 
+        #self.heft.rank_up(nodeD) 
         self.heft.rank_up(nodeA) 
         self.assertTrue(nodeD.rank == 3)
         self.assertTrue(nodeA.rank == 19)
@@ -167,11 +167,11 @@ class TestHeftMethods(unittest.TestCase):
         print retval[1]
          
 class TestMoreHeftMethods(unittest.TestCase):
-    @unittest.skip("Skipping Heft Until re-organise class structure")
+    #unittest.skip("Skipping Heft Until re-organise class structure")
 
     def test_random_rank(self):
         num_nodes = 10
-        num_edges = 12
+        num_edges = 20
         num_processors = 3
         processors = create_processors(num_processors) 
         comp_matrix = random_comp_matrix(num_processors, num_nodes, 30)
@@ -192,7 +192,7 @@ class TestMoreHeftMethods(unittest.TestCase):
         for node in heft_g.graph.nodes():
             print 'Node tid: ' + str(node.tid) + ': ' + str(heft_g.graph.predecessors(node))
         for task in task_sort:
-            print 'id: ' + str(task.tid) + 'rank: ' + 'aft: ' + str(task.aft)
+            print 'id: ' + str(task.tid) + 'rank: ' +str(task.rank) + 'aft: ' + str(task.aft)
         for x in range(len(retval[1])):
             print retval[1][x]
         print retval[2]

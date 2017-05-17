@@ -88,11 +88,12 @@ def random_task_dag(nodes, edges):
     count = 1
     for node in node_list:
         if node.tid != 0:
-            while graph.predecessors(node):
-                new_task = random.randint(0,nodes-1)
+            predecessors = graph.predecessors(node)
+            while predecessors is []:
+                new_task = random.randint(1,nodes-1)
                 graph.add_edge(new_task,node)
                 if  nx.is_directed_acyclic_graph(graph):
-                    count = 0     
+                    predecessors = graph.predecessors(node)     
                 else:
                     graph.remove_edge(new_task,node)
         else:
