@@ -3,6 +3,7 @@ Functions for static HEFT implementation
 """
 import networkx as nx
 import task 
+import time
 
 """
 HEFT is organised into 2 phases: 
@@ -55,7 +56,7 @@ class Heft(object):
         
         self.rank_sort = self.rank_sort_tasks()
         self.top_sort = self.top_sort_tasks()
-        print 'top_sort ' + str(self.top_sort)
+        #print 'top_sort ' + str(self.top_sort)
         #for node in self.graph.nodes():
         #    print 'node ' + str(node.tid) + 'rank ' + str(node.rank)
         #print 'rank_sort ' + str(self.rank_sort)
@@ -109,7 +110,7 @@ class Heft(object):
         """
         nodes = self.graph.nodes()
         nodes.sort(key=lambda x: x.rank, reverse=True)
-        print nodes
+        #print nodes
 
         return nodes
     
@@ -179,7 +180,7 @@ class Heft(object):
         """
         nodes = self.graph.nodes()
         r_sorted = self.rank_sort
-        print 'r_sorted ' + str(r_sorted)
+        #print 'r_sorted ' + str(r_sorted)
         makespan = 0
         for task in r_sorted:
             if task == r_sorted[0]:
@@ -215,7 +216,7 @@ class Heft(object):
         in Tocuoglu et al.(2002)
         """
         t_sorted = self.top_sort
-        print 't_sorted ' + str(t_sorted)
+#       print 't_sorted ' + str(t_sorted)
         self.processors = self.top_processors #reset processors
         makespan = 0
         for task in t_sorted:
@@ -249,19 +250,24 @@ class Heft(object):
 
 
     def makespan(self):
-       
+        start = time.time() 
         val =  self.insertion_policy()
+        finish=time.time()
+        total_time = (finish-start)*1000
         sort = val[0]
-        print 'rank '+str(sort)
+        #print 'rank '+str(sort)
         rank = val[2]
-        return rank
+        return rank,total_time
 
     def top_makespan(self):
+        start = time.time() 
         val = self.insertion_policy_top()
+        finish=time.time()
+        total_time = (finish-start)*1000
         sort = val[0]
-        print 'top ' + str(sort)
+        #print 'top ' + str(sort)
         top = val[2]
-        return top
+        return top,total_time
            
     def display_schedule(self):
         retval = self.insertion_policy() 
