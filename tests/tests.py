@@ -74,7 +74,7 @@ class TestHeftMethods(unittest.TestCase):
         processors = create_processors(num_processors)
         nodes = [Task(x) for x in range(num_nodes)]
         comm_matrix = {0:[0,1,1,0],1:[0,0,0,2],2:[0,0,0,2],3:[0,0,0,0]}
-        comp_matrix = {0:[4],1:[6],2:[9],3:[3]}
+        comp_matrix = {0:[4,4],1:[6,6],2:[9,9],3:[3,3]}
 
         """
         Calc. rank by hand is a pain; the hard work is done here
@@ -127,7 +127,7 @@ class TestHeftMethods(unittest.TestCase):
     def test_rank_multiple_successors(self):
         nodeA = self.heft.graph.nodes()[0]
         nodeD = self.heft.graph.nodes()[3]
-        self.heft.rank_up(nodeD) 
+        #self.heft.rank_up(nodeD) 
         self.heft.rank_up(nodeA) 
         self.assertTrue(nodeD.rank == 3)
         self.assertTrue(nodeA.rank == 19)
@@ -151,13 +151,23 @@ class TestHeftMethods(unittest.TestCase):
     
     def test_rank_sort(self):
         sorted_nodes = self.heft.rank_sort_tasks()
+        for node in sorted_nodes:
+            print 'Node-id: ' + str(node.tid) + ' rank: ' + str(node.rank)
     
     def test_calc_est(self):
         print self.heft.processors
         known_est_nodeA = 0
         known_est_nodeC = 0
 
+    def test_insertion_policy(self):
+        retval = self.heft.insertion_policy()
+        task_sort = retval[0]
+        for task in task_sort:
+            print 'Processor No. ' + str(task.processor)
+        print retval[1]
+         
 class TestMoreHeftMethods(unittest.TestCase):
+    #unittest.skip("Skipping Heft Until re-organise class structure")
 
     def test_random_rank(self):
         num_nodes = 10
@@ -170,12 +180,21 @@ class TestMoreHeftMethods(unittest.TestCase):
         init_tasks(graphy, comp_matrix) 
         heft_g = Heft(graphy, comm_matrix, comp_matrix,processors)
         nodeB = heft_g.graph.nodes()[1]
-        print '***Predecessors***'
-        print heft_g.graph.predecessors(nodeB)
         print '***Comms***'
         for row in comm_matrix:
             print row
         print '***Comp***'
         print comp_matrix
         print '***EST***'
-        print heft_g.calc_est(nodeB,1)
+        retval = heft_g.insertion_policy()
+        task_sort = retval[0]
+        print '***Predecessors***'
+        for node in heft_g.graph.nodes():
+            print 'Node tid: ' + str(node.tid) + ': ' + str(heft_g.graph.predecessors(node))
+        for task in task_sort:
+            print 'id: ' + str(task.tid) + 'rank: ' +str(task.rank) + 'aft: ' + str(task.aft)
+        for x in range(len(retval[1])):
+            print retval[1][x]
+        print retval[2]
+        print heft_g.graph.nodes()[nodeB.tid]
+

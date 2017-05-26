@@ -68,17 +68,37 @@ def random_task_dag(nodes, edges):
         return graph
     for i in range(nodes):
         graph.add_node(Task(i))
+    graph.add_edge(Task(0), Task(1))
     while edges > 0:
         a = Task(random.randint(0,nodes-1))
         b=a
-        while b==a:
+        while b.tid==a.tid:
             b = Task(random.randint(0,nodes-1))
-        graph.add_edge(a,b)
-        if nx.is_directed_acyclic_graph(graph):
-            edges -= 1
+        if b.tid > 0 and a >=0 :
+            graph.add_edge(a,b)
+            if nx.is_directed_acyclic_graph(graph):
+                edges -= 1
+            else:
+                # we closed a loop!
+                graph.remove_edge(a,b)
         else:
-            # we closed a loop!
-            graph.remove_edge(a,b)
+            continue
+
+    node_list = graph.nodes()
+    count = 1
+    for node in node_list:
+        if node.tid != 0:
+            predecessors = graph.predecessors(node)
+            while predecessors is []:
+                new_task = random.randint(1,nodes-1)
+                graph.add_edge(new_task,node)
+                if  nx.is_directed_acyclic_graph(graph):
+                    predecessors = graph.predecessors(node)     
+                else:
+                    graph.remove_edge(new_task,node)
+        else:
+            continue
+
     return graph
 
 if __name__ == "__main__":
@@ -87,11 +107,14 @@ if __name__ == "__main__":
     """
     num_processors=3
     nodes=5 
-    edges=6
+    edges=10
 
 #   comp_matrix = random_cost_matrix(processors, nodes,100) 
 #   comm_matrix = random_cost_matrix(node, nodes,50) # Node x Node communication matrix
     processors = create_processors(num_processors)
     graph = random_task_dag(nodes,edges)
+    nodes = graph.nodes()
+    for node in nodes:
+        print graph.predecessors(node)
 
         

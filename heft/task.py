@@ -12,8 +12,8 @@ class Task(object):
 #       self.ave_comm = -1 # I do not think this is necessary 
         self.rank = -1 # This is updated during the 'Task Prioritisation' phase 
         self.processor = -1
-        self.est = 0 
-        self.eft = 0 
+        self.ast = 0 
+        self.aft = 0 
 
     def __repr__(self):
         return str(self.tid)
