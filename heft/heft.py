@@ -130,6 +130,8 @@ class Heft(object):
             if tmp > est:
                 est = tmp
 
+        # Now we find the time it fits in on the processor
+
         return est
 
     def insertion_policy(graph):
