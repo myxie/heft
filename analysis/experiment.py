@@ -61,28 +61,46 @@ def run_random_heft():
     nodes_final=1001
     makespan_list = [] 
     makespan_time_list = []
+    makespan_rank_time = []
+    makespan_insertion_time = []
     top_make_list = []
     top_time_list = []
+    # difference_list = []
     num_processor = 2
+    #,2,3,4,5,3,4,5
     n_list = [x for x in range(nodes_init,nodes_final,50)]
-    for n in range(nodes_init, nodes_final, 50):
-        g = random_task_dag(n,2*n)
-        p = create_processors(num_processor)
-        comp = random_comp_matrix(num_processor,n,20)
-        comm = random_comm_matrix(n,10)
-        heft = Heft(g,comm,comp,p)
-        makespan_tuple = heft.makespan()
-        makespan_list.append(makespan_tuple[0])
-        makespan_time_list.append(makespan_tuple[1])
+    for x in [(4/float(3))]:   
+        for n in range(nodes_init, nodes_final, 50):
+            g = random_task_dag(n,float(x*n))
+            p = create_processors(num_processor)
+            comp = random_comp_matrix(num_processor,n,20)
+            comm = random_comm_matrix(n,10)
+            heft = Heft(g,comm,comp,p)
+            makespan_tuple = heft.makespan()
+            makespan_list.append(makespan_tuple[0])
+            makespan_time_list.append(makespan_tuple[1])
+            # makespan_rank_time.append(makespan_tuple[2])
+            # makespan_insertion_time.append(makespan_tuple[3])
+            topmakespan_tuple = heft.top_makespan()
+            top_make_list.append(topmakespan_tuple[0])
+            # top_time_list.append(topmakespan_tuple[1])
+        
+        # plt.plot(n_list, makespan_list,label=str(1/(float(x))))
+        print zip(top_make_list,makespan_list)
+        print [i-j for i,j in zip(top_make_list,makespan_list)]
+        difference_list = [i - j for i, j in zip(top_make_list, makespan_list)]
+        # plt.plot(n_list, top_make_list,label='Top. Sort')
+        plt.plot(n_list, difference_list, label=str(1/float(x)))
 
-        topmakespan_tuple = heft.top_makespan()
-        top_make_list.append(topmakespan_tuple[0])
-        top_time_list.append(topmakespan_tuple[1])
-    
-    plt.plot(n_list, makespan_list,label='Rank Sort')
-    plt.plot(n_list, top_make_list,label='Top. Sort')
-#    plt.plot(n_list,makespan_time_list,label='Rank')
-#    plt.plot(n_list,top_time_list,label='Top')
+        #plt.plot(n_list,makespan_time_list,label='Total')
+        # plt.plot(n_list,makespan_rank_time,label='Rank')
+        # plt.plot(n_list,makespan_insertion_time,label='Insertion')
+        # plt.plot(n_list,top_time_list,label='Top')
+        makespan_list = [] 
+        makespan_time_list = []
+        top_make_list = []
+        top_time_list = []
+
     plt.legend()
     plt.show()
 

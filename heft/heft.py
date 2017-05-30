@@ -5,42 +5,6 @@ import networkx as nx
 import task 
 import time
 
-"""
-HEFT is organised into 2 phases: 
-
-    - Task Prioritisation
-    - Processor Allocation
-
-In this Implementation of HEFT, we are testing the difference between a 
-topological sort and the original ranku function implemented in HEFT.
-For more information, read the original paper here: 
-
-Variables: 
-
-v = set of vertices
-e = set of edges
-
-Data - v x v matrix of communication data. Data(i,k) is the amount of data
-required to be transmittied from ni to nk (where n is a given task)
-
-Q - set of heterogeneous resources 'q'. Interprocessor communication is assumed
-to occur without communication.
-
-W - computation cost matrix (w = work...I think). W(i,j) gives the time cost 
-of task ni on processor pj
-
-B - transfer rates matrix (between processors). I.e. B(m,n) gives the 
-(predicted) transfer rate between processor pm and pn.
-
-Communication cost from edge (i,k), transferring data from task ni to nk 
-(from pm to pn respectively), is given by:
-
-C(i,k) = data(i,k)/B(m,n) + L(m),
-
-Where L(m) is the startup communication cost on pm.
-
-C(i,k) = 0 when pn = pm.
-"""
 
 class Heft(object):
     def __init__(self, graph, comm, comp,processors):
@@ -89,7 +53,6 @@ class Heft(object):
         """
         longest_rank = 0
         for successor in self.graph.successors(node):
-#           print successor
             if successor.rank is -1:
                 self.rank_up(successor)
 
@@ -179,6 +142,8 @@ class Heft(object):
         Allocate tasks to processors following the insertion based policy outline 
         in Tocuoglu et al.(2002)
         """
+        start = time.time() 
+ 
         nodes = self.graph.nodes()
         r_sorted = self.rank_sort
         #print 'r_sorted ' + str(r_sorted)
@@ -209,7 +174,10 @@ class Heft(object):
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0])
 
-        return r_sorted, self.processors, makespan
+        finish=time.time()
+        insertion_time = (finish-start)*1000
+
+        return r_sorted, self.processors, makespan, insertion_time
 
     def insertion_policy_top(self):
         """
@@ -258,7 +226,9 @@ class Heft(object):
         sort = val[0]
         #print 'rank '+str(sort)
         rank = val[2]
-        return rank,total_time
+        insertion_time = val[3]
+        rank_time = total_time-insertion_time
+        return rank,total_time,rank_time,insertion_time
 
     def top_makespan(self):
         start = time.time() 
