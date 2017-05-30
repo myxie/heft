@@ -146,6 +146,7 @@ class Heft(object):
             if tmp >= est:
                 est = tmp
 
+        # Now we find the time it fits in on the processor
         processor = self.processors[processor_num] # return the list of allocated tasks
         available_slots = []
         if len(processor) == 0:
