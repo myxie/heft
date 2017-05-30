@@ -35,7 +35,7 @@ def setup_graph():
     graph.add_nodes_from([a,b,c,d,e,f])
     graph.add_edges_from([(a,b ),(a,c),(b,e),(c,d),(d,e),(e,f)])
 
-    comp_matrix={0:[7,5],1:[8,9],2:[4,16],3:[2,1],4:[8,5],5:[12,11]}
+    comp_matrix={0:[7,5],1:[8,9],2:[4,15],3:[2,1],4:[8,5],5:[12,11]}
 
     comm_matrix=[[0,7,12,0,0,0],[7,0,0,0,5,0],[12,0,0,6,0,0],\
         [0,0,0,0,11,0],[0,5,0,11,0,9],[0,0,0,0,9,0]]
@@ -44,8 +44,13 @@ def setup_graph():
 
     heft = Heft(graph,comm_matrix,comp_matrix,processors)
     heft.rank_up(graph.nodes()[0])
+    #print    heft.top_sort_tasks()
     for task in  heft.rank_sort_tasks():
-        print str(task.tid) + ': ' + str(task.rank)
+        print 'taskid: ' + str(task.tid) + ': '+ str(task.rank)
+    makespan_tuple = heft.insertion_policy()
+    for x in range(len(makespan_tuple[1])):
+        print makespan_tuple[1][x]
+
 
 def run_random_heft():
     """
@@ -74,10 +79,10 @@ def run_random_heft():
         top_make_list.append(topmakespan_tuple[0])
         top_time_list.append(topmakespan_tuple[1])
     
-#    plt.plot(n_list, makespan_list,label='Rank Sort')
-#    plt.plot(n_list, top_make_list,label='Top. Sort')
-    plt.plot(n_list,makespan_time_list,label='Rank')
-    plt.plot(n_list,top_time_list,label='Top')
+    plt.plot(n_list, makespan_list,label='Rank Sort')
+    plt.plot(n_list, top_make_list,label='Top. Sort')
+#    plt.plot(n_list,makespan_time_list,label='Rank')
+#    plt.plot(n_list,top_time_list,label='Top')
     plt.legend()
     plt.show()
 

@@ -121,7 +121,7 @@ class Heft(object):
         list of tasks based on precedence constraints. This is to test whether or 
         not the ranking heuristic is any better than a topological sort approach
         """
-        sort_list=nx.topological_sort(self.graph,reverse=True)
+        sort_list=nx.topological_sort(self.graph)
         
         return sort_list
     
