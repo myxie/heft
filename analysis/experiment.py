@@ -111,6 +111,7 @@ def run_random_heft():
 
     return makespan_list,makespan_time_list,top_make_list,top_time_list
 
+#TODO Change this to produce a nicer output
 def rank_heft():
     nodes_init=10
     nodes_final=1000
@@ -162,9 +163,6 @@ def rank_heft():
     plt.plot(n_list, makespan_list,label='Rank Sort')
     plt.plot(n_list, top_make_list,label='Rank Sort')
 
-    # print zip(top_make_list,makespan_list)
-    # print [i-j for i,j in zip(top_make_list,makespan_list)]
-    # difference_list = [i - j for i, j in zip(top_make_list, makespan_list)]
     output_file = open('output.txt','a')
     output_file.write(str(makespan_list)+'\n')
     output_file.write(str(top_make_list)+'\n')
@@ -175,27 +173,11 @@ def rank_heft():
     plt.plot(n_list, max_make_list,label='Max. Sort')
     plt.plot(n_list, min_make_list,label='Min. Sort')
 
-    # plt.plot(n_list, difference_list, label=str(1/float(x)))
-    # print makespan_list
-    # print top_make_list
-    # print max_make_list
-    # print min_make_list
-    # minmakespan_tuple = heft.min_makespan()
-    # min_make_list.append(minmakespan_tuple[0])
-    # print min_make_list
-    #plt.plot(n_list,makespan_time_list,label='Total')
-    # plt.plot(n_list,makespan_rank_time,label='Rank')
-    # plt.plot(n_list,makespan_insertion_time,label='Insertion')
-    # plt.plot(n_list,top_time_list,label='Top')
     makespan_list = [] 
     makespan_time_list = []
     top_make_list = []
     top_time_list = []
 
-    # plt.legend()
-    # # plt.show()
-    # print max_count
-    # print min_count
     print top_count
     print len(n_list)
     return makespan_list,makespan_time_list,top_make_list,top_time_list

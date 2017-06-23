@@ -94,7 +94,7 @@ class TestHeftMethods(unittest.TestCase):
         graph.add_edge(nodes[0],nodes[2]) #A->C
         graph.add_edge(nodes[1],nodes[3]) #B->D
         graph.add_edge(nodes[2],nodes[3]) #C->D
-        self.heft = Heft(graph, comm_matrix, comp_matrix,processors)
+        self.heft = Heft(graph, comm_matrix, comp_matrix,num_processors)
 
     def tearDown(self):
         return -1
@@ -178,7 +178,7 @@ class TestMoreHeftMethods(unittest.TestCase):
         comm_matrix= random_comm_matrix(num_nodes, 10)
         graphy = random_task_dag(num_nodes, num_edges)
         init_tasks(graphy, comp_matrix) 
-        heft_g = Heft(graphy, comm_matrix, comp_matrix,processors)
+        heft_g = Heft(graphy, comm_matrix, comp_matrix,num_processors)
         nodeB = heft_g.graph.nodes()[1]
         print '***Comms***'
         for row in comm_matrix:

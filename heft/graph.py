@@ -113,8 +113,12 @@ if __name__ == "__main__":
 #   comm_matrix = random_cost_matrix(node, nodes,50) # Node x Node communication matrix
     processors = create_processors(num_processors)
     graph = random_task_dag(nodes,edges)
-    nodes = graph.nodes()
-    for node in nodes:
-        print graph.predecessors(node)
+    nx.write_adjlist(graph,"test.adjlist")
+    fh=open("test.adjlist", 'rb')
+    G=nx.read_adjlist(fh)
+    print G.nodes()
+    # nodes = graph.nodes()
+    # for node in nodes:
+    #     print graph.predecessors(node)
 
         
