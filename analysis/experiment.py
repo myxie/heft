@@ -42,7 +42,7 @@ def setup_graph():
 
     processors = create_processors(2)
 
-    heft = Heft(graph,comm_matrix,comp_matrix,processors)
+    heft = Heft(graph,comm_matrix,comp_matrix,2)
     heft.rank_up(graph.nodes()[0])
     #print    heft.top_sort_tasks()
     for task in  heft.rank_sort_tasks():

@@ -4,16 +4,21 @@ Functions for static HEFT implementation
 import networkx as nx
 import task 
 import time
-from graph import create_processors
+from graph import create_processors, random_comp_matrix, random_comm_matrix
 import copy
 
 
 class Heft(object):
-    def __init__(self, graph, comm, comp,num_processors):
+    # def __init__(self, graph, comm, comp,num_processors):
+    def __init__(self,nodes,num_processors,cost):
         tmp = graph
-        self.graph = graph
-        self.comm_matrix = comm
-        self.comp_matrix = comp
+
+        # comp = random_comp_matrix(num_processor,n,20)
+        # comm = random_comm_matrix(n,10)
+        # heft = Heft(g,comm,comp,num_processor)
+        self.graph = random_task_dag(nodes,float(2*n))
+        self.comm_matrix = random_comp_matrix(num_processors,nodes,cost)
+        self.comp_matrix = random_comm_matrix(n,cost/2)
         self.processors = create_processors(num_processors) 
         self.top_processors = create_processors(num_processors) # for topological sort comparison
         for node in self.graph.nodes():
