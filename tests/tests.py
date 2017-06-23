@@ -66,6 +66,8 @@ class TestGraphMethods(unittest.TestCase):
         node = digraph.nodes()[1]
         self.assertEquals(node.comp_cost, val)
 
+#unittest.skip("Skipping Heft Until re-organise class structure")
+
 class TestHeftMethods(unittest.TestCase):
     
     def setUp(self):
@@ -87,14 +89,14 @@ class TestHeftMethods(unittest.TestCase):
         A->B; A->C; B->D; C->D
         """
 
-        graph = nx.DiGraph()
-        graph.add_nodes_from(nodes)
-        init_tasks(graph,comp_matrix)
-        graph.add_edge(nodes[0],nodes[1]) #A->B
-        graph.add_edge(nodes[0],nodes[2]) #A->C
-        graph.add_edge(nodes[1],nodes[3]) #B->D
-        graph.add_edge(nodes[2],nodes[3]) #C->D
-        self.heft = Heft(graph, comm_matrix, comp_matrix,num_processors)
+        # graph = nx.DiGraph()
+        # graph.add_nodes_from(nodes)
+        # init_tasks(graph,comp_matrix)
+        # graph.add_edge(nodes[0],nodes[1]) #A->B
+        # graph.add_edge(nodes[0],nodes[2]) #A->C
+        # graph.add_edge(nodes[1],nodes[3]) #B->D
+        # graph.add_edge(nodes[2],nodes[3]) #C->D
+        self.heft = Heft(num_nodes, num_processors,0,test=True)
 
     def tearDown(self):
         return -1
@@ -136,29 +138,31 @@ class TestHeftMethods(unittest.TestCase):
     def test_ave_comm(self):
         graph = self.heft.graph
         nodes = graph.nodes()
-        cost = self.heft.ave_comm_cost(nodes[0],nodes[1])
+        cost = self.heft.ave_comm_cost(nodes[0].tid,nodes[1].tid)
 
+    # @unittest.skip("Skipping Heft Until re-organise class structure")
     def test_ave_comp(self):
         nodeA = Task(1)
         nodeA.comp_cost = [3,2,1]
         #print self.heft.ave_comp_cost(nodeA.tid)
-    #@unittest.skip("Skipping Heft Until re-organise class structure")
 
+
+    # @unittest.skip("Skipping Heft Until re-organise class structure")
     def test_top_sort(self):
         graph = self.heft.graph
         nodes = graph.nodes()
         sorted_nodes = self.heft.top_sort_tasks()
-    
+    # @unittest.skip("Skipping Heft Until re-organise class structure")    
     def test_rank_sort(self):
         sorted_nodes = self.heft.rank_sort_tasks()
         for node in sorted_nodes:
             print 'Node-id: ' + str(node.tid) + ' rank: ' + str(node.rank)
-    
+    # @unittest.skip("Skipping Heft Until re-organise class structure")    
     def test_calc_est(self):
         print self.heft.processors
         known_est_nodeA = 0
         known_est_nodeC = 0
-
+    # @unittest.skip("Skipping Heft Until re-organise class structure")
     def test_insertion_policy(self):
         retval = self.heft.insertion_policy()
         task_sort = retval[0]
@@ -167,25 +171,16 @@ class TestHeftMethods(unittest.TestCase):
         print retval[1]
          
 class TestMoreHeftMethods(unittest.TestCase):
-    #unittest.skip("Skipping Heft Until re-organise class structure")
+
+    # @unittest.skip("Skipping  Heft Until re-organise class structure")
 
     def test_random_rank(self):
         num_nodes = 10
         num_edges = 20
         num_processors = 3
-        processors = create_processors(num_processors) 
-        comp_matrix = random_comp_matrix(num_processors, num_nodes, 30)
-        comm_matrix= random_comm_matrix(num_nodes, 10)
-        graphy = random_task_dag(num_nodes, num_edges)
-        init_tasks(graphy, comp_matrix) 
-        heft_g = Heft(graphy, comm_matrix, comp_matrix,num_processors)
+        heft_g = Heft(num_nodes,num_processors,20)
         nodeB = heft_g.graph.nodes()[1]
         print '***Comms***'
-        for row in comm_matrix:
-            print row
-        print '***Comp***'
-        print comp_matrix
-        print '***EST***'
         retval = heft_g.insertion_policy()
         task_sort = retval[0]
         print '***Predecessors***'

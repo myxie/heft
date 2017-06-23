@@ -4,23 +4,28 @@ Functions for static HEFT implementation
 import networkx as nx
 import task 
 import time
-from graph import create_processors, random_comp_matrix, random_comm_matrix
+from graph import create_processors, random_comp_matrix, random_comm_matrix,random_task_dag,test_graph
 import copy
 
 
 class Heft(object):
     # def __init__(self, graph, comm, comp,num_processors):
-    def __init__(self,nodes,num_processors,cost):
-        tmp = graph
+    def __init__(self,nodes,num_processors,cost, test=False):
 
-        # comp = random_comp_matrix(num_processor,n,20)
-        # comm = random_comm_matrix(n,10)
-        # heft = Heft(g,comm,comp,num_processor)
-        self.graph = random_task_dag(nodes,float(2*n))
-        self.comm_matrix = random_comp_matrix(num_processors,nodes,cost)
-        self.comp_matrix = random_comm_matrix(n,cost/2)
-        self.processors = create_processors(num_processors) 
-        self.top_processors = create_processors(num_processors) # for topological sort comparison
+        if test:
+            self.graph = test_graph()
+            self.comm_matrix = {0:[0,1,1,0],1:[0,0,0,2],2:[0,0,0,2],3:[0,0,0,0]} 
+            self.comp_matrix = {0:[4,4],1:[6,6],2:[9,9],3:[3,3]}
+            self.processors = create_processors(num_processors) 
+            self.top_processors = create_processors(num_processors) # for topological sort comparison
+        else:
+            self.graph = random_task_dag(nodes,float(2*nodes))
+            self.comm_matrix = random_comm_matrix(nodes,cost/2) 
+            self.comp_matrix = random_comp_matrix(num_processors,nodes,cost)
+            self.processors = create_processors(num_processors) 
+            self.top_processors = create_processors(num_processors) # for topological sort comparison
+
+        # Rank tasks using upward rank heuristic    
         for node in self.graph.nodes():
             self.rank_up(node)
 
@@ -37,8 +42,7 @@ class Heft(object):
         :params node: Starting node
         :params successor: Node with which the starting node is communicating
         """
-
-        cost = self.comm_matrix[node.tid][successor.tid]
+        cost = self.comm_matrix[node][successor]
         return cost 
 
     def ave_comp_cost(self,tid):
@@ -59,7 +63,7 @@ class Heft(object):
             if successor.rank is -1:
                 self.rank_up(successor)
 
-            longest_rank = max(longest_rank, self.ave_comm_cost(node,successor)+ successor.rank)
+            longest_rank = max(longest_rank, self.ave_comm_cost(node.tid,successor.tid)+ successor.rank)
 
         node.ave_comp = self.ave_comp_cost(node.tid)
         node.rank = node.ave_comp + longest_rank

@@ -101,6 +101,29 @@ def random_task_dag(nodes, edges):
 
     return graph
 
+def test_graph():
+    # Calc. rank by hand is a pain; the hard work is done here
+    # 1 processor
+    # Task A = 0, Task B = 1 etc. 
+    # A comp_cost = 4
+    # B comp_cost = 6
+    # C comp_cost = 9
+    # D comp_cost = 3
+    # A->B; A->C; B->D; C->D
+    nodes = [Task(x) for x in range(4)]
+
+    graph = nx.DiGraph()
+    graph.add_nodes_from(nodes)
+    # init_tasks(graph,comp_matrix)
+    graph.add_edge(nodes[0],nodes[1]) #A->B
+    graph.add_edge(nodes[0],nodes[2]) #A->C
+    graph.add_edge(nodes[1],nodes[3]) #B->D
+    graph.add_edge(nodes[2],nodes[3]) #C->D
+
+    print 'Test' + str(graph.nodes())
+    return graph
+
+
 if __name__ == "__main__":
     """
     Working with graphs
