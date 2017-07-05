@@ -2,31 +2,40 @@
 Functions for static HEFT implementation
 """
 import networkx as nx
-import task 
+from task import Task
 import time
-from graph import create_processors, random_comp_matrix, random_comm_matrix,random_task_dag,test_graph
+from graph import create_processors, random_comp_matrix, random_comm_matrix
 import copy
 
 
 class Heft(object):
     # def __init__(self, graph, comm, comp,num_processors):
-    def __init__(self,nodes,num_processors,cost, test=False):
+    def __init__(self,nodes,num_processors,cost, graphml,test=False):
 
-        if test:
-            self.graph = test_graph()
-            self.comm_matrix = {0:[0,1,1,0],1:[0,0,0,2],2:[0,0,0,2],3:[0,0,0,0]} 
-            self.comp_matrix = {0:[4,4],1:[6,6],2:[9,9],3:[3,3]}
+        # if test:
+        #     self.graph = test_graph()
+        #     self.comm_matrix = {0:[0,1,1,0],1:[0,0,0,2],2:[0,0,0,2],3:[0,0,0,0]} 
+        #     self.comp_matrix = {0:[4,4],1:[6,6],2:[9,9],3:[3,3]}
+        #     self.processors = create_processors(num_processors) 
+        #     self.top_processors = create_processors(num_processors) # for topological sort comparison
+        # else:
+        # self.graph = random_task_dag(nodes,float(2*nodes))
+        self.graph = nx.read_graphml(graphml,Task)
+        print sorted(self.graph.nodes())
+        print self.graph.edges()
+        if test:            
+            # self.comm_matrix = {0:[0,1,1,0],1:[0,0,0,2],2:[0,0,0,2],3:[0,0,0,0]} 
+            # self.comp_matrix = {0:[4,4],1:[6,6],2:[9,9],3:[3,3]}
             self.processors = create_processors(num_processors) 
             self.top_processors = create_processors(num_processors) # for topological sort comparison
         else:
-            self.graph = random_task_dag(nodes,float(2*nodes))
             self.comm_matrix = random_comm_matrix(nodes,cost/2) 
             self.comp_matrix = random_comp_matrix(num_processors,nodes,cost)
             self.processors = create_processors(num_processors) 
             self.top_processors = create_processors(num_processors) # for topological sort comparison
 
         # Rank tasks using upward rank heuristic    
-        for node in self.graph.nodes():
+        for node in sorted(self.graph.nodes()):
             self.rank_up(node)
 
         self.rank_sort = self.rank_sort_tasks()
@@ -164,7 +173,7 @@ class Heft(object):
                 task.processor = p
                 task.ast = 0
                 task.aft = w
-                self.processors[p].append((task.ast,task.aft,str(task.tid)))
+                self.processors[p].append(task.ast,task.aft,str(task.tid))
             else:
                 aft = 10000 # a big number
                 for processor in range(len(self.processors)):

@@ -5,7 +5,7 @@ Task class for the HEFT algorithm
 class Task(object):
 
     def __init__(self, tid, comp_cost=[]):
-        self.tid = tid # task id - this is unique
+        self.tid = int(tid)# task id - this is unique
         self.comp_cost = comp_cost # List of computation cost on each processor 
         self.ave_comp = -1 # average computation cost 
         #TODO check if self.ave_comp is necessary at all
