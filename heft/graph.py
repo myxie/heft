@@ -182,8 +182,6 @@ if __name__ == "__main__":
     nodes=50    
     edges=100
 
-#   comp_matrix = random_cost_matrix(processors, nodes,100) 
-#   comm_matrix = random_cost_matrix(node, nodes,50) # Node x Node communication matrix
     processors = create_processors(num_processors)
     graph = random_task_dag(nodes,edges)
     nx.write_adjlist(graph,"test.adjlist")
@@ -191,27 +189,11 @@ if __name__ == "__main__":
     G=nx.read_adjlist(fh)
     nx.write_graphml(G, "test.graphml")
     new_graph = nx.read_graphml("test.graphml")
-   # print G.nodes()
     seq = seq_task_dag(10)
     nx.write_graphml(seq, "seq.graphml")
     seq_copy = nx.read_graphml("seq.graphml")
-    # print seq.nodes()
-    # print seq_copy.nodes()
-    # print seq_copy.edges()
-    # print test.nodes()
-
-    # def parse_type(node_type):
-    #     return node_type
-    # val = 53
-    # tmp_node = parse_type(Task)(val)  
-    # print tmp_node.comp_cost
-
+     
     gen_test_graph()
-    #matrix=random_comp_matrix(2,10,10)
     val = read_comp_matrix('test_comp.txt')
-    # print new_graph.nodes()
-    # nodes = graph.nodes()
-    # for node in nodes:
-    #     print graph.predecessors(node)
 
         
