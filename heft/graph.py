@@ -6,18 +6,6 @@ from task import Task
 import random
 import ast
 
-def create_processors(processors):
-    """
-    Function that creates a given number of processors
-    
-    :param processors: The number of processors 
-    """
-    processor_dict = dict() 
-    for x in range(0,processors):
-        processor_dict[x]=[] 
-
-    return processor_dict
-
 def random_comp_matrix(processors, nodes, cost):
     """
     Function that generates a random cost matrix for a number of tasks
@@ -160,6 +148,24 @@ def gen_test_graph():
     print 'Test' + str(graph.nodes())
     return graph
 
+def read_comp_matrix(matrix):
+    lines = [] 
+    with open(matrix) as f:
+        next(f)
+        for line in f:
+            line = ast.literal_eval(line)
+            lines.append(line)
+    return lines 
+
+def read_comm_matrix(matrix):
+    lines = [] 
+    with open(matrix) as f:
+        next(f)
+        for line in f:
+            line = ast.literal_eval(line)
+            lines.append(line)
+    return lines 
+
 def seq_task_dag(nodes):
     """Generate a sequential Directed Acyclic Graph (DAG) with a given number of nodes and edges.
     """
@@ -176,24 +182,10 @@ if __name__ == "__main__":
     """
     Working with graphs
     """
-
-    test = gen_test_graph()
-    num_processors=3
-    nodes=50    
-    edges=100
-
-    processors = create_processors(num_processors)
-    graph = random_task_dag(nodes,edges)
-    nx.write_adjlist(graph,"test.adjlist")
-    fh=open("test.adjlist", 'rb')
-    G=nx.read_adjlist(fh)
-    nx.write_graphml(G, "test.graphml")
-    new_graph = nx.read_graphml("test.graphml")
-    seq = seq_task_dag(10)
-    nx.write_graphml(seq, "seq.graphml")
-    seq_copy = nx.read_graphml("seq.graphml")
-     
-    gen_test_graph()
-    val = read_comp_matrix('test_comp.txt')
+    
+    lines = read_comp_matrix('graph/matrices/test_comp.txt')
+    print lines
+    lines = read_comm_matrix('graph/matrices/test_comm.txt')
+    print lines
 
         

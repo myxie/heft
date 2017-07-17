@@ -6,7 +6,7 @@ import unittest
 from heft.task import Task
 from heft.heft import Heft
 from heft.graph import random_comm_matrix, random_comp_matrix,init_tasks,\
-create_processors,random_task_dag
+random_task_dag
 
 import networkx as nx
 
@@ -73,7 +73,10 @@ class TestHeftMethods(unittest.TestCase):
     def setUp(self):
         num_nodes = 4
         num_processors=1
-        processors = create_processors(num_processors)
+        #processors = create_processors(num_processors)
+        processors = dict()
+        for x in range(num_processors):
+            processors[x] = []
         nodes = [Task(x) for x in range(num_nodes)]
         comm_matrix = {0:[0,1,1,0],1:[0,0,0,2],2:[0,0,0,2],3:[0,0,0,0]}
         comp_matrix = {0:[4,4],1:[6,6],2:[9,9],3:[3,3]}
@@ -96,7 +99,10 @@ class TestHeftMethods(unittest.TestCase):
         # graph.add_edge(nodes[0],nodes[2]) #A->C
         # graph.add_edge(nodes[1],nodes[3]) #B->D
         # graph.add_edge(nodes[2],nodes[3]) #C->D
-        self.heft = Heft(num_nodes, num_processors,0,'unit_test.graphml',True)
+        self.heft = Heft(num_processors,\
+                'graph/matrices/test_comp.txt',\
+                'graph/matrices/test_comm.txt',\
+                'graph/graphml/unit_test.graphml')
 
     def tearDown(self):
         return -1

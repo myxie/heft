@@ -2,37 +2,61 @@
 Functions for static HEFT implementation
 """
 import networkx as nx
-from task import Task
 import time
-from graph import create_processors, random_comp_matrix, random_comm_matrix
+from graph import read_comp_matrix, read_comm_matrix
 import copy
 
+"""
+Task class for the HEFT algorithm
+"""
+class Task(object):
+
+    def __init__(self, tid, comp_cost=[]):
+        self.tid = int(tid)# task id - this is unique
+        self.comp_cost = comp_cost # List of computation cost on each processor 
+        self.ave_comp = -1 # average computation cost 
+        #TODO check if self.ave_comp is necessary at all
+#       self.ave_comm = -1 # I do not think this is necessary 
+        self.rank = -1 # This is updated during the 'Task Prioritisation' phase 
+        self.processor = -1
+        self.ast = 0 
+        self.aft = 0 
+
+    def __repr__(self):
+        return str(self.tid)
+    """
+    To utilise the NetworkX graph library, we need to make the node structure hashable  
+    Implementation adapted from: http://stackoverflow.com/a/12076539        
+    """
+
+    def __hash__(self):
+        return hash(self.tid)
+
+    def __eq__(self, task):
+        if isinstance(task, self.__class__):
+            return self.tid == task.tid
+        return NotImplemented
+
+    """
+    Networkx requires an object to be iterable; given comp_cost is a list, 
+    we might as well make that the return of the iteration as we can use it
+    in the HEFT algorithm
+    """
+    def __iter__(self):
+        return self.comp_cost
 
 class Heft(object):
-    # def __init__(self, graph, comm, comp,num_processors):
-    def __init__(self,nodes,num_processors,cost, graphml,test=False):
+    def __init__(self,num_processors, comp, comm,graphml):
 
-        # if test:
-        #     self.graph = test_graph()
-        #     self.comm_matrix = {0:[0,1,1,0],1:[0,0,0,2],2:[0,0,0,2],3:[0,0,0,0]} 
-        #     self.comp_matrix = {0:[4,4],1:[6,6],2:[9,9],3:[3,3]}
-        #     self.processors = create_processors(num_processors) 
-        #     self.top_processors = create_processors(num_processors) # for topological sort comparison
-        # else:
-        # self.graph = random_task_dag(nodes,float(2*nodes))
         self.graph = nx.read_graphml(graphml,Task)
-        print sorted(self.graph.nodes())
-        print self.graph.edges()
-        if test:            
-            # self.comm_matrix = {0:[0,1,1,0],1:[0,0,0,2],2:[0,0,0,2],3:[0,0,0,0]} 
-            # self.comp_matrix = {0:[4,4],1:[6,6],2:[9,9],3:[3,3]}
-            self.processors = create_processors(num_processors) 
-            self.top_processors = create_processors(num_processors) # for topological sort comparison
-        else:
-            self.comm_matrix = random_comm_matrix(nodes,cost/2) 
-            self.comp_matrix = random_comp_matrix(num_processors,nodes,cost)
-            self.processors = create_processors(num_processors) 
-            self.top_processors = create_processors(num_processors) # for topological sort comparison
+        num_nodes = len(self.graph.nodes())
+        self.comp_matrix = read_comp_matrix(comp)
+        self.comm_matrix = read_comm_matrix(comm)
+        self.processors = dict()
+        self.top_processors = dict()
+        for x in range(0,num_processors):
+            self.processors[x]=[]
+            self.top_processors[x]=[]
 
         # Rank tasks using upward rank heuristic    
         for node in sorted(self.graph.nodes()):
@@ -173,7 +197,7 @@ class Heft(object):
                 task.processor = p
                 task.ast = 0
                 task.aft = w
-                self.processors[p].append(task.ast,task.aft,str(task.tid))
+                self.processors[p].append((task.ast,task.aft,str(task.tid)))
             else:
                 aft = 10000 # a big number
                 for processor in range(len(self.processors)):
