@@ -1,10 +1,9 @@
 # Functions associated with creating a Graph that can be used in the HEFT algorithm
 
-
-import networkx as nx
-from task import Task
 import random
-import ast
+import networkx as nx
+
+from heft.heft import Task
 
 def random_comp_matrix(processors, nodes, cost):
     """
@@ -30,21 +29,6 @@ def random_comp_matrix(processors, nodes, cost):
     
     return computation_matrix
 
-def read_comp_matrix(file_name):
-    count = 0
-    matrix = dict()
-    with open(file_name) as f:
-        for line in f:
-            if count is 0:
-                ## skip the first line
-                count = count + 1
-            else:
-                matrix[count-1] = ast.literal_eval(line)
-                count = count + 1
-
-
-    return matrix
-
 def random_comm_matrix(nodes, cost):
     """
     Function that generates a random communication cost (n x n) matrix for a number of tasks
@@ -62,11 +46,6 @@ def random_comm_matrix(nodes, cost):
             communication_matrix[y][x]=communication_matrix[x][y]
 
     return communication_matrix
-
-def init_tasks(graph, comp_matrix):
-    for task in graph:
-         task.comp_cost = comp_matrix[task.tid]    
- 
 
 def random_task_dag(nodes, edges):
     """Generate a random Directed Acyclic Graph (DAG) with a given number of nodes and edges.
@@ -148,24 +127,6 @@ def gen_test_graph():
     print 'Test' + str(graph.nodes())
     return graph
 
-def read_comp_matrix(matrix):
-    lines = [] 
-    with open(matrix) as f:
-        next(f)
-        for line in f:
-            line = ast.literal_eval(line)
-            lines.append(line)
-    return lines 
-
-def read_comm_matrix(matrix):
-    lines = [] 
-    with open(matrix) as f:
-        next(f)
-        for line in f:
-            line = ast.literal_eval(line)
-            lines.append(line)
-    return lines 
-
 def seq_task_dag(nodes):
     """Generate a sequential Directed Acyclic Graph (DAG) with a given number of nodes and edges.
     """
@@ -182,10 +143,5 @@ if __name__ == "__main__":
     """
     Working with graphs
     """
-    
-    lines = read_comp_matrix('graph/matrices/test_comp.txt')
-    print lines
-    lines = read_comm_matrix('graph/matrices/test_comm.txt')
-    print lines
 
         

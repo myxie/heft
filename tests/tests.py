@@ -4,7 +4,7 @@ unittest runner for the heft.py code """
 import sys
 import unittest
 from heft.heft import Task, Heft
-from heft.graph import random_comm_matrix, random_comp_matrix,init_tasks,\
+from graph.graph import random_comm_matrix, random_comp_matrix,\
 random_task_dag
 
 import networkx as nx
@@ -52,20 +52,7 @@ class TestGraphMethods(unittest.TestCase):
     def test_random_comm_matrix(self):
         matrix = random_comm_matrix(4,10)
 
-    def test_init_tasks(self):
-        a = Task(0) 
-        b = Task(1)
-        c = Task(2)
-        d = Task(3)
-        matrix = random_comp_matrix(3,5,20) 
-        val = matrix[1]
-        digraph = nx.DiGraph()       
-        digraph.add_nodes_from([a,b,c,d])
-        init_tasks(digraph, matrix)
-        node = digraph.nodes()[1]
-        self.assertEquals(node.comp_cost, val)
-
-#unittest.skip("Skipping Heft Until re-organise class structure")
+    #unittest.skip("Skipping Heft Until re-organise class structure")
 
 class TestHeftMethods(unittest.TestCase):
     
@@ -98,8 +85,7 @@ class TestHeftMethods(unittest.TestCase):
         # graph.add_edge(nodes[0],nodes[2]) #A->C
         # graph.add_edge(nodes[1],nodes[3]) #B->D
         # graph.add_edge(nodes[2],nodes[3]) #C->D
-        self.heft = Heft(num_processors,\
-                'graph/matrices/test_comp.txt',\
+        self.heft = Heft('graph/matrices/test_comp.txt',\
                 'graph/matrices/test_comm.txt',\
                 'graph/graphml/unit_test.graphml')
 

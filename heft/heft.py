@@ -3,8 +3,20 @@ Functions for static HEFT implementation
 """
 import networkx as nx
 import time
-from graph import read_comp_matrix, read_comm_matrix
-import copy
+import ast
+
+#########Utility Functions##########
+
+def read_matrix(matrix):
+    lines = [] 
+    with open(matrix) as f:
+        next(f)
+        for line in f:
+            line = ast.literal_eval(line)
+            lines.append(line)
+    return lines 
+
+###################################
 
 """
 Task class for the HEFT algorithm
@@ -46,14 +58,14 @@ class Task(object):
         return self.comp_cost
 
 class Heft(object):
-    def __init__(self,num_processors, comp, comm,graphml):
+    def __init__(self, comp, comm,graphml):
 
         self.graph = nx.read_graphml(graphml,Task)
-        num_nodes = len(self.graph.nodes())
-        self.comp_matrix = read_comp_matrix(comp)
-        self.comm_matrix = read_comm_matrix(comm)
+        self.comp_matrix = read_matrix(comp)
+        self.comm_matrix = read_matrix(comm)
         self.processors = dict()
         self.top_processors = dict()
+        num_processors = len(self.comp_matrix[0])
         for x in range(0,num_processors):
             self.processors[x]=[]
             self.top_processors[x]=[]
