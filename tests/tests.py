@@ -3,8 +3,7 @@
 unittest runner for the heft.py code """
 import sys
 import unittest
-from heft.task import Task
-from heft.heft import Heft
+from heft.heft import Task, Heft
 from heft.graph import random_comm_matrix, random_comp_matrix,init_tasks,\
 random_task_dag
 
