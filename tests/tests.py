@@ -57,16 +57,6 @@ class TestGraphMethods(unittest.TestCase):
 class TestHeftMethods(unittest.TestCase):
     
     def setUp(self):
-        num_nodes = 4
-        num_processors=1
-        #processors = create_processors(num_processors)
-        processors = dict()
-        for x in range(num_processors):
-            processors[x] = []
-        nodes = [Task(x) for x in range(num_nodes)]
-        comm_matrix = {0:[0,1,1,0],1:[0,0,0,2],2:[0,0,0,2],3:[0,0,0,0]}
-        comp_matrix = {0:[4,4],1:[6,6],2:[9,9],3:[3,3]}
-
         """
         Calc. rank by hand is a pain; the hard work is done here
         1 processor
@@ -77,14 +67,6 @@ class TestHeftMethods(unittest.TestCase):
         D comp_cost = 3
         A->B; A->C; B->D; C->D
         """
-
-        # graph = nx.DiGraph()
-        # graph.add_nodes_from(nodes)
-        # init_tasks(graph,comp_matrix)
-        # graph.add_edge(nodes[0],nodes[1]) #A->B
-        # graph.add_edge(nodes[0],nodes[2]) #A->C
-        # graph.add_edge(nodes[1],nodes[3]) #B->D
-        # graph.add_edge(nodes[2],nodes[3]) #C->D
         self.heft = Heft('graph/matrices/test_comp.txt',\
                 'graph/matrices/test_comm.txt',\
                 'graph/graphml/unit_test.graphml')
@@ -150,7 +132,6 @@ class TestHeftMethods(unittest.TestCase):
             print 'Node-id: ' + str(node.tid) + ' rank: ' + str(node.rank)
     # @unittest.skip("Skipping Heft Until re-organise class structure")    
     def test_calc_est(self):
-        print self.heft.processors
         known_est_nodeA = 0
         known_est_nodeC = 0
     # @unittest.skip("Skipping Heft Until re-organise class structure")

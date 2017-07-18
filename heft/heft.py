@@ -25,14 +25,12 @@ class Task(object):
 
     def __init__(self, tid, comp_cost=[]):
         self.tid = int(tid)# task id - this is unique
-        self.comp_cost = comp_cost # List of computation cost on each processor 
         self.ave_comp = -1 # average computation cost 
-        #TODO check if self.ave_comp is necessary at all
-#       self.ave_comm = -1 # I do not think this is necessary 
         self.rank = -1 # This is updated during the 'Task Prioritisation' phase 
         self.processor = -1
         self.ast = 0 
         self.aft = 0 
+        self.comp_cost = comp_cost # List of computation cost on each processor 
 
     def __repr__(self):
         return str(self.tid)

@@ -1,11 +1,15 @@
 #/usr/bin 
 # Script to import a DALiuGE Physical Graph Template (PGT)
 
+import sys
 import json
 import networkx as nx
 
-with open('/tmp/bash_unroll.json') as fname: 
-    graph = json.load(fname)
+cli = sys.argv
+fname = cli[1]
+
+with open(fname) as f: 
+    graph = json.load(f)
 
 G = nx.DiGraph()
 
