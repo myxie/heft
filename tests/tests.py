@@ -132,27 +132,4 @@ class TestHeftMethods(unittest.TestCase):
     def test_insertion_policy(self):
         retval = self.heft.insertion_policy()
         task_sort = retval[0]
-         
-class TestMoreHeftMethods(unittest.TestCase):
-
-    @unittest.skip("Skipping  Heft Until re-organise class structure")
-
-    def test_random_rank(self):
-        num_nodes = 10
-        num_edges = 20
-        num_processors = 3
-        heft_g = Heft(num_nodes,num_processors,20)
-        nodeB = heft_g.graph.nodes()[1]
-        print '***Comms***'
-        retval = heft_g.insertion_policy()
-        task_sort = retval[0]
-        print '***Predecessors***'
-        for node in heft_g.graph.nodes():
-            print 'Node tid: ' + str(node.tid) + ': ' + str(heft_g.graph.predecessors(node))
-        for task in task_sort:
-            print 'id: ' + str(task.tid) + 'rank: ' +str(task.rank) + 'aft: ' + str(task.aft)
-        for x in range(len(retval[1])):
-            print retval[1][x]
-        print retval[2]
-        print heft_g.graph.nodes()[nodeB.tid]
-
+    
