@@ -124,7 +124,6 @@ class Heft(object):
         """
         nodes = self.graph.nodes()
         nodes.sort(key=lambda x: x.rank, reverse=True)
-        #print nodes
 
         return nodes
     
@@ -197,8 +196,6 @@ class Heft(object):
  
         nodes = self.graph.nodes()
         r_sorted = self.rank_sort
-        # print self.processors
-        #print 'r_sorted ' + str(r_sorted)
         makespan = 0
         for task in r_sorted:
             if task == r_sorted[0]:
@@ -220,7 +217,6 @@ class Heft(object):
                 task.processor = p
                 task.ast = aft - self.comp_matrix[task.tid][p]
                 task.aft = aft
-                #print 'aft: ' + str(task.aft)
                 if task.aft >= makespan:
                    makespan = task.aft
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
@@ -228,7 +224,6 @@ class Heft(object):
 
         finish=time.time()
         insertion_time = (finish-start)*1000
-        print self.processors
         return r_sorted, self.processors, makespan, insertion_time
 
     def insertion_policy_top(self):
@@ -237,10 +232,7 @@ class Heft(object):
         in Tocuoglu et al.(2002)
         """
         t_sorted = self.top_sort
-#       print 't_sorted ' + str(t_sorted)
-        # tmp = self.empty_processors #reset processors
         self.processors = self.top_processors
-        # print self.processors
         makespan = 0
         for task in t_sorted:
             if task == t_sorted[0]:
@@ -262,13 +254,11 @@ class Heft(object):
                 task.processor = p
                 task.ast = aft - self.comp_matrix[task.tid][p]
                 task.aft = aft
-                #print 'aft: ' + str(task.aft)
                 if task.aft >= makespan:
                    makespan = task.aft
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0])
 
-        print self.processors
         return t_sorted, self.processors, makespan
 
 
@@ -278,7 +268,6 @@ class Heft(object):
         finish=time.time()
         total_time = (finish-start)*1000
         sort = val[0]
-        #print 'rank '+str(sort)
         rank = val[2]
         insertion_time = val[3]
         rank_time = total_time-insertion_time
@@ -290,7 +279,6 @@ class Heft(object):
         finish=time.time()
         total_time = (finish-start)*1000
         sort = val[0]
-        #print 'top ' + str(sort)
         top = val[2]
         return top,total_time
 
@@ -301,7 +289,5 @@ class Heft(object):
         makespan = retval[2]
         return retval
         
-    
 
-# if __name__ == '__main__':
   
