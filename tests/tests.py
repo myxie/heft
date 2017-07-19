@@ -103,7 +103,9 @@ class TestHeftMethods(unittest.TestCase):
         nodeA = self.heft.graph.nodes()[0]
         nodeD = self.heft.graph.nodes()[3]
         #self.heft.rank_up(nodeD) 
-        self.heft.rank_up(nodeA) 
+         
+        #self.heft.rank_up(nodeA) 
+        self.heft.rank()
         self.assertTrue(nodeD.rank == 3)
         self.assertTrue(nodeA.rank == 19)
 
