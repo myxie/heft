@@ -74,35 +74,10 @@ class TestHeftMethods(unittest.TestCase):
     def tearDown(self):
         return -1
 
-    @unittest.skip("Skipping Heft Until re-organise class structure")
-    def test_rank_no_successors(self):
-        G = nx.DiGraph()
-        T1 = Task(1)
-        T1.ave_comp = 5
-        G.add_node(T1)
-        rank_up(T1,G)
-        self.assertTrue(T1.rank == 5)
-        #TODO Add a few tasks to the digraph and choose one with and without successors
-
-    @unittest.skip("Skipping Heft Until re-organise class structure")
-    def test_rank_one_successor(self):
-        G = nx.DiGraph()
-        T1 = Task(1)
-        T1.ave_comp = 5
-        G.add_node(T1)
-        T2 = Task(2)
-        T2.ave_comp = 7
-        G.add_node(T2)
-        G.add_edge(T1,T2)
-        rank_up(T1,G)
-        self.assertTrue(T2.rank == 7)
-        self.assertTrue(T1.rank == 17)
-    
-
     def test_rank_multiple_successors(self):
         nodeA = self.heft.graph.nodes()[0]
         nodeD = self.heft.graph.nodes()[3]
-        #self.heft.rank_up(nodeD) 
+        self.heft.rank_up(nodeD) 
         self.heft.rank_up(nodeA) 
         self.assertTrue(nodeD.rank == 3)
         self.assertTrue(nodeA.rank == 19)
@@ -115,7 +90,6 @@ class TestHeftMethods(unittest.TestCase):
     def test_ave_comp(self):
         nodeA = Task(1)
         nodeA.comp_cost = [3,2,1]
-
 
     def test_top_sort(self):
         graph = self.heft.graph
@@ -132,4 +106,18 @@ class TestHeftMethods(unittest.TestCase):
     def test_insertion_policy(self):
         retval = self.heft.insertion_policy()
         task_sort = retval[0]
-    
+
+class TestHeftMethodsTopcuoglu(unittest.TestCase):
+    """
+    This class tests HEFT on the same example graph presented by 
+    Topcuoglu et al
+    """ 
+     
+    def setUp(self):
+        return -1
+
+    def tearDown(self):
+        return -1
+
+
+

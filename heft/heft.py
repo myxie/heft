@@ -111,7 +111,11 @@ class Heft(object):
         node.ave_comp = self.ave_comp_cost(node.tid)
         node.rank = node.ave_comp + longest_rank
 
+    def rank_oct(self, node):
+            
+        return -1
 
+    
     def rank_sort_tasks(self):
         """ 
         Model from this: http://stackoverflow.com/questions/403421/

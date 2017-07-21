@@ -134,6 +134,45 @@ def gen_test_graph():
     print 'Test' + str(graph.nodes())
     return graph
 
+def gen_topcuoglu_graph():
+    comp = {}
+    comm = {}
+    file = open('topcuoglu_comp.txt','w')
+    file.write("P1,P2,...,Pn\n") 
+    for n in range(len(comp)):
+        file.write(str(comp[n])+'\n')
+    file.close()
+
+    file = open('topcuoglu_comm.txt','w')
+    file.write("N1,N2,...,Nn\n") 
+    for n in range(len(comm)):
+        file.write(str(comm[n])+'\n')
+    file.close()
+
+
+    nodes = [Task(x) for x in range(1,11)]
+    graph = nx.DiGraph()
+    graph.add_nodes_from(nodes)
+    
+    for node in nodes[1:6]:
+        graph.add_edge(nodes[0],node)        
+
+    graph.add_edge(nodes[1],nodes[7])
+    graph.add_edge(nodes[1],nodes[8])
+    graph.add_edge(nodes[2],nodes[6])
+    graph.add_edge(nodes[3],nodes[7])
+    graph.add_edge(nodes[3],nodes[8])
+    graph.add_edge(nodes[4],nodes[8])
+    graph.add_edge(nodes[5],nodes[7])
+
+    for node in nodes[6:9]:
+        graph.add_edge(node, nodes[9])
+
+    print graph.edges()
+
+    file = nx.write_graphml(graph,"tests/topcuoglu.graphml")
+
+
 def seq_task_dag(nodes):
     """Generate a sequential Directed Acyclic Graph (DAG) with a given number of nodes and edges.
     """
@@ -152,3 +191,4 @@ if __name__ == "__main__":
     """
 
         
+    gen_topcuoglu_graph()
