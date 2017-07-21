@@ -69,12 +69,14 @@ class Heft(object):
             self.top_processors[x]=[]
 
         # Rank tasks using upward rank heuristic    
-        for node in sorted(self.graph.nodes()):
-            self.rank_up(node)
-
+        
         self.rank_sort = self.rank_sort_tasks()
 
         self.top_sort = self.top_sort_tasks()
+
+    def rank(self):
+        for node in sorted(self.graph.nodes()):
+            self.rank_up(node)
 
     def ave_comm_cost(self,node,successor):
         """
