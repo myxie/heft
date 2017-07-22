@@ -135,8 +135,22 @@ def gen_test_graph():
     return graph
 
 def gen_topcuoglu_graph():
-    comp = {}
-    comm = {}
+    comp = {0:[14,16,9],1:[13,19,18],\
+            2:[11,13,19],3:[13,8,17],\
+            4:[12,13,10],5:[13,16,9],\
+            6:[7,15,11],7:[5,11,14],\
+            8:[18,12,20],9:[21,7,16]}
+    comm = {0:[0,18,12,9,11,14,0,0,0,0],\
+            1:[18,0,0,0,0,0,0,19,16,0],\
+            2:[12,0,0,0,0,0,23,0,0,0],\
+            3:[9,0,0,0,0,0,0,27,23,0],\
+            4:[11,0,0,0,0,0,0,0,13,0],\
+            5:[14,0,0,0,0,0,0,15,0,0],\
+            6:[0,0,23,0,0,0,0,0,0,17],\
+            7:[0,19,0,27,0,15,0,0,0,11],\
+            8:[0,16,0,23,13,0,0,0,0,13],\
+            9:[0,0,0,0,0,0,0,17,11,13]}
+    
     file = open('topcuoglu_comp.txt','w')
     file.write("P1,P2,...,Pn\n") 
     for n in range(len(comp)):
@@ -150,7 +164,7 @@ def gen_topcuoglu_graph():
     file.close()
 
 
-    nodes = [Task(x) for x in range(1,11)]
+    nodes = [Task(x) for x in range(0,10)]
     graph = nx.DiGraph()
     graph.add_nodes_from(nodes)
     
@@ -189,6 +203,5 @@ if __name__ == "__main__":
     """
     Working with graphs
     """
-
         
     gen_topcuoglu_graph()

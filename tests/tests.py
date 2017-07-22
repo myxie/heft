@@ -114,10 +114,35 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
     """ 
      
     def setUp(self):
+        self.heft = Heft('tests/topcuoglu_comp.txt',\
+            'tests/topcuoglu_comm.txt',\
+            'tests/topcuoglu.graphml')
+         
         return -1
 
     def tearDown(self):
         return -1
+    
+    def test_rank(self):
+        rank_values = [106,75,79,78,67,62,42,35,43,14]
+        
+        self.heft.rank()
+        nodes = self.heft.graph.nodes()
+        for x in range(0,10):
+            self.assertTrue(nodes[x].rank == rank_values[x])
 
+class TestHeftMethodsOCT(unittest.TestCase):
+    """
+    This class tests HEFT on the same example graph presented by Arabnejad 
+    and Barbos
+    """
 
+   def setUp(self):
+       self.heft= ('tests/topcuoglu_comp.txt',\
+            'tests/topcuoglu_comm.txt',\
+            'tests/topcuoglu.graphml')
 
+       return -1
+
+   def tearDown(self):
+       return -1
