@@ -132,17 +132,41 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
             self.assertTrue(nodes[x].rank == rank_values[x])
 
 class TestHeftMethodsOCT(unittest.TestCase):
+
     """
     This class tests HEFT on the same example graph presented by Arabnejad 
     and Barbos
     """
-
-   def setUp(self):
+    def setUp(self):
        self.heft= ('tests/topcuoglu_comp.txt',\
             'tests/topcuoglu_comm.txt',\
             'tests/topcuoglu.graphml')
 
        return -1
 
-   def tearDown(self):
+    def tearDown(self):
        return -1
+
+class TestDALiuGEBashHeft(unittest.TestCase): 
+
+    """
+    This class tests the schedule of the bash_test.json DALiuGE graph
+    """
+
+    def setUp(self):
+        self.heft = Heft('data/input/matrices/comp/comp_10-1.txt',\
+                'data/input/matrices/comm/comm_10.txt',\
+                'tests/translated_importer.graphml')
+    
+    def tearDown(self):
+            return -1
+
+
+    def test_bash_ranking(self):
+        self.heft.rank()
+            
+        nodes = self.heft.graph.nodes()
+        for node in nodes:
+            print str(node.tid) + ' :' + str(node.rank)
+
+        
