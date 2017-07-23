@@ -1,0 +1,16 @@
+{ "class": "go.GraphLinksModel",
+  "linkFromPortIdProperty": "fromPort",
+  "linkToPortIdProperty": "toPort",
+  "nodeDataArray": [ 
+{"category":"DynlibApp", "text":"DynLib", "execution_time":5, "num_cpus":1, "group_start":0, "libpath":"/Users/Chen/projects/dfms/lib/python2.7/site-packages/dfms-0.2.0.dev0+9e19fbc-py2.7.egg/test/apps/libdynlib_example.so", "Arg01":"print_stats=1", "Arg02":"", "Arg03":"", "Arg04":"", "Arg05":"", "Arg06":"", "Arg07":"", "Arg08":"", "Arg09":"", "Arg10":"", "key":-5, "loc":"-309.49830102233017 -1043.696022033691"},
+{"category":"memory", "text":"Output \nMemory", "data_volume":5, "group_end":0, "key":-3, "loc":"-308.8618218635825 -914.6960220336908"},
+{"category":"file", "text":"FileDrop", "data_volume":5, "group_end":0, "check_filepath_exists":"0", "filepath":"/tmp/ddout", "dirname":"", "key":-7, "loc":"-309.4981938825463 -1181.6960220336914"},
+{"category":"BashShellApp", "text":"DD", "execution_time":5, "num_cpus":1, "group_start":0, "Arg01":"dd", "Arg02":"if=/dev/urandom", "Arg03":"of=%o[-7]", "Arg04":"bs=1024  count=10240", "Arg05":"", "Arg06":"", "Arg07":"", "Arg08":"", "Arg09":"", "Arg10":"", "key":-4, "loc":"-471.49824745243825 -1268.6960220336914"},
+{"category":"file", "text":"OutputFile", "data_volume":5, "group_end":0, "check_filepath_exists":"0", "filepath":"/tmp/dynlib_out", "dirname":"", "key":-6, "loc":"-132.49824745243825 -904.6960226893425"}
+ ],
+  "linkDataArray": [ 
+{"from":-5, "to":-3, "fromPort":"B", "toPort":"T", "points":[-309.4983010223301,-1012.3792877197266,-309.4983010223301,-1002.3792877197266,-309.4983010223301,-975.7253791809082,-308.8618218635826,-975.7253791809082,-308.8618218635826,-949.0714706420898,-308.8618218635826,-939.0714706420898]},
+{"from":-7, "to":-5, "fromPort":"B", "toPort":"T", "points":[-309.4981938825463,-1154.6331481933594,-309.4981938825463,-1144.6331481933594,-309.4981938825463,-1114.8229522705078,-309.4983010223301,-1114.8229522705078,-309.4983010223301,-1085.0127563476562,-309.4983010223301,-1075.0127563476562]},
+{"from":-4, "to":-7, "fromPort":"R", "toPort":"T", "points":[-449.64986386441706,-1268.6960220336914,-439.64986386441706,-1268.6960220336914,-309.4981938825463,-1268.6960220336914,-309.4981938825463,-1243.7274589538574,-309.4981938825463,-1218.7588958740234,-309.4981938825463,-1208.7588958740234]},
+{"from":-5, "to":-6, "fromPort":"R", "toPort":"T", "points":[-278.18156670836527,-1043.6960220336914,-268.18156670836527,-1043.6960220336914,-132.49824745243825,-1043.6960220336914,-132.49824745243825,-992.727459281683,-132.49824745243825,-941.7588965296745,-132.49824745243825,-931.7588965296745]}
+ ]}

@@ -168,5 +168,8 @@ class TestDALiuGEBashHeft(unittest.TestCase):
         nodes = self.heft.graph.nodes()
         for node in nodes:
             print str(node.tid) + ' :' + str(node.rank)
-
+    
+    def test_bash_insertion(self):
+        self.heft.insertion_policy()
+        print self.heft.processors
         

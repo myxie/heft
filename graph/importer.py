@@ -33,13 +33,17 @@ translate = dict()
 count = 0 
 
 for node in G.nodes():
-    translate[node] = count
+    translate[node] = count 
     count = count+1
+
+for key, val in translate.items():
+    print str(key) + ' :' + str(val) 
 
 translated_graph = nx.DiGraph()
 
 for key in translate:
     translated_graph.add_node(translate[key])
+
 
 for edge in G.edges():
     translated_graph.add_edge(translate[edge[0]], translate[edge[1]])
