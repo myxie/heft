@@ -82,8 +82,8 @@ class Heft(object):
 
         elif method == 'oct':
             for node in sorted(self.graph.nodes()): 
-               # for val in range(0,3):
-               self.rank_oct(node,0)
+                for val in range(0,3):
+                    self.rank_oct(node,val)
 
     def ave_comm_cost(self,node,successor):
         """
@@ -125,7 +125,6 @@ class Heft(object):
         Upwatd ranking heuristic outlined in Arabnejad and Barbos (2014)
         """
         max_successor = 0
-        successor_min = []
         for successor in self.graph.successors(node):
             min_processor = 1000
             if successor.rank is -1:
@@ -138,11 +137,7 @@ class Heft(object):
                     oct_val  = successor.oct_rank[processor] + \
                             self.comp_matrix[successor.tid][processor] + comm_cost 
                     min_processor = min(min_processor,oct_val)
-                successor_min.append(min_processor)
-
-        print successor_min
-        if successor_min:
-            max_successor = max(successor_min)
+            max_successor = max(max_successor, min_processor)
 
         node.oct_rank[pk] = max_successor
 
