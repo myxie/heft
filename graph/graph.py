@@ -134,6 +134,61 @@ def gen_test_graph():
     print 'Test' + str(graph.nodes())
     return graph
 
+def gen_oct_graph():
+    comp = {0:[22,21,36],1:[22,18,18],\
+            2:[32,27,43],3:[7,10,4],\
+            4:[29,27,35],5:[26,17,24],\
+            6:[14,25,30],7:[29,23,36],\
+            8:[15,21,8],9:[13,16,33]}
+    comm = {0:[0,17,31,29,13,7,0,0,0,0],\
+            1:[17,0,0,0,0,0,0,3,30,0],\
+            2:[31,0,0,0,0,0,16,0,0,0],\
+            3:[29,0,0,0,0,0,0,11,7,0],\
+            4:[13,0,0,0,0,0,0,0,57,0],\
+            5:[7,0,0,0,0,0,0,5,0,0],\
+            6:[0,0,16,0,0,0,0,0,0,9],\
+            7:[0,3,0,11,0,5,0,0,0,42],\
+            8:[0,30,0,7,57,0,0,0,0,7],\
+            9:[0,0,0,0,0,0,0,9,42,7]}
+
+    graph = nx.DiGraph()
+    file = open('oct_comp.txt','w')
+    file.write("P1,P2,...,Pn\n") 
+    for n in range(len(comp)):
+        file.write(str(comp[n])+'\n')
+    file.close()
+
+    file = open('oct_comm.txt','w')
+    file.write("N1,N2,...,Nn\n") 
+    for n in range(len(comm)):
+        file.write(str(comm[n])+'\n')
+    file.close()
+
+
+    nodes = [Task(x) for x in range(0,10)]
+    graph = nx.DiGraph()
+    graph.add_nodes_from(nodes)
+    
+    for node in nodes[1:6]:
+        graph.add_edge(nodes[0],node)        
+
+    graph.add_edge(nodes[1],nodes[7])
+    graph.add_edge(nodes[1],nodes[8])
+    graph.add_edge(nodes[2],nodes[6])
+    graph.add_edge(nodes[3],nodes[7])
+    graph.add_edge(nodes[3],nodes[8])
+    graph.add_edge(nodes[4],nodes[8])
+    graph.add_edge(nodes[5],nodes[7])
+
+    for node in nodes[6:9]:
+        graph.add_edge(node, nodes[9])
+
+    print graph.edges()
+
+    file = nx.write_graphml(graph,"tests/oct.graphml")
+    return -1 
+
+
 def gen_topcuoglu_graph():
     comp = {0:[14,16,9],1:[13,19,18],\
             2:[11,13,19],3:[13,8,17],\
@@ -204,4 +259,4 @@ if __name__ == "__main__":
     Working with graphs
     """
         
-    gen_topcuoglu_graph()
+    gen_oct_graph()

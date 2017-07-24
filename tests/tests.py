@@ -126,7 +126,7 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
     def test_rank(self):
         rank_values = [106,75,79,78,67,62,42,35,43,14]
         
-        self.heft.rank()
+        self.heft.rank('up')
         nodes = self.heft.graph.nodes()
         for x in range(0,10):
             self.assertTrue(nodes[x].rank == rank_values[x])
@@ -138,14 +138,23 @@ class TestHeftMethodsOCT(unittest.TestCase):
     and Barbos
     """
     def setUp(self):
-       self.heft= ('tests/topcuoglu_comp.txt',\
-            'tests/topcuoglu_comm.txt',\
-            'tests/topcuoglu.graphml')
+       self.heft= Heft('tests/oct_comp.txt',\
+            'tests/oct_comm.txt',\
+            'tests/oct.graphml')
 
        return -1
 
     def tearDown(self):
        return -1
+
+    def test_oct_rank(self):
+        self.heft.rank('oct')
+
+        nodes = self.heft.graph.nodes()
+        for node in nodes:
+            print str(node.tid) + ': '+ str(node.oct_rank)
+#        for x in range(0,10):
+#            self.assertTrue(nodes[x].rank == rank_values[x])
 
 class TestDALiuGEBashHeft(unittest.TestCase): 
 
@@ -163,7 +172,7 @@ class TestDALiuGEBashHeft(unittest.TestCase):
 
 
     def test_bash_ranking(self):
-        self.heft.rank()
+        self.heft.rank('up')
             
         nodes = self.heft.graph.nodes()
         for node in nodes:

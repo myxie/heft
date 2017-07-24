@@ -27,6 +27,7 @@ class Task(object):
         self.tid = int(tid)# task id - this is unique
         self.ave_comp = -1 # average computation cost 
         self.rank = -1 # This is updated during the 'Task Prioritisation' phase 
+        self.oct_rank = dict() 
         self.processor = -1
         self.ast = 0 
         self.aft = 0 
@@ -74,9 +75,15 @@ class Heft(object):
 
         self.top_sort = self.top_sort_tasks()
 
-    def rank(self):
-        for node in sorted(self.graph.nodes()):
-            self.rank_up(node)
+    def rank(self, method,processor=0):
+        if method == 'up':
+            for node in sorted(self.graph.nodes()):
+                self.rank_up(node)
+
+        elif method == 'oct':
+            for node in sorted(self.graph.nodes()): 
+               # for val in range(0,3):
+               self.rank_oct(node,0)
 
     def ave_comm_cost(self,node,successor):
         """
@@ -101,21 +108,43 @@ class Heft(object):
         https://github.com/oyld/heft/blob/master/src/heft.py
 
         :param node: A task node in an DAG that is being ranked
-        :param graph: A DAG - contains successor information about nodes 
         """
         longest_rank = 0
         for successor in self.graph.successors(node):
             if successor.rank is -1:
                 self.rank_up(successor)
 
-            longest_rank = max(longest_rank, self.ave_comm_cost(node.tid,successor.tid)+ successor.rank)
+            longest_rank = max(longest_rank, self.ave_comm_cost(node.tid,successor.tid)+\
+                    successor.rank)
 
         node.ave_comp = self.ave_comp_cost(node.tid)
         node.rank = node.ave_comp + longest_rank
 
-    def rank_oct(self, node):
-            
-        return -1
+    def rank_oct(self, node, pk):
+        """
+        Upwatd ranking heuristic outlined in Arabnejad and Barbos (2014)
+        """
+        max_successor = 0
+        successor_min = []
+        for successor in self.graph.successors(node):
+            min_processor = 1000
+            if successor.rank is -1:
+                for processor in self.processors:
+                    oct_val = 0
+                    self.rank_oct(successor, processor) 
+                    comm_cost = 0
+                    if processor is not pk:
+                        comm_cost = self.ave_comm_cost(node.tid, successor.tid)
+                    oct_val  = successor.oct_rank[processor] + \
+                            self.comp_matrix[successor.tid][processor] + comm_cost 
+                    min_processor = min(min_processor,oct_val)
+                successor_min.append(min_processor)
+
+        print successor_min
+        if successor_min:
+            max_successor = max(successor_min)
+
+        node.oct_rank[pk] = max_successor
 
     
     def rank_sort_tasks(self):
