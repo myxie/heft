@@ -1,4 +1,5 @@
 """
+
 Functions for static HEFT implementation
 """
 import networkx as nx
@@ -27,7 +28,8 @@ class Task(object):
         self.tid = int(tid)# task id - this is unique
         self.ave_comp = -1 # average computation cost 
         self.rank = -1 # This is updated during the 'Task Prioritisation' phase 
-        self.oct_rank = dict() 
+        self.oct_rank_dict = dict() 
+        self.oct_rank = -1
         self.processor = -1
         self.ast = 0 
         self.aft = 0 
@@ -65,25 +67,39 @@ class Heft(object):
         self.processors = dict()
         self.top_processors = dict()
         num_processors = len(self.comp_matrix[0])
+        self.oct_matrix = dict()
+
         for x in range(0,num_processors):
             self.processors[x]=[]
             self.top_processors[x]=[]
 
-        # Rank tasks using upward rank heuristic    
-        
-        self.rank_sort = self.rank_sort_tasks()
-
-        self.top_sort = self.top_sort_tasks()
+         
+        self.rank_sort = []
+        self.top_sort = []
 
     def rank(self, method,processor=0):
         if method == 'up':
             for node in sorted(self.graph.nodes()):
                 self.rank_up(node)
 
+            self.rank_sort = self.rank_sort_tasks()
+            self.top_sort = self.top_sort_tasks()
+
         elif method == 'oct':
             for node in sorted(self.graph.nodes()): 
                 for val in range(0,3):
                     self.rank_oct(node,val)
+            
+            for node in self.graph.nodes():
+                ave_list = []
+                for key in node.oct_rank_dict:
+                    ave_list.append(node.oct_rank_dict[key])
+                node.rank = sum(ave_list)/len(ave_list)
+ 
+            self.rank_sort = self.rank_sort_tasks()
+            self.top_sort = self.top_sort_tasks()
+
+               
 
     def ave_comm_cost(self,node,successor):
         """
@@ -134,12 +150,12 @@ class Heft(object):
                     comm_cost = 0
                     if processor is not pk:
                         comm_cost = self.ave_comm_cost(node.tid, successor.tid)
-                    oct_val  = successor.oct_rank[processor] + \
+                    oct_val  = successor.oct_rank_dict[processor] + \
                             self.comp_matrix[successor.tid][processor] + comm_cost 
                     min_processor = min(min_processor,oct_val)
             max_successor = max(max_successor, min_processor)
 
-        node.oct_rank[pk] = max_successor
+        node.oct_rank_dict[pk] = max_successor
 
     
     def rank_sort_tasks(self):

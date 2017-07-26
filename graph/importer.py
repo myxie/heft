@@ -27,7 +27,7 @@ for val in graph:
 for node in G.nodes():
     G.node[node]['label']=str(node)
 
-nx.write_graphml(G, '/tmp/importer.graphml')
+nx.write_graphml(G, 'data/_{0}.graphml'.format(fname))
 
 translate = dict()
 count = 0 
@@ -51,6 +51,6 @@ for edge in G.edges():
 for node in translated_graph.nodes():
     translated_graph.node[node]['label'] = str(node)
 
-nx.write_graphml(translated_graph, '/tmp/translated_importer.graphml')
+nx.write_graphml(translated_graph, 'data/{0}.graphml'.format(fname))
 
 
