@@ -19,7 +19,7 @@ def random_comp_matrix(processors, nodes, cost):
 
     for x in range(nodes):
         computation_matrix[x] = random.sample(range(cost),processors)
-    name = 'graph/matrices/comp_{0}-{1}.txt'.format(nodes,processors)    
+    name = 'data/input/matrices/comp/comp_{0}-{1}.txt'.format(nodes,processors)    
     file = open(name,'w')
     file.write("P1,P2,...,Pn\n") 
     for n in range(len(computation_matrix)):
@@ -45,7 +45,7 @@ def random_comm_matrix(nodes, cost):
             communication_matrix[x][y]=random.randint(0,cost)
             communication_matrix[y][x]=communication_matrix[x][y]
 
-    name = 'graph/matrices/comm_{0}.txt'.format(nodes)    
+    name = 'data/input/matrices/comm/comm_{0}.txt'.format(nodes)    
     file = open(name,'w')
     file.write("N1,N2,...,Nx\n") 
     for n in range(len(communication_matrix)):

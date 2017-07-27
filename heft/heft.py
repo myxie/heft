@@ -6,7 +6,6 @@ import networkx as nx
 import time
 import ast
 
-#########Utility Functions##########
 
 def read_matrix(matrix):
     lines = [] 
@@ -17,7 +16,6 @@ def read_matrix(matrix):
             lines.append(line)
     return lines 
 
-###################################
 
 """
 Task class for the HEFT algorithm
@@ -59,8 +57,7 @@ class Task(object):
         return self.comp_cost
 
 class Heft(object):
-    def __init__(self, comp, comm,graphml):
-
+    def __init__(self, comp, comm, graphml):
         self.graph = nx.read_graphml(graphml,Task)
         self.comp_matrix = read_matrix(comp)
         self.comm_matrix = read_matrix(comm)

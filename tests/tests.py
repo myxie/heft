@@ -106,6 +106,7 @@ class TestHeftMethods(unittest.TestCase):
     def test_insertion_policy(self):
         retval = self.heft.insertion_policy()
         task_sort = retval[0]
+
 @unittest.skip("In Development")
 class TestHeftMethodsTopcuoglu(unittest.TestCase):
     """
@@ -139,7 +140,7 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
         print retval[2]
 
         
-@unittest.skip("In Development")
+#@unittest.skip("In Development")
 class TestHeftMethodsOCT(unittest.TestCase):
 
     """
@@ -157,7 +158,7 @@ class TestHeftMethodsOCT(unittest.TestCase):
         return -1
 
     def test_oct_rank(self):
-
+        print len(self.heft.graph.nodes())
         self.heft.rank('oct')
 
         nodes = self.heft.graph.nodes()
@@ -165,7 +166,7 @@ class TestHeftMethodsOCT(unittest.TestCase):
             print (str(node.tid) + ': '+ str(node.rank))
 #        for x in range(0,10):
 #            self.assertTrue(nodes[x].rank == rank_values[x])
-#@unittest.skip("In Development")
+@unittest.skip("In Development")
 class TestDALiuGEBashHeft(unittest.TestCase): 
 
     """
@@ -193,4 +194,43 @@ class TestDALiuGEBashHeft(unittest.TestCase):
         retval = self.heft.insertion_policy()
         print retval[2] 
         #print(self.heft.processors)
-        
+
+class TestHEFTExperiments(unittest.TestCase):
+
+    def setUp(self):
+        return -1
+        #graph = nx.read_graphml(graphml,Task)
+
+    @unittest.skip("In Development")
+    def test_find_appropriate_matrix(self):
+        """
+        We want to read in the cost matrices that correspond to the 
+        the number of nodes in the graph
+        """
+        heft = Heft('data/input/matrices/comp/comp_130-2.txt',\
+                'data/input/matrices/comm/comm_130.txt',
+                'data/input/graphml/translated__test_seq_gather.graphml')
+
+        heft.rank('up')
+        retval = heft.insertion_policy()
+        print 'insertion ' + str(retval[2])
+
+        return -1
+
+
+    def test_more_things(self):
+        """
+        We want to read in the cost matrices that correspond to the 
+        the number of nodes in the graph
+        """
+        heft = Heft('data/input/matrices/comp/comp_130-2.txt',\
+                'data/input/matrices/comm/comm_130.txt',
+                'data/input/graphml/translated__test_seq_gather.graphml')
+
+        heft.rank('oct')
+        retval = heft.insertion_policy()
+        print 'insertion ' + str(retval[2])
+
+        return -1
+
+

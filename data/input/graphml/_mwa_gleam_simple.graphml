@@ -1,0 +1,288 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key attr.name="label" attr.type="string" for="node" id="d0" />
+  <graph edgedefault="directed">
+    <node id="1_-6_0/1">
+      <data key="d0">1_-6_0/1</data>
+    </node>
+    <node id="1_-4_0/5">
+      <data key="d0">1_-4_0/5</data>
+    </node>
+    <node id="1_-4_0/4">
+      <data key="d0">1_-4_0/4</data>
+    </node>
+    <node id="1_-4_0/3">
+      <data key="d0">1_-4_0/3</data>
+    </node>
+    <node id="1_-4_0/2">
+      <data key="d0">1_-4_0/2</data>
+    </node>
+    <node id="1_-4_0/1">
+      <data key="d0">1_-4_0/1</data>
+    </node>
+    <node id="1_-6_0/0">
+      <data key="d0">1_-6_0/0</data>
+    </node>
+    <node id="1_-3_0/0">
+      <data key="d0">1_-3_0/0</data>
+    </node>
+    <node id="1_-6_0/3">
+      <data key="d0">1_-6_0/3</data>
+    </node>
+    <node id="1_-6_0/2">
+      <data key="d0">1_-6_0/2</data>
+    </node>
+    <node id="1_-7_0/4">
+      <data key="d0">1_-7_0/4</data>
+    </node>
+    <node id="1_-7_0/5">
+      <data key="d0">1_-7_0/5</data>
+    </node>
+    <node id="1_-10_0/5">
+      <data key="d0">1_-10_0/5</data>
+    </node>
+    <node id="1_-10_0/4">
+      <data key="d0">1_-10_0/4</data>
+    </node>
+    <node id="1_-10_0/3">
+      <data key="d0">1_-10_0/3</data>
+    </node>
+    <node id="1_-10_0/2">
+      <data key="d0">1_-10_0/2</data>
+    </node>
+    <node id="1_-10_0/1">
+      <data key="d0">1_-10_0/1</data>
+    </node>
+    <node id="1_-10_0/0">
+      <data key="d0">1_-10_0/0</data>
+    </node>
+    <node id="1_-2_0/1">
+      <data key="d0">1_-2_0/1</data>
+    </node>
+    <node id="1_-2_0/0">
+      <data key="d0">1_-2_0/0</data>
+    </node>
+    <node id="1_-3_0/3">
+      <data key="d0">1_-3_0/3</data>
+    </node>
+    <node id="1_-7_0/0">
+      <data key="d0">1_-7_0/0</data>
+    </node>
+    <node id="1_-7_0/1">
+      <data key="d0">1_-7_0/1</data>
+    </node>
+    <node id="1_-8_0/3">
+      <data key="d0">1_-8_0/3</data>
+    </node>
+    <node id="1_-8_0/2">
+      <data key="d0">1_-8_0/2</data>
+    </node>
+    <node id="1_-8_0/1">
+      <data key="d0">1_-8_0/1</data>
+    </node>
+    <node id="1_-8_0/0">
+      <data key="d0">1_-8_0/0</data>
+    </node>
+    <node id="1_-4_0/0">
+      <data key="d0">1_-4_0/0</data>
+    </node>
+    <node id="1_-7_0/2">
+      <data key="d0">1_-7_0/2</data>
+    </node>
+    <node id="1_-8_0/5">
+      <data key="d0">1_-8_0/5</data>
+    </node>
+    <node id="1_-8_0/4">
+      <data key="d0">1_-8_0/4</data>
+    </node>
+    <node id="1_-5_0/4">
+      <data key="d0">1_-5_0/4</data>
+    </node>
+    <node id="1_-7_0/3">
+      <data key="d0">1_-7_0/3</data>
+    </node>
+    <node id="1_-5_0/2">
+      <data key="d0">1_-5_0/2</data>
+    </node>
+    <node id="1_-5_0/3">
+      <data key="d0">1_-5_0/3</data>
+    </node>
+    <node id="1_-5_0/0">
+      <data key="d0">1_-5_0/0</data>
+    </node>
+    <node id="1_-5_0/1">
+      <data key="d0">1_-5_0/1</data>
+    </node>
+    <node id="1_-3_0/1">
+      <data key="d0">1_-3_0/1</data>
+    </node>
+    <node id="1_-13_0/4">
+      <data key="d0">1_-13_0/4</data>
+    </node>
+    <node id="1_-13_0/5">
+      <data key="d0">1_-13_0/5</data>
+    </node>
+    <node id="1_-2_0/3">
+      <data key="d0">1_-2_0/3</data>
+    </node>
+    <node id="1_-2_0/2">
+      <data key="d0">1_-2_0/2</data>
+    </node>
+    <node id="1_-13_0/0">
+      <data key="d0">1_-13_0/0</data>
+    </node>
+    <node id="1_-13_0/1">
+      <data key="d0">1_-13_0/1</data>
+    </node>
+    <node id="1_-13_0/2">
+      <data key="d0">1_-13_0/2</data>
+    </node>
+    <node id="1_-13_0/3">
+      <data key="d0">1_-13_0/3</data>
+    </node>
+    <node id="1_-14_0/3">
+      <data key="d0">1_-14_0/3</data>
+    </node>
+    <node id="1_-14_0/2">
+      <data key="d0">1_-14_0/2</data>
+    </node>
+    <node id="1_-14_0/1">
+      <data key="d0">1_-14_0/1</data>
+    </node>
+    <node id="1_-14_0/0">
+      <data key="d0">1_-14_0/0</data>
+    </node>
+    <node id="1_-3_0/4">
+      <data key="d0">1_-3_0/4</data>
+    </node>
+    <node id="1_-3_0/5">
+      <data key="d0">1_-3_0/5</data>
+    </node>
+    <node id="1_-14_0/5">
+      <data key="d0">1_-14_0/5</data>
+    </node>
+    <node id="1_-14_0/4">
+      <data key="d0">1_-14_0/4</data>
+    </node>
+    <node id="1_-3_0/2">
+      <data key="d0">1_-3_0/2</data>
+    </node>
+    <node id="1_-2_0/5">
+      <data key="d0">1_-2_0/5</data>
+    </node>
+    <node id="1_-5_0/5">
+      <data key="d0">1_-5_0/5</data>
+    </node>
+    <node id="1_-6_0/5">
+      <data key="d0">1_-6_0/5</data>
+    </node>
+    <node id="1_-6_0/4">
+      <data key="d0">1_-6_0/4</data>
+    </node>
+    <node id="1_-11_0/4">
+      <data key="d0">1_-11_0/4</data>
+    </node>
+    <node id="1_-11_0/5">
+      <data key="d0">1_-11_0/5</data>
+    </node>
+    <node id="1_-11_0/2">
+      <data key="d0">1_-11_0/2</data>
+    </node>
+    <node id="1_-11_0/3">
+      <data key="d0">1_-11_0/3</data>
+    </node>
+    <node id="1_-11_0/0">
+      <data key="d0">1_-11_0/0</data>
+    </node>
+    <node id="1_-11_0/1">
+      <data key="d0">1_-11_0/1</data>
+    </node>
+    <node id="1_-2_0/4">
+      <data key="d0">1_-2_0/4</data>
+    </node>
+    <node id="1_-12_0/5">
+      <data key="d0">1_-12_0/5</data>
+    </node>
+    <node id="1_-12_0/4">
+      <data key="d0">1_-12_0/4</data>
+    </node>
+    <node id="1_-12_0/1">
+      <data key="d0">1_-12_0/1</data>
+    </node>
+    <node id="1_-12_0/0">
+      <data key="d0">1_-12_0/0</data>
+    </node>
+    <node id="1_-12_0/3">
+      <data key="d0">1_-12_0/3</data>
+    </node>
+    <node id="1_-12_0/2">
+      <data key="d0">1_-12_0/2</data>
+    </node>
+    <edge source="1_-6_0/1" target="1_-12_0/1" />
+    <edge source="1_-4_0/5" target="1_-5_0/5" />
+    <edge source="1_-4_0/4" target="1_-5_0/4" />
+    <edge source="1_-4_0/3" target="1_-5_0/3" />
+    <edge source="1_-4_0/2" target="1_-5_0/2" />
+    <edge source="1_-4_0/1" target="1_-5_0/1" />
+    <edge source="1_-6_0/0" target="1_-12_0/0" />
+    <edge source="1_-3_0/0" target="1_-6_0/0" />
+    <edge source="1_-3_0/0" target="1_-4_0/0" />
+    <edge source="1_-6_0/3" target="1_-12_0/3" />
+    <edge source="1_-6_0/2" target="1_-12_0/2" />
+    <edge source="1_-10_0/5" target="1_-3_0/5" />
+    <edge source="1_-10_0/4" target="1_-3_0/4" />
+    <edge source="1_-10_0/3" target="1_-3_0/3" />
+    <edge source="1_-10_0/2" target="1_-3_0/2" />
+    <edge source="1_-10_0/1" target="1_-3_0/1" />
+    <edge source="1_-10_0/0" target="1_-3_0/0" />
+    <edge source="1_-2_0/1" target="1_-11_0/1" />
+    <edge source="1_-2_0/0" target="1_-11_0/0" />
+    <edge source="1_-3_0/3" target="1_-4_0/3" />
+    <edge source="1_-3_0/3" target="1_-6_0/3" />
+    <edge source="1_-8_0/3" target="1_-7_0/3" />
+    <edge source="1_-8_0/2" target="1_-7_0/2" />
+    <edge source="1_-8_0/1" target="1_-7_0/1" />
+    <edge source="1_-8_0/0" target="1_-7_0/0" />
+    <edge source="1_-4_0/0" target="1_-5_0/0" />
+    <edge source="1_-8_0/5" target="1_-7_0/5" />
+    <edge source="1_-8_0/4" target="1_-7_0/4" />
+    <edge source="1_-5_0/4" target="1_-8_0/4" />
+    <edge source="1_-5_0/2" target="1_-8_0/2" />
+    <edge source="1_-5_0/3" target="1_-8_0/3" />
+    <edge source="1_-5_0/0" target="1_-8_0/0" />
+    <edge source="1_-5_0/1" target="1_-8_0/1" />
+    <edge source="1_-3_0/1" target="1_-6_0/1" />
+    <edge source="1_-3_0/1" target="1_-4_0/1" />
+    <edge source="1_-13_0/4" target="1_-14_0/4" />
+    <edge source="1_-13_0/5" target="1_-14_0/5" />
+    <edge source="1_-2_0/3" target="1_-11_0/3" />
+    <edge source="1_-2_0/2" target="1_-11_0/2" />
+    <edge source="1_-13_0/0" target="1_-14_0/0" />
+    <edge source="1_-13_0/1" target="1_-14_0/1" />
+    <edge source="1_-13_0/2" target="1_-14_0/2" />
+    <edge source="1_-13_0/3" target="1_-14_0/3" />
+    <edge source="1_-14_0/3" target="1_-10_0/3" />
+    <edge source="1_-14_0/2" target="1_-10_0/2" />
+    <edge source="1_-14_0/1" target="1_-10_0/1" />
+    <edge source="1_-14_0/0" target="1_-10_0/0" />
+    <edge source="1_-3_0/4" target="1_-6_0/4" />
+    <edge source="1_-3_0/4" target="1_-4_0/4" />
+    <edge source="1_-3_0/5" target="1_-6_0/5" />
+    <edge source="1_-3_0/5" target="1_-4_0/5" />
+    <edge source="1_-14_0/5" target="1_-10_0/5" />
+    <edge source="1_-14_0/4" target="1_-10_0/4" />
+    <edge source="1_-3_0/2" target="1_-4_0/2" />
+    <edge source="1_-3_0/2" target="1_-6_0/2" />
+    <edge source="1_-2_0/5" target="1_-11_0/5" />
+    <edge source="1_-5_0/5" target="1_-8_0/5" />
+    <edge source="1_-6_0/5" target="1_-12_0/5" />
+    <edge source="1_-6_0/4" target="1_-12_0/4" />
+    <edge source="1_-11_0/4" target="1_-13_0/4" />
+    <edge source="1_-11_0/5" target="1_-13_0/5" />
+    <edge source="1_-11_0/2" target="1_-13_0/2" />
+    <edge source="1_-11_0/3" target="1_-13_0/3" />
+    <edge source="1_-11_0/0" target="1_-13_0/0" />
+    <edge source="1_-11_0/1" target="1_-13_0/1" />
+    <edge source="1_-2_0/4" target="1_-11_0/4" />
+  </graph>
+</graphml>

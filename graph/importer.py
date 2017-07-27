@@ -38,7 +38,8 @@ for key in graphs:
         
         variable = 'data/input/graphml/'
 #        if os.path.exits(variable):
-        save = variable + key.split('.')[0]
+        title = key.split('.')[0]
+        save = variable +title 
         #fname = open('{0}.graphml'.format(save),'w+')
         nx.write_graphml(G, '{0}.graphml'.format(save))
 
@@ -63,8 +64,8 @@ for key in graphs:
         for node in translated_graph.nodes():
             translated_graph.node[node]['label'] = str(node)
 
-        tmp = save.split('_')
-        save = tmp[0]+tmp[1]
+        variable = 'data/input/graphml/translated_'
+        save = variable+title
         nx.write_graphml(translated_graph, '{0}.graphml'.format(save))
 
 
