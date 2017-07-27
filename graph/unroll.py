@@ -20,7 +20,7 @@ for graph in os.listdir(location):
 for graph in graphs:
     path = graphs[graph]+graph
     if os.path.exists(path): 
-        print "fuck"
+        print path
         cmd_list = ['dlg', 'unroll-and-partition', '-L',path ]
         #f = open('data/input/json/_{0}_unroll.json'.format(graph),'w+') 
         with open('data/input/json/_{0}'.format(graph),'w+') as f:
