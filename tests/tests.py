@@ -103,8 +103,7 @@ class TestHeftMethods(unittest.TestCase):
         known_est_nodeA = 0
         known_est_nodeC = 0
 
-    def test_insertion_policy(self):
-        retval = self.heft.insertion_policy()
+    def test_insertion_policy(self): retval = self.heft.insertion_policy()
         task_sort = retval[0]
 
 @unittest.skip("In Development")
@@ -163,7 +162,7 @@ class TestHeftMethodsOCT(unittest.TestCase):
 
         nodes = self.heft.graph.nodes()
         for node in nodes:
-            print (str(node.tid) + ': '+ str(node.rank))
+            print (str(node.tid) + ': '+ str(node.oct_rank_dict))
 #        for x in range(0,10):
 #            self.assertTrue(nodes[x].rank == rank_values[x])
 @unittest.skip("In Development")
@@ -217,7 +216,7 @@ class TestHEFTExperiments(unittest.TestCase):
 
         return -1
 
-
+#    @unittest.skip("In Development")
     def test_more_things(self):
         """
         We want to read in the cost matrices that correspond to the 
@@ -228,8 +227,8 @@ class TestHEFTExperiments(unittest.TestCase):
                 'data/input/graphml/translated__test_seq_gather.graphml')
 
         heft.rank('oct')
-        retval = heft.insertion_policy()
-        print 'insertion ' + str(retval[2])
+        #retval = heft.insertion_policy()
+        #print 'insertion ' + str(retval[2])
 
         return -1
 

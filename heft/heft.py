@@ -59,6 +59,7 @@ class Task(object):
 class Heft(object):
     def __init__(self, comp, comm, graphml):
         self.graph = nx.read_graphml(graphml,Task)
+        print nx.is_directed_acyclic_graph(self.graph)
         self.comp_matrix = read_matrix(comp)
         self.comm_matrix = read_matrix(comm)
         self.processors = dict()
@@ -69,7 +70,7 @@ class Heft(object):
         for x in range(0,num_processors):
             self.processors[x]=[]
             self.top_processors[x]=[]
-
+        print self.processors
          
         self.rank_sort = []
         self.top_sort = []
@@ -78,23 +79,24 @@ class Heft(object):
         if method == 'up':
             for node in sorted(self.graph.nodes()):
                 self.rank_up(node)
-
+                print node.rank
             self.rank_sort = self.rank_sort_tasks()
             self.top_sort = self.top_sort_tasks()
 
         elif method == 'oct':
+            #for val in range(0,processor+1):
             for node in sorted(self.graph.nodes()): 
-                for val in range(0,3):
-                    self.rank_oct(node,val)
-            
+                self.rank_oct(node,processor)
+
+                print node.rank
+
             for node in self.graph.nodes():
                 ave_list = []
                 for key in node.oct_rank_dict:
                     ave_list.append(node.oct_rank_dict[key])
                 node.rank = sum(ave_list)/len(ave_list)
- 
-            self.rank_sort = self.rank_sort_tasks()
-            self.top_sort = self.top_sort_tasks()
+#            self.rank_sort = self.rank_sort_tasks()
+#            self.top_sort = self.top_sort_tasks()
 
                
 
@@ -135,10 +137,11 @@ class Heft(object):
 
     def rank_oct(self, node, pk):
         """
-        Upwatd ranking heuristic outlined in Arabnejad and Barbos (2014)
+        Optimistic cost table ranking heuristic outlined in Arabnejad and Barbos (2014)
         """
         max_successor = 0
         for successor in self.graph.successors(node):
+            #print successor
             min_processor = 1000
             if successor.rank is -1:
                 for processor in self.processors:
