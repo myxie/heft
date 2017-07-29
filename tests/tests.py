@@ -103,7 +103,8 @@ class TestHeftMethods(unittest.TestCase):
         known_est_nodeA = 0
         known_est_nodeC = 0
 
-    def test_insertion_policy(self): retval = self.heft.insertion_policy()
+    def test_insertion_policy(self): 
+        retval = self.heft.insertion_policy()
         task_sort = retval[0]
 
 @unittest.skip("In Development")
