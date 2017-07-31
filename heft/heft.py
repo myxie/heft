@@ -59,7 +59,6 @@ class Task(object):
 class Heft(object):
     def __init__(self, comp, comm, graphml):
         self.graph = nx.read_graphml(graphml,Task)
-        print nx.is_directed_acyclic_graph(self.graph)
         self.comp_matrix = read_matrix(comp)
         self.comm_matrix = read_matrix(comm)
         self.processors = dict()
@@ -67,10 +66,18 @@ class Heft(object):
         num_processors = len(self.comp_matrix[0])
         self.oct_matrix = dict()
 
+        print range(0,num_processors)
+        print num_processors
+        keys =  [x for x in range(0,num_processors)]
+        for node in self.graph.nodes():
+            node.oct_rank_dict = {key: -1 for key in keys}
+        """
+        for node in self.graph.nodes():
+            print node.oct_rank_dict
+        """
         for x in range(0,num_processors):
             self.processors[x]=[]
             self.top_processors[x]=[]
-        print self.processors
          
         self.rank_sort = []
         self.top_sort = []
@@ -79,16 +86,15 @@ class Heft(object):
         if method == 'up':
             for node in sorted(self.graph.nodes()):
                 self.rank_up(node)
-                print node.rank
             self.rank_sort = self.rank_sort_tasks()
             self.top_sort = self.top_sort_tasks()
 
         elif method == 'oct':
             #for val in range(0,processor+1):
             for node in sorted(self.graph.nodes()): 
+                print node.oct_rank_dict[processor]
                 self.rank_oct(node,processor)
 
-                print node.rank
 
             for node in self.graph.nodes():
                 ave_list = []
@@ -141,9 +147,9 @@ class Heft(object):
         """
         max_successor = 0
         for successor in self.graph.successors(node):
-            #print successor
             min_processor = 1000
-            if successor.rank is -1:
+            print successor.oct_rank_dict
+            if successor.oct_rank_dict[pk] is -1:
                 for processor in self.processors:
                     oct_val = 0
                     self.rank_oct(successor, processor) 

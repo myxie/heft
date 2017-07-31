@@ -53,7 +53,7 @@ class TestGraphMethods(unittest.TestCase):
     def test_random_comm_matrix(self):
         matrix = random_comm_matrix(4,10)
 
-
+@unittest.skip("In Development")
 class TestHeftMethods(unittest.TestCase):
     
     def setUp(self):
@@ -195,6 +195,7 @@ class TestDALiuGEBashHeft(unittest.TestCase):
         print retval[2] 
         #print(self.heft.processors)
 
+@unittest.skip("In Development")
 class TestHEFTExperiments(unittest.TestCase):
 
     def setUp(self):
