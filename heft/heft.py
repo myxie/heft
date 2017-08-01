@@ -67,10 +67,12 @@ class Heft(object):
         self.oct_matrix = dict()
 
         print range(0,num_processors)
-        print num_processors
         keys =  [x for x in range(0,num_processors)]
         for node in self.graph.nodes():
             node.oct_rank_dict = {key: -1 for key in keys}
+            self.oct_matrix[node.tid] = node.oct_rank_dict    
+
+    
         """
         for node in self.graph.nodes():
             print node.oct_rank_dict
@@ -92,7 +94,6 @@ class Heft(object):
         elif method == 'oct':
             #for val in range(0,processor+1):
             for node in sorted(self.graph.nodes()): 
-                print node.oct_rank_dict[processor]
                 self.rank_oct(node,processor)
 
 
@@ -147,22 +148,32 @@ class Heft(object):
         """
         max_successor = 0
         for successor in self.graph.successors(node):
-            min_processor = 1000
-            print successor.oct_rank_dict
-            if successor.oct_rank_dict[pk] is -1:
+            min_processor = 5000 
+            if self.oct_matrix[successor.tid][pk] is -1:
                 for processor in self.processors:
                     oct_val = 0
                     self.rank_oct(successor, processor) 
                     comm_cost = 0
+                    comp_cost = self.comp_matrix[successor.tid][processor] 
                     if processor is not pk:
                         comm_cost = self.ave_comm_cost(node.tid, successor.tid)
+                    oct_val = self.oct_matrix[successor.tid][processor] + \
+                            comp_cost + comm_cost
+                    print 'oct-val ' + str(oct_val)
+                    """
                     oct_val  = successor.oct_rank_dict[processor] + \
                             self.comp_matrix[successor.tid][processor] + comm_cost 
+                    """
                     min_processor = min(min_processor,oct_val)
-            max_successor = max(max_successor, min_processor)
+                    print 'min ' + str(min_processor) + 'p ' + str(processor)
+                print 'max_min' + str(min_processor) + str(max_successor)
+                max_successor = max(max_successor, min_processor)
 
-        node.oct_rank_dict[pk] = max_successor
 
+        self.oct_matrix[node.tid][pk] = max_successor
+        print 'nodemax ' + str(self.oct_matrix[node.tid][pk])
+        print 'max ' + str(max_successor)
+        
     
     def rank_sort_tasks(self):
         """ 
