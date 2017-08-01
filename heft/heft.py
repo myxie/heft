@@ -149,8 +149,9 @@ class Heft(object):
         max_successor = 0
         for successor in self.graph.successors(node):
             min_processor = 5000 
-            if self.oct_matrix[successor.tid][pk] is -1:
-                for processor in self.processors:
+            for processor in self.processors:
+                if self.oct_matrix[successor.tid][pk] is -1:
+
                     oct_val = 0
                     self.rank_oct(successor, processor) 
                     comm_cost = 0
