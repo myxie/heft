@@ -151,11 +151,11 @@ class Heft(object):
             min_processor = 5000 
             for processor in self.processors:
                 if self.oct_matrix[successor.tid][pk] is -1:
-
                     oct_val = 0
                     self.rank_oct(successor, processor) 
                     comm_cost = 0
                     comp_cost = self.comp_matrix[successor.tid][processor] 
+                    print 'comp cost '+ str(comp_cost)
                     if processor is not pk:
                         comm_cost = self.ave_comm_cost(node.tid, successor.tid)
                     oct_val = self.oct_matrix[successor.tid][processor] + \
@@ -167,13 +167,12 @@ class Heft(object):
                     """
                     min_processor = min(min_processor,oct_val)
                     print 'min ' + str(min_processor) + 'p ' + str(processor)
-                print 'max_min' + str(min_processor) + str(max_successor)
-                max_successor = max(max_successor, min_processor)
+            print 'max_min' + str(min_processor) + str(max_successor)
+            max_successor = max(max_successor, min_processor)
 
 
         self.oct_matrix[node.tid][pk] = max_successor
         print 'nodemax ' + str(self.oct_matrix[node.tid][pk])
-        print 'max ' + str(max_successor)
         
     
     def rank_sort_tasks(self):
