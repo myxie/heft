@@ -26,8 +26,7 @@ class Task(object):
         self.tid = int(tid)# task id - this is unique
         self.ave_comp = -1 # average computation cost 
         self.rank = -1 # This is updated during the 'Task Prioritisation' phase 
-        self.oct_rank_dict = dict() 
-        self.oct_rank = -1
+        self.oct_rank =dict() 
         self.processor = -1
         self.ast = 0 
         self.aft = 0 
@@ -66,12 +65,11 @@ class Heft(object):
         num_processors = len(self.comp_matrix[0])
         self.oct_matrix = dict()
 
-        print range(0,num_processors)
         keys =  [x for x in range(0,num_processors)]
-        for node in self.graph.nodes():
-            node.oct_rank_dict = {key: -1 for key in keys}
-            self.oct_matrix[node.tid] = node.oct_rank_dict    
-
+        #for node in self.graph.nodes():
+        #    node.oct_rank_dict = {key: -1 for key in keys}
+        
+            
     
         """
         for node in self.graph.nodes():
@@ -92,16 +90,17 @@ class Heft(object):
             self.top_sort = self.top_sort_tasks()
 
         elif method == 'oct':
-            #for val in range(0,processor+1):
-            for node in sorted(self.graph.nodes()): 
-                self.rank_oct(node,processor)
+            for val in range(0,3):
+                for node in sorted(self.graph.nodes()): 
+                    self.rank_oct(node,val)
 
-
+            """
             for node in self.graph.nodes():
                 ave_list = []
                 for key in node.oct_rank_dict:
                     ave_list.append(node.oct_rank_dict[key])
                 node.rank = sum(ave_list)/len(ave_list)
+            """
 #            self.rank_sort = self.rank_sort_tasks()
 #            self.top_sort = self.top_sort_tasks()
 
@@ -146,33 +145,24 @@ class Heft(object):
         """
         Optimistic cost table ranking heuristic outlined in Arabnejad and Barbos (2014)
         """
+#       print self.oct_matrix[node.tid]
         max_successor = 0
         for successor in self.graph.successors(node):
-            min_processor = 5000 
-            for processor in self.processors:
-                if self.oct_matrix[successor.tid][pk] is -1:
-                    oct_val = 0
-                    self.rank_oct(successor, processor) 
-                    comm_cost = 0
-                    comp_cost = self.comp_matrix[successor.tid][processor] 
-                    print 'comp cost '+ str(comp_cost)
-                    if processor is not pk:
-                        comm_cost = self.ave_comm_cost(node.tid, successor.tid)
-                    oct_val = self.oct_matrix[successor.tid][processor] + \
-                            comp_cost + comm_cost
-                    print 'oct-val ' + str(oct_val)
-                    """
-                    oct_val  = successor.oct_rank_dict[processor] + \
-                            self.comp_matrix[successor.tid][processor] + comm_cost 
-                    """
-                    min_processor = min(min_processor,oct_val)
-                    print 'min ' + str(min_processor) + 'p ' + str(processor)
-            print 'max_min' + str(min_processor) + str(max_successor)
+            min_processor = 100000 
+            #if successor.rank is -1:
+            print successor 
+            for processor in range(0,len(self.processors)):
+                oct_val = 0
+                self.rank_oct(successor, processor) 
+                comm_cost = 0
+                comp_cost = self.comp_matrix[successor.tid][processor] 
+                if processor is not pk:
+                    comm_cost = self.ave_comm_cost(node.tid, successor.tid)
+                oct_val = successor.oct_rank[processor] + comp_cost + comm_cost
+                min_processor = min(min_processor,oct_val)
             max_successor = max(max_successor, min_processor)
 
-
-        self.oct_matrix[node.tid][pk] = max_successor
-        print 'nodemax ' + str(self.oct_matrix[node.tid][pk])
+        node.oct_rank[pk]= max_successor
         
     
     def rank_sort_tasks(self):

@@ -53,7 +53,7 @@ class TestGraphMethods(unittest.TestCase):
     def test_random_comm_matrix(self):
         matrix = random_comm_matrix(4,10)
 
-@unittest.skip("In Development")
+#@unittest.skip("In Development")
 class TestHeftMethods(unittest.TestCase):
     
     def setUp(self):
@@ -107,7 +107,7 @@ class TestHeftMethods(unittest.TestCase):
         retval = self.heft.insertion_policy()
         task_sort = retval[0]
 
-@unittest.skip("In Development")
+#@unittest.skip("In Development")
 class TestHeftMethodsTopcuoglu(unittest.TestCase):
     """
     This class tests HEFT on the same example graph presented by 
@@ -128,7 +128,7 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
         rank_values = [106,75,79,78,67,62,42,35,43,14]
         print rank_values
          
-        self.heft.rank('oct')
+        self.heft.rank('up')
         nodes = self.heft.graph.nodes()
         #for x in range(0,10):
         for node in nodes:
@@ -163,10 +163,10 @@ class TestHeftMethodsOCT(unittest.TestCase):
 
         nodes = self.heft.graph.nodes()
         for node in nodes:
-            print (str(node.tid) + ': '+ str(node.oct_rank_dict))
+            print (str(node.tid) + ': '+ str(node.oct_rank))
 #        for x in range(0,10):
 #            self.assertTrue(nodes[x].rank == rank_values[x])
-@unittest.skip("In Development")
+#@unittest.skip("In Development")
 class TestDALiuGEBashHeft(unittest.TestCase): 
 
     """
@@ -174,7 +174,7 @@ class TestDALiuGEBashHeft(unittest.TestCase):
     """
 
     def setUp(self):
-        self.heft = Heft('data/input/matrices/comp/comp_10-1.txt',\
+        self.heft = Heft('data/input/matrices/comp/comp_10-2.txt',\
                 'data/input/matrices/comm/comm_10.txt',\
                 'tests/translated_importer.graphml')
     
@@ -183,11 +183,11 @@ class TestDALiuGEBashHeft(unittest.TestCase):
 
 
     def test_bash_ranking(self):
-        self.heft.rank('up')
+        self.heft.rank('oct')
             
         nodes = self.heft.graph.nodes()
         for node in nodes:
-            print (str(node.tid) + ' :' + str(node.rank))
+            print (str(node.tid) + ' :' + str(node.oct_rank))
     
     def test_bash_insertion(self):
         self.heft.rank('up')
@@ -195,7 +195,7 @@ class TestDALiuGEBashHeft(unittest.TestCase):
         print retval[2] 
         #print(self.heft.processors)
 
-@unittest.skip("In Development")
+#@unittest.skip("In Development")
 class TestHEFTExperiments(unittest.TestCase):
 
     def setUp(self):
@@ -208,7 +208,7 @@ class TestHEFTExperiments(unittest.TestCase):
         We want to read in the cost matrices that correspond to the 
         the number of nodes in the graph
         """
-        heft = Heft('data/input/matrices/comp/comp_130-2.txt',\
+        heft = Heft('data/input/matrices/comp/comp_130-1.txt',\
                 'data/input/matrices/comm/comm_130.txt',
                 'data/input/graphml/translated__test_seq_gather.graphml')
 
