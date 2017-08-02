@@ -5,7 +5,7 @@ Functions for static HEFT implementation
 import networkx as nx
 import time
 import ast
-
+from pudb import set_trace
 
 def read_matrix(matrix):
     lines = [] 
@@ -64,17 +64,13 @@ class Heft(object):
         self.top_processors = dict()
         num_processors = len(self.comp_matrix[0])
         self.oct_matrix = dict()
+        self.oct_rank_matrix = dict()
 
+        for val in self.comp_matrix:
+            print val
         keys =  [x for x in range(0,num_processors)]
         #for node in self.graph.nodes():
         #    node.oct_rank_dict = {key: -1 for key in keys}
-        
-            
-    
-        """
-        for node in self.graph.nodes():
-            print node.oct_rank_dict
-        """
         for x in range(0,num_processors):
             self.processors[x]=[]
             self.top_processors[x]=[]
@@ -91,9 +87,15 @@ class Heft(object):
 
         elif method == 'oct':
             for val in range(0,3):
-                for node in sorted(self.graph.nodes()): 
-                    self.rank_oct(node,val)
-
+            #    for node in sorted(self.graph.nodes(),reverse=True): 
+                nodes = self.graph.nodes()
+                nodes.sort(key=lambda x: x.tid)
+                node = nodes[0]
+                self.rank_oct(node,val)
+            """
+            for val in self.oct_rank_matrix:
+                print str(val) +': '+ str(self.oct_rank_matrix[val])
+            """
             """
             for node in self.graph.nodes():
                 ave_list = []
@@ -143,14 +145,13 @@ class Heft(object):
 
     def rank_oct(self, node, pk):
         """
-        Optimistic cost table ranking heuristic outlined in Arabnejad and Barbos (2014)
+        Optimistic cost table ranking heuristic outlined in 
+        Arabnejad and Barbos (2014)
         """
-#       print self.oct_matrix[node.tid]
+#       set_trace()
         max_successor = 0
         for successor in self.graph.successors(node):
             min_processor = 100000 
-            #if successor.rank is -1:
-            print successor 
             for processor in range(0,len(self.processors)):
                 oct_val = 0
                 self.rank_oct(successor, processor) 
@@ -158,11 +159,13 @@ class Heft(object):
                 comp_cost = self.comp_matrix[successor.tid][processor] 
                 if processor is not pk:
                     comm_cost = self.ave_comm_cost(node.tid, successor.tid)
-                oct_val = successor.oct_rank[processor] + comp_cost + comm_cost
+                oct_val = self.oct_rank_matrix[(successor.tid,processor)] +\
+                        comp_cost+ comm_cost
                 min_processor = min(min_processor,oct_val)
             max_successor = max(max_successor, min_processor)
-
-        node.oct_rank[pk]= max_successor
+        
+        #node.oct_rank[pk]= max_successor
+        self.oct_rank_matrix[(node.tid,pk)] = max_successor
         
     
     def rank_sort_tasks(self):

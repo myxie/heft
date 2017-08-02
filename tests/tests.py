@@ -53,7 +53,7 @@ class TestGraphMethods(unittest.TestCase):
     def test_random_comm_matrix(self):
         matrix = random_comm_matrix(4,10)
 
-#@unittest.skip("In Development")
+@unittest.skip("In Development")
 class TestHeftMethods(unittest.TestCase):
     
     def setUp(self):
@@ -107,7 +107,7 @@ class TestHeftMethods(unittest.TestCase):
         retval = self.heft.insertion_policy()
         task_sort = retval[0]
 
-#@unittest.skip("In Development")
+@unittest.skip("In Development")
 class TestHeftMethodsTopcuoglu(unittest.TestCase):
     """
     This class tests HEFT on the same example graph presented by 
@@ -162,8 +162,12 @@ class TestHeftMethodsOCT(unittest.TestCase):
         self.heft.rank('oct')
 
         nodes = self.heft.graph.nodes()
-        for node in nodes:
-            print (str(node.tid) + ': '+ str(node.oct_rank))
+        for tpl in sorted(self.heft.oct_rank_matrix.keys()):
+            print "%s: %s" % (tpl, self.heft.oct_rank_matrix[tpl])
+
+        #print self.heft.oct_rank_matrix
+        #for node in nodes:
+        #    print (str(node.tid) + ': '+ str(node.oct_rank))
 #        for x in range(0,10):
 #            self.assertTrue(nodes[x].rank == rank_values[x])
 #@unittest.skip("In Development")
@@ -229,6 +233,10 @@ class TestHEFTExperiments(unittest.TestCase):
                 'data/input/graphml/translated__test_seq_gather.graphml')
 
         heft.rank('oct')
+        for tpl in sorted(heft.oct_rank_matrix.keys()):
+            print "%s: %s" % (tpl, heft.oct_rank_matrix[tpl])
+
+
         #retval = heft.insertion_policy()
         #print 'insertion ' + str(retval[2])
 

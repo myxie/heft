@@ -19,7 +19,7 @@ for key in graphs:
         graph = dict()
         with open(path) as f:
             graph = json.load(f)
-
+        
         G = nx.DiGraph()
 
         for val in graph:
@@ -36,6 +36,8 @@ for key in graphs:
         for node in G.nodes():
             G.node[node]['label']=str(node)
         
+        nx.topological_sort(G)
+        
         variable = 'data/input/graphml/'
 #        if os.path.exits(variable):
         title = key.split('.')[0]
@@ -46,7 +48,7 @@ for key in graphs:
         translate = dict()
         count = 0 
 
-        for node in G.nodes():
+        for node in nx.topological_sort(G):
             translate[node] = count 
             count = count+1
 
