@@ -170,7 +170,7 @@ class TestHeftMethodsOCT(unittest.TestCase):
         #    print (str(node.tid) + ': '+ str(node.oct_rank))
 #        for x in range(0,10):
 #            self.assertTrue(nodes[x].rank == rank_values[x])
-#@unittest.skip("In Development")
+@unittest.skip("In Development")
 class TestDALiuGEBashHeft(unittest.TestCase): 
 
     """
@@ -228,7 +228,7 @@ class TestHEFTExperiments(unittest.TestCase):
         We want to read in the cost matrices that correspond to the 
         the number of nodes in the graph
         """
-        heft = Heft('data/input/matrices/comp/comp_130-2.txt',\
+        heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
                 'data/input/matrices/comm/comm_130.txt',
                 'data/input/graphml/translated__test_seq_gather.graphml')
 

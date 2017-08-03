@@ -151,10 +151,11 @@ class Heft(object):
 #       set_trace()
         max_successor = 0
         for successor in self.graph.successors(node):
-            min_processor = 100000 
+            min_processor=1000
             for processor in range(0,len(self.processors)):
                 oct_val = 0
-                self.rank_oct(successor, processor) 
+                if (successor.tid, processor) not in self.oct_rank_matrix.keys():
+                    self.rank_oct(successor, processor) 
                 comm_cost = 0
                 comp_cost = self.comp_matrix[successor.tid][processor] 
                 if processor is not pk:
@@ -164,7 +165,6 @@ class Heft(object):
                 min_processor = min(min_processor,oct_val)
             max_successor = max(max_successor, min_processor)
         
-        #node.oct_rank[pk]= max_successor
         self.oct_rank_matrix[(node.tid,pk)] = max_successor
         
     
