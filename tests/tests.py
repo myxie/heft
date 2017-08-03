@@ -158,13 +158,13 @@ class TestHeftMethodsOCT(unittest.TestCase):
         return -1
 
     def test_oct_rank(self):
-        print len(self.heft.graph.nodes())
         self.heft.rank('oct')
-
+        self.heft.show_rank()
+        """
         nodes = self.heft.graph.nodes()
         for tpl in sorted(self.heft.oct_rank_matrix.keys()):
             print "%s: %s" % (tpl, self.heft.oct_rank_matrix[tpl])
-
+        """
         #print self.heft.oct_rank_matrix
         #for node in nodes:
         #    print (str(node.tid) + ': '+ str(node.oct_rank))
@@ -206,15 +206,16 @@ class TestHEFTExperiments(unittest.TestCase):
         return -1
         #graph = nx.read_graphml(graphml,Task)
 
-    @unittest.skip("In Development")
+    #@unittest.skip("In Development")
+    
     def test_find_appropriate_matrix(self):
         """
         We want to read in the cost matrices that correspond to the 
         the number of nodes in the graph
         """
-        heft = Heft('data/input/matrices/comp/comp_130-1.txt',\
+        heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
                 'data/input/matrices/comm/comm_130.txt',
-                'data/input/graphml/translated__test_seq_gather.graphml')
+                'data/input/graphml/translated__mwa_gleam_simple.graphml')
 
         heft.rank('up')
         retval = heft.insertion_policy()
@@ -230,16 +231,18 @@ class TestHEFTExperiments(unittest.TestCase):
         """
         heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
                 'data/input/matrices/comm/comm_130.txt',
-                'data/input/graphml/translated__test_seq_gather.graphml')
+                'data/input/graphml/translated__mwa_gleam_simple.graphml')
 
         heft.rank('oct')
-        for tpl in sorted(heft.oct_rank_matrix.keys()):
-            print "%s: %s" % (tpl, heft.oct_rank_matrix[tpl])
+        #heft.show_rank()
+        retval = heft.insertion_policy()
+        print 'oct ' + str(retval[2])
+        #for tpl in sorted(heft.oct_rank_matrix.keys()):
+        #    print "%s: %s" % (tpl, heft.oct_rank_matrix[tpl])
 
 
         #retval = heft.insertion_policy()
         #print 'insertion ' + str(retval[2])
 
         return -1
-
 

@@ -66,8 +66,6 @@ class Heft(object):
         self.oct_matrix = dict()
         self.oct_rank_matrix = dict()
 
-        for val in self.comp_matrix:
-            print val
         keys =  [x for x in range(0,num_processors)]
         #for node in self.graph.nodes():
         #    node.oct_rank_dict = {key: -1 for key in keys}
@@ -86,27 +84,28 @@ class Heft(object):
             self.top_sort = self.top_sort_tasks()
 
         elif method == 'oct':
-            for val in range(0,3):
-            #    for node in sorted(self.graph.nodes(),reverse=True): 
-                nodes = self.graph.nodes()
-                nodes.sort(key=lambda x: x.tid)
-                node = nodes[0]
-                self.rank_oct(node,val)
+            for val in range(0,len(self.processors)):
+                for node in sorted(self.graph.nodes(),reverse=True): 
+                    self.rank_oct(node,val)
+
             """
             for val in self.oct_rank_matrix:
                 print str(val) +': '+ str(self.oct_rank_matrix[val])
             """
-            """
             for node in self.graph.nodes():
                 ave_list = []
-                for key in node.oct_rank_dict:
-                    ave_list.append(node.oct_rank_dict[key])
+                for key in self.oct_rank_matrix:
+                    if key[0] is node.tid:
+                        ave_list.append(self.oct_rank_matrix[key])
                 node.rank = sum(ave_list)/len(ave_list)
-            """
-#            self.rank_sort = self.rank_sort_tasks()
-#            self.top_sort = self.top_sort_tasks()
 
-               
+            self.rank_sort = self.rank_sort_tasks()
+            self.top_sort = self.top_sort_tasks()
+
+    def show_rank(self):
+
+        for node in self.graph.nodes():
+            print node.rank
 
     def ave_comm_cost(self,node,successor):
         """
