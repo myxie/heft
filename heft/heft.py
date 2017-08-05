@@ -1,7 +1,7 @@
 """
-
 Functions for static HEFT implementation
 """
+
 import networkx as nx
 import time
 import ast
