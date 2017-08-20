@@ -279,69 +279,14 @@ class Heft(object):
 
         finish=time.time()
         insertion_time = (finish-start)*1000
-        return r_sorted, self.processors, makespan, insertion_time
+        return makespan 
 
-    def insertion_policy_top(self):
-        """
-        Allocate tasks to processors following the insertion based policy outline 
-        in Tocuoglu et al.(2002)
-        """
-        t_sorted = self.top_sort
-        self.processors = self.top_processors
-        makespan = 0
-        for task in t_sorted:
-            if task == t_sorted[0]:
-                w = min(self.comp_matrix[task.tid])
-                p = self.comp_matrix[task.tid].index(w)
-                task.processor = p
-                task.ast = 0
-                task.aft = w
-                self.processors[p].append((task.ast,task.aft,str(task.tid)))
-            else:
-                aft = 10000 # a big number
-                for processor in range(len(self.processors)):
-                    # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
-                    est = self.calc_est(task, processor,t_sorted)
-                    if est + self.comp_matrix[task.tid][processor] < aft:
-                        aft = est + self.comp_matrix[task.tid][processor]
-                        p = processor
-    
-                task.processor = p
-                task.ast = aft - self.comp_matrix[task.tid][p]
-                task.aft = aft
-                if task.aft >= makespan:
-                   makespan = task.aft
-                self.processors[p].append((task.ast, task.aft,str(task.tid)))
-                self.processors[p].sort(key=lambda x: x[0])
+   def schedule(self, schedule='insertion'):
+       if schedule is 'insertion':
+           self.insertion_policy()
 
-        return t_sorted, self.processors, makespan
-
-
-    def makespan(self):
-        start = time.time() 
-        val =  self.insertion_policy()
-        finish=time.time()
-        total_time = (finish-start)*1000
-        sort = val[0]
-        rank = val[2]
-        insertion_time = val[3]
-        rank_time = total_time-insertion_time
-        return rank,total_time,rank_time,insertion_time
-
-    def top_makespan(self):
-        start = time.time() 
-        val = self.insertion_policy_top()
-        finish=time.time()
-        total_time = (finish-start)*1000
-        sort = val[0]
-        top = val[2]
-        return top,total_time
-
-    def display_schedule(self):
+   def display_schedule(self):
         retval = self.insertion_policy() 
-        r_sorted = retval[0]
-        processors = retval[1]
-        makespan = retval[2]
         return retval
         
 

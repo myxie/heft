@@ -19,7 +19,24 @@ import networkx as nx
 
 import matplotlib.pyplot as plt
 
+"""
+Requirements for new experiments:
+    * Run through a folder of DALiuGE Graphs and read all the .graphml files
+    * For each file
+        - Convert it into a heft object
+        - Calculate the rank based on a variety of ranking heuristics
+        - For each of the different ranks, determine the final schedule based 
+        on a variety of scheduling policies
+        - Return this final schedule into some data format
+"""
 
+
+if __name__ == '__main__':
+    #setup_graph()
+    # print run_random_heft()
+    #rank_heft()
+
+# Deprecated and archaic setup
 def setup_graph():
 
     """
@@ -51,8 +68,8 @@ def setup_graph():
     for x in range(len(makespan_tuple[1])):
         print makespan_tuple[1][x]
 
-
-def run_random_heft():
+# Deprecated and archaic testing functionality
+def dep_run_random_heft():
     """
     This runs the HEFT algorithm on an increasing number of nodes 
     and adds each makespan onto a list 
@@ -183,10 +200,3 @@ def rank_heft():
     return makespan_list,makespan_time_list,top_make_list,top_time_list
 
 
-       
-
-
-if __name__ == '__main__':
-    #setup_graph()
-    print run_random_heft()
-    #rank_heft()
