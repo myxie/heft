@@ -165,6 +165,10 @@ class Heft(object):
             max_successor = max(max_successor, min_processor)
         
         self.oct_rank_matrix[(node.tid,pk)] = max_successor
+
+    def rank_stochastic(self, node, pk):
+        return -1
+
         
     
     def rank_sort_tasks(self):
@@ -242,6 +246,56 @@ class Heft(object):
 
         return est
     
+    def est_oct(self,node,processor_num,task_list):
+        """
+        Calculate the Estimated Start Time of a node on a given processor
+        """
+        
+        est = 0 # If the node does not have predecessors
+        predecessors = self.graph.predecessors(node)
+        for pretask in predecessors:
+            if pretask.processor != processor_num: # If task isn't on the same processor
+                comm_cost = self.comm_matrix[pretask.tid][node.tid]
+            else:
+                comm_cost = 0 # task is on the same processor, communication cost is 0
+
+            # self.graph.predecessors is not being updated in insertion_policy;
+            # need to use the tasks that are being updated to get the right results
+            index = task_list.index(pretask)
+            aft = task_list[index].aft
+            tmp = aft  + comm_cost
+            if tmp >= est:
+                est = tmp
+
+        # Now we find the time it fits in on the processor
+        processor = self.processors[processor_num] # return the list of allocated tasks
+        available_slots = []
+        if len(processor) == 0:
+            return est # Nothing in the time slots yet, so the earliest start time is whenever
+        else:
+            for x in range(len(processor)):
+                # For each start/finish time tuple that exists in the processor
+                if x == 0:
+                    if processor[0][0] != 0: #If the start time of the first tuple is not 0
+                        available_slots.append((0,processor[0][0]))# add a 0-current_start time tuple
+                    else:
+                        continue
+                else: 
+                    # Append the finish time of the previous slot and the start time of this slot
+                    available_slots.append((processor[x-1][1],processor[x][0]))
+            
+            # Add a very large number to the final time slot available, so we have a gap after 
+            available_slots.append((processor[len(processor)-1][1],10000))
+
+        for avail in available_slots:
+            if est < avail[0] and avail[0]+ self.comp_matrix[node.tid][processor_num] <= avail[1]:
+                return avail[0]
+            if est >= avail[0] and est + self.comp_matrix[node.tid][processor_num] <= avail[1]:
+               return est 
+
+        return est
+
+
     def insertion_policy(self):
         """
         Allocate tasks to processors following the insertion based policy outline 
