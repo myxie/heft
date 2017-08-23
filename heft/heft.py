@@ -246,62 +246,12 @@ class Heft(object):
 
         return est
     
-    def est_oct(self,node,processor_num,task_list):
-        """
-        Calculate the Estimated Start Time of a node on a given processor
-        """
-        
-        est = 0 # If the node does not have predecessors
-        predecessors = self.graph.predecessors(node)
-        for pretask in predecessors:
-            if pretask.processor != processor_num: # If task isn't on the same processor
-                comm_cost = self.comm_matrix[pretask.tid][node.tid]
-            else:
-                comm_cost = 0 # task is on the same processor, communication cost is 0
 
-            # self.graph.predecessors is not being updated in insertion_policy;
-            # need to use the tasks that are being updated to get the right results
-            index = task_list.index(pretask)
-            aft = task_list[index].aft
-            tmp = aft  + comm_cost
-            if tmp >= est:
-                est = tmp
-
-        # Now we find the time it fits in on the processor
-        processor = self.processors[processor_num] # return the list of allocated tasks
-        available_slots = []
-        if len(processor) == 0:
-            return est # Nothing in the time slots yet, so the earliest start time is whenever
-        else:
-            for x in range(len(processor)):
-                # For each start/finish time tuple that exists in the processor
-                if x == 0:
-                    if processor[0][0] != 0: #If the start time of the first tuple is not 0
-                        available_slots.append((0,processor[0][0]))# add a 0-current_start time tuple
-                    else:
-                        continue
-                else: 
-                    # Append the finish time of the previous slot and the start time of this slot
-                    available_slots.append((processor[x-1][1],processor[x][0]))
-            
-            # Add a very large number to the final time slot available, so we have a gap after 
-            available_slots.append((processor[len(processor)-1][1],10000))
-
-        for avail in available_slots:
-            if est < avail[0] and avail[0]+ self.comp_matrix[node.tid][processor_num] <= avail[1]:
-                return avail[0]
-            if est >= avail[0] and est + self.comp_matrix[node.tid][processor_num] <= avail[1]:
-               return est 
-
-        return est
-
-
-    def insertion_policy(self):
+    def insertion_policy(self,option=None):
         """
         Allocate tasks to processors following the insertion based policy outline 
         in Tocuoglu et al.(2002)
         """
-        start = time.time() 
  
         nodes = self.graph.nodes()
         r_sorted = self.rank_sort
@@ -319,9 +269,16 @@ class Heft(object):
                 for processor in range(len(self.processors)):
                     # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
                     est = self.calc_est(task, processor,r_sorted)
-                    if est + self.comp_matrix[task.tid][processor] < aft:
-                        aft = est + self.comp_matrix[task.tid][processor]
-                        p = processor
+                    if option is None:
+                        if est + self.comp_matrix[task.tid][processor] < aft:
+                            aft = est + self.comp_matrix[task.tid][processor]
+                            p = processor
+                    elif option is 'oct':
+                        eft=est+self.comp_matrix[task.tid][processor]
+                        oct_eft = eft + self.oct_rank_matrix[(node.tid,processor)] 
+                        if oct_eft < aft:
+                            p = processor
+
     
                 task.processor = p
                 task.ast = aft - self.comp_matrix[task.tid][p]
@@ -331,15 +288,42 @@ class Heft(object):
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0])
 
-        finish=time.time()
-        insertion_time = (finish-start)*1000
-        return makespan 
+        return makespan
 
-   def schedule(self, schedule='insertion'):
-       if schedule is 'insertion':
-           self.insertion_policy()
+    def greedy_policy(self):
+        nodes = self.graph.nodes()
+        r_sorted = self.rank_sort
+        task_aft_list = dict{}
+        for task in r_sorted:
+            if task == r_sorted[0]:
+                w = min(self.comp_matrix[task.tid])
+                p = self.comp_matrix[task.tid].index(w)
+                task.processor = p
+                task.ast = 0
+                task.aft = w
+                print task.aft
+                task_aft_list[task.tid] = task.aft
+                self.processors[p].append((task.ast, task.aft, str(task.tid)))
+            else:
+                aft = 1000 
+                est = -1
+                for predecessor in self.graph.predecessors(task):
+                    tmp_aft = task_aft_list[processor.tid]
+                     tmp_aftaft > est:
+                        est = aft.aft
 
-   def display_schedule(self):
+        for key,val in task_aft_list:
+            print str(val) + str(key)
+
+            # EST of each task is the maximum Estimated finish time of the task predecessors
+
+        return -1
+
+   # def schedule(self, schedule='insertion'):
+   #     if schedule is 'insertion':
+   #         self.insertion_policy()
+
+    def display_schedule(self):
         retval = self.insertion_policy() 
         return retval
         

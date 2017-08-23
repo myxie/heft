@@ -102,12 +102,13 @@ class TestHeftMethods(unittest.TestCase):
     def test_calc_est(self):
         known_est_nodeA = 0
         known_est_nodeC = 0
+        return 1
 
     def test_insertion_policy(self): 
         retval = self.heft.insertion_policy()
-        task_sort = retval[0]
+        task_sort = retval
 
-@unittest.skip("In Development")
+#@unittest.skip("In Development")
 class TestHeftMethodsTopcuoglu(unittest.TestCase):
     """
     This class tests HEFT on the same example graph presented by 
@@ -126,19 +127,21 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
     
     def test_rank(self):
         rank_values = [106,75,79,78,67,62,42,35,43,14]
-        print rank_values
+#       print rank_values
          
         self.heft.rank('up')
         nodes = self.heft.graph.nodes()
         #for x in range(0,10):
-        for node in nodes:
-            print (str(node.tid) + ': '+ str(node.rank))
+#       for node in nodes:
+#           print (str(node.tid) + ': '+ str(node.rank))
             #self.assertTrue(nodes[x].rank == rank_values[x])
     def test_insertion(self):
         self.heft.rank('up')
         retval = self.heft.insertion_policy()
-        print retval[2]
-
+        print retval
+    def test_greedy(self):
+        self.heft.rank('up')
+        retval = self.heft.greedy_policy()
         
 #@unittest.skip("In Development")
 class TestHeftMethodsOCT(unittest.TestCase):
@@ -190,13 +193,13 @@ class TestDALiuGEBashHeft(unittest.TestCase):
         self.heft.rank('oct')
             
         nodes = self.heft.graph.nodes()
-        for node in nodes:
-            print (str(node.tid) + ' :' + str(node.oct_rank))
+#       for node in nodes:
+#           print (str(node.tid) + ' :' + str(node.oct_rank))
     
     def test_bash_insertion(self):
         self.heft.rank('up')
         retval = self.heft.insertion_policy()
-        print retval[2] 
+#       print retval 
         #print(self.heft.processors)
 
 #@unittest.skip("In Development")
@@ -219,7 +222,7 @@ class TestHEFTExperiments(unittest.TestCase):
 
         heft.rank('up')
         retval = heft.insertion_policy()
-        print 'insertion ' + str(retval[2])
+        print 'insertion ' + str(retval)
 
         return -1
 
@@ -236,7 +239,7 @@ class TestHEFTExperiments(unittest.TestCase):
         heft.rank('oct')
         #heft.show_rank()
         retval = heft.insertion_policy()
-        print 'oct ' + str(retval[2])
+        print 'oct ' + str(retval)
         #for tpl in sorted(heft.oct_rank_matrix.keys()):
         #    print "%s: %s" % (tpl, heft.oct_rank_matrix[tpl])
 
