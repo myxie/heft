@@ -135,13 +135,16 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
 #       for node in nodes:
 #           print (str(node.tid) + ': '+ str(node.rank))
             #self.assertTrue(nodes[x].rank == rank_values[x])
+
     def test_insertion(self):
         self.heft.rank('up')
         retval = self.heft.insertion_policy()
-        print retval
+        print 'insertion'+ str(retval)
+
     def test_greedy(self):
         self.heft.rank('up')
         retval = self.heft.greedy_policy()
+        print 'greedy' + str(retval)
         
 #@unittest.skip("In Development")
 class TestHeftMethodsOCT(unittest.TestCase):
@@ -173,7 +176,6 @@ class TestHeftMethodsOCT(unittest.TestCase):
         #    print (str(node.tid) + ': '+ str(node.oct_rank))
 #        for x in range(0,10):
 #            self.assertTrue(nodes[x].rank == rank_values[x])
-@unittest.skip("In Development")
 class TestDALiuGEBashHeft(unittest.TestCase): 
 
     """
@@ -189,6 +191,7 @@ class TestDALiuGEBashHeft(unittest.TestCase):
             return -1
 
 
+    @unittest.skip("In Development")
     def test_bash_ranking(self):
         self.heft.rank('oct')
             
@@ -199,7 +202,7 @@ class TestDALiuGEBashHeft(unittest.TestCase):
     def test_bash_insertion(self):
         self.heft.rank('up')
         retval = self.heft.insertion_policy()
-#       print retval 
+        print retval 
         #print(self.heft.processors)
 
 #@unittest.skip("In Development")

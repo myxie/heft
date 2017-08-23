@@ -287,13 +287,15 @@ class Heft(object):
                    makespan = task.aft
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0])
+            print 'insertion' +str(task.aft)
 
+        #print 'makespan' + str(makespan)
         return makespan
 
     def greedy_policy(self):
         nodes = self.graph.nodes()
         r_sorted = self.rank_sort
-        task_aft_list = dict{}
+        makespan = 0
         for task in r_sorted:
             if task == r_sorted[0]:
                 w = min(self.comp_matrix[task.tid])
@@ -301,23 +303,25 @@ class Heft(object):
                 task.processor = p
                 task.ast = 0
                 task.aft = w
-                print task.aft
-                task_aft_list[task.tid] = task.aft
                 self.processors[p].append((task.ast, task.aft, str(task.tid)))
             else:
-                aft = 1000 
                 est = -1
                 for predecessor in self.graph.predecessors(task):
-                    tmp_aft = task_aft_list[processor.tid]
-                     tmp_aftaft > est:
-                        est = aft.aft
+                    task_index = r_sorted.index(predecessor)
+                    tmp_task = r_sorted[task_index] 
+                    if tmp_task.aft > est:
+                        est = tmp_task.aft
+                        task.ast = est 
+                        w = self.comp_matrix[task.tid][tmp_task.processor]
+                        task.aft = est + w 
+                    self.processors[p].append((task.ast, task.aft,str(task.tid)))
+                    self.processors[p].sort(key=lambda x: x[0])
+        
+                if task.aft > makespan:
+                    makespan = task.aft
 
-        for key,val in task_aft_list:
-            print str(val) + str(key)
 
-            # EST of each task is the maximum Estimated finish time of the task predecessors
-
-        return -1
+        return makespan 
 
    # def schedule(self, schedule='insertion'):
    #     if schedule is 'insertion':
