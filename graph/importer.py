@@ -14,7 +14,7 @@ for val in os.listdir(location):
 for key in graphs:
      path = graphs[key]+key
      print "'Path is:" + path +"'"
-     if os.path.exists(path): 
+     if os.path.exists(path) and (os.stat(path).st_size != 0): 
               
         graph = dict()
         with open(path) as f:
@@ -66,7 +66,7 @@ for key in graphs:
         for node in translated_graph.nodes():
             translated_graph.node[node]['label'] = str(node)
 
-        variable = 'data/input/graphml/translated_'
+        variable = 'data/input/graphml/translated'
         save = variable+title
         nx.write_graphml(translated_graph, '{0}.graphml'.format(save))
 

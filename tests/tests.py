@@ -176,6 +176,17 @@ class TestHeftMethodsOCT(unittest.TestCase):
         #    print (str(node.tid) + ': '+ str(node.oct_rank))
 #        for x in range(0,10):
 #            self.assertTrue(nodes[x].rank == rank_values[x])
+    def test_oct_insertion(self):
+        self.heft.rank('oct')
+        retval = self.heft.insertion_policy()
+        print 'insertion oct '+ str(retval)
+
+    def test_oct_greedy(self):
+        self.heft.rank('oct')
+        retval = self.heft.greedy_policy()
+        print 'greedy oct ' + str(retval)
+        
+
 class TestDALiuGEBashHeft(unittest.TestCase): 
 
     """
@@ -225,7 +236,7 @@ class TestHEFTExperiments(unittest.TestCase):
 
         heft.rank('up')
         retval = heft.insertion_policy()
-        print 'insertion ' + str(retval)
+        print 'insertion up' + str(retval)
 
         return -1
 
@@ -242,13 +253,37 @@ class TestHEFTExperiments(unittest.TestCase):
         heft.rank('oct')
         #heft.show_rank()
         retval = heft.insertion_policy()
-        print 'oct ' + str(retval)
+        print 'oct insertion' + str(retval)
         #for tpl in sorted(heft.oct_rank_matrix.keys()):
         #    print "%s: %s" % (tpl, heft.oct_rank_matrix[tpl])
+    def test_more_things_greedy_oct(self):
 
+        heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
+                'data/input/matrices/comm/comm_130.txt',
+                'data/input/graphml/translated__mwa_gleam_simple.graphml')
+
+        heft.rank('oct')
+        #heft.show_rank()
+        retval = heft.greedy_policy()
+        print 'oct greedy' + str(retval)
 
         #retval = heft.insertion_policy()
         #print 'insertion ' + str(retval[2])
 
         return -1
+    def test_greedy_find_appropriate_matrix(self):
+        """
+        We want to read in the cost matrices that correspond to the 
+        the number of nodes in the graph
+        """
+        heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
+                'data/input/matrices/comm/comm_130.txt',
+                'data/input/graphml/translated__mwa_gleam_simple.graphml')
+
+        heft.rank('up')
+        retval = heft.greedy_policy()
+        print 'greedy up' + str(retval)
+
+        return -1
+
 

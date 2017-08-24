@@ -12,12 +12,15 @@ example purposes within the body of the text
 and then plot the resulting makespan and time it takes to run 
 the algorithm on a pyplot chart. 
 """
-from heft.heft import Heft
-from heft.graph import create_processors, random_task_dag,random_comp_matrix,random_comm_matrix 
-from heft.task import Task
-import networkx as nx
+import os
 
+import networkx as nx
 import matplotlib.pyplot as plt
+
+from heft.heft import Task, Heft
+from graph.graph import random_task_dag,random_comp_matrix,random_comm_matrix 
+
+
 
 """
 Requirements for new experiments:
@@ -30,11 +33,42 @@ Requirements for new experiments:
         - Return this final schedule into some data format
 """
 
+def run_hefts():
+    heuristics = ['up', 'oct']
+    policies   = ['insertion', 'oct_schedule', 'greedy']
+
+    location = 'data/input/graphml/'
+    graphs = [] 
+
+    for val in os.listdir(location):
+       graphs.append(location+val)
+
+    for path in graphs:
+        print path
+        if os.path.exists(path): 
+            for heuristic in heuristics:
+                for policy in policies:
+                    graph = nx.read_graphml(path,Task)
+                    num= len(graph.nodes())
+                    heft = Heft('data/input/matrices/comp/comp_{0}-3.txt'.format(num+1),\
+                    'data/input/matrices/comm/comm_{0}.txt'.format(num+1),path)
+                    heft.rank(heuristic)
+                    retval = heft.schedule(policy)
+                    print heuristic + policy + str(retval)
+
+    # heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
+    #     'data/input/matrices/comm/comm_130.txt',
+    #     'data/input/graphml/translated__mwa_gleam_simple.graphml')
+
+    # heft.rank('up')
+    # retval = heft.insertion_policy()
+    # print 'insertion up' + str(retval)
+
 
 if __name__ == '__main__':
-    #setup_graph()
-    # print run_random_heft()
-    #rank_heft()
+    run_hefts()
+    
+
 
 # Deprecated and archaic setup
 def setup_graph():

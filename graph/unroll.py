@@ -11,7 +11,7 @@ Things we need:
 
 """
 print os.listdir('.')
-location = '../daliuge/daliuge-logical-graphs/MWA Pipelines/'
+location = '../daliuge/daliuge-logical-graphs/SDP Pipelines/'
 
 graphs = dict() 
 for graph in os.listdir(location):

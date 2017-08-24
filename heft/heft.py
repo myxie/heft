@@ -88,19 +88,21 @@ class Heft(object):
                 for node in sorted(self.graph.nodes(),reverse=True): 
                     self.rank_oct(node,val)
 
-            """
-            for val in self.oct_rank_matrix:
-                print str(val) +': '+ str(self.oct_rank_matrix[val])
-            """
             for node in self.graph.nodes():
                 ave_list = []
                 for key in self.oct_rank_matrix:
                     if key[0] is node.tid:
                         ave_list.append(self.oct_rank_matrix[key])
-                node.rank = sum(ave_list)/len(ave_list)
+
+                if ave_list:         
+                    node.rank = sum(ave_list)/len(ave_list)
+                else: 
+                    node.rank = sum(ave_list)/1
 
             self.rank_sort = self.rank_sort_tasks()
             self.top_sort = self.top_sort_tasks()
+
+            print 'matrix size ' + str(len(self.oct_rank_matrix)/len(self.processors))
 
     def show_rank(self):
 
@@ -265,7 +267,7 @@ class Heft(object):
                 task.aft = w
                 self.processors[p].append((task.ast,task.aft,str(task.tid)))
             else:
-                aft = 10000 # a big number
+                aft = 10000 # a big number`
                 for processor in range(len(self.processors)):
                     # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
                     est = self.calc_est(task, processor,r_sorted)
@@ -274,10 +276,13 @@ class Heft(object):
                             aft = est + self.comp_matrix[task.tid][processor]
                             p = processor
                     elif option is 'oct':
+                        if not self.oct_rank_matrix:
+                            self.rank('oct')
                         eft=est+self.comp_matrix[task.tid][processor]
-                        oct_eft = eft + self.oct_rank_matrix[(node.tid,processor)] 
+                        oct_eft = eft + self.oct_rank_matrix[(task.tid,processor)] 
                         if oct_eft < aft:
                             p = processor
+                            aft = eft
 
     
                 task.processor = p
@@ -289,8 +294,11 @@ class Heft(object):
                 self.processors[p].sort(key=lambda x: x[0])
 
         #print 'makespan' + str(makespan)
-
-        return makespan
+        count = 0
+        for key in self.processors:
+            for element in self.processors[key]:
+                count = count + 1
+        return makespan, count
 
     def greedy_policy(self):
         nodes = self.graph.nodes()
@@ -307,14 +315,18 @@ class Heft(object):
             else:
                 est = -1
                 pred = None 
-                for predecessor in self.graph.predecessors(task):
-                    task_index = r_sorted.index(predecessor)
-                    tmp_task = r_sorted[task_index] 
-                    if tmp_task.aft > est:
-                        est = tmp_task.aft
-                        pred = tmp_task
+                if self.graph.predecessors(task):
+                    for predecessor in self.graph.predecessors(task):
+                        task_index = r_sorted.index(predecessor)
+                        tmp_task = r_sorted[task_index] 
+                        if tmp_task.aft > est:
+                            est = tmp_task.aft
+                            pred = tmp_task
+                else: # if we have more than 1 start nodes 
+                    est = 0
+
                 # We have the earliest time we can start (est), as the latest time of the predecessors
-                # Now, we check what processor is available
+                # Now, we check for the earliest processor that is available
                 finish = 500
                 finish_processor = 0
                 for key in self.processors:
@@ -326,24 +338,36 @@ class Heft(object):
                                 finish = tmp
                                 finish_processor = key
 
+
                 comm_cost = 0
-                if pred.processor is not finish_processor:
-                    comm_cost = self.comm_matrix[pred.tid][task.tid]
+                if pred: #If we have only 1 start node
+                    if pred.processor is not finish_processor:
+                        comm_cost = self.comm_matrix[pred.tid][task.tid]
+                
                 w = self.comp_matrix[task.tid][finish_processor]
                 aft = finish + w + comm_cost
                 task.aft = aft
-                print 'aft ' +str(task.aft)
                 if task.aft >= makespan:
                    makespan = task.aft
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0])
 
+        count = 0
+        for key in self.processors:
+            for element in self.processors[key]:
+                count = count + 1
 
-        return makespan 
+        return makespan, count 
 
-   # def schedule(self, schedule='insertion'):
-   #     if schedule is 'insertion':
-   #         self.insertion_policy()
+    def schedule(self, schedule='insertion'):
+        if schedule is 'insertion':
+            retval = self.insertion_policy()
+        elif schedule is 'oct_schedule':
+            retval = self.insertion_policy('oct')
+        elif schedule is 'greedy':
+            retval = self.greedy_policy()
+
+        return retval
 
     def display_schedule(self):
         retval = self.insertion_policy() 
