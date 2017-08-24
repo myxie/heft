@@ -1,0 +1,8 @@
+IMPORTANT
+
+-- Create a new oct_scheduler policy function
+-- You want to save all the ESTs in a matrix, as well as all the O_ect values
+-- for OCT, we essentially calc insertion_policy times, and then re-allocate all the processors afterwards (I think)!
+-- I think this means we are "allocating" onto the processors, but then we want to 'reset' the processors at the end and re-allocate
+(Given we use processor allocation to calculate EST for the each subsequent task)
+
