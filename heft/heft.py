@@ -287,9 +287,9 @@ class Heft(object):
                    makespan = task.aft
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0])
-            print 'insertion' +str(task.aft)
 
         #print 'makespan' + str(makespan)
+
         return makespan
 
     def greedy_policy(self):
@@ -306,19 +306,37 @@ class Heft(object):
                 self.processors[p].append((task.ast, task.aft, str(task.tid)))
             else:
                 est = -1
+                pred = None 
                 for predecessor in self.graph.predecessors(task):
                     task_index = r_sorted.index(predecessor)
                     tmp_task = r_sorted[task_index] 
                     if tmp_task.aft > est:
                         est = tmp_task.aft
-                        task.ast = est 
-                        w = self.comp_matrix[task.tid][tmp_task.processor]
-                        task.aft = est + w 
-                    self.processors[p].append((task.ast, task.aft,str(task.tid)))
-                    self.processors[p].sort(key=lambda x: x[0])
-        
-                if task.aft > makespan:
-                    makespan = task.aft
+                        pred = tmp_task
+                # We have the earliest time we can start (est), as the latest time of the predecessors
+                # Now, we check what processor is available
+                finish = 500
+                finish_processor = 0
+                for key in self.processors:
+                    if self.processors[key]:
+                        item_list = self.processors[key]
+                        for item in item_list:
+                            tmp = item[1] 
+                            if (tmp < finish) and (tmp >= est):
+                                finish = tmp
+                                finish_processor = key
+
+                comm_cost = 0
+                if pred.processor is not finish_processor:
+                    comm_cost = self.comm_matrix[pred.tid][task.tid]
+                w = self.comp_matrix[task.tid][finish_processor]
+                aft = finish + w + comm_cost
+                task.aft = aft
+                print 'aft ' +str(task.aft)
+                if task.aft >= makespan:
+                   makespan = task.aft
+                self.processors[p].append((task.ast, task.aft,str(task.tid)))
+                self.processors[p].sort(key=lambda x: x[0])
 
 
         return makespan 
