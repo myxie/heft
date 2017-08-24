@@ -108,7 +108,7 @@ class TestHeftMethods(unittest.TestCase):
         retval = self.heft.insertion_policy()
         task_sort = retval
 
-#@unittest.skip("In Development")
+@unittest.skip("In Development")
 class TestHeftMethodsTopcuoglu(unittest.TestCase):
     """
     This class tests HEFT on the same example graph presented by 
@@ -178,14 +178,14 @@ class TestHeftMethodsOCT(unittest.TestCase):
 #            self.assertTrue(nodes[x].rank == rank_values[x])
     def test_oct_insertion(self):
         self.heft.rank('oct')
-        retval = self.heft.insertion_policy()
-        print 'insertion oct '+ str(retval)
+        retval = self.heft.schedule('oct_schedule')
+        print 'oct_schedule oct '+ str(retval)
 
     def test_oct_greedy(self):
         self.heft.rank('oct')
         retval = self.heft.greedy_policy()
-        print 'greedy oct ' + str(retval)
         
+@unittest.skip("In Development")
 
 class TestDALiuGEBashHeft(unittest.TestCase): 
 
@@ -216,7 +216,7 @@ class TestDALiuGEBashHeft(unittest.TestCase):
         print retval 
         #print(self.heft.processors)
 
-#@unittest.skip("In Development")
+@unittest.skip("In Development")
 class TestHEFTExperiments(unittest.TestCase):
 
     def setUp(self):
@@ -232,7 +232,7 @@ class TestHEFTExperiments(unittest.TestCase):
         """
         heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
                 'data/input/matrices/comm/comm_130.txt',
-                'data/input/graphml/translated__mwa_gleam_simple.graphml')
+                'data/input/graphml/translated_mwa_gleam_simple.graphml')
 
         heft.rank('up')
         retval = heft.insertion_policy()
@@ -248,7 +248,7 @@ class TestHEFTExperiments(unittest.TestCase):
         """
         heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
                 'data/input/matrices/comm/comm_130.txt',
-                'data/input/graphml/translated__mwa_gleam_simple.graphml')
+                'data/input/graphml/translated_mwa_gleam_simple.graphml')
 
         heft.rank('oct')
         #heft.show_rank()
@@ -260,7 +260,7 @@ class TestHEFTExperiments(unittest.TestCase):
 
         heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
                 'data/input/matrices/comm/comm_130.txt',
-                'data/input/graphml/translated__mwa_gleam_simple.graphml')
+                'data/input/graphml/translated_mwa_gleam_simple.graphml')
 
         heft.rank('oct')
         #heft.show_rank()
@@ -278,7 +278,7 @@ class TestHEFTExperiments(unittest.TestCase):
         """
         heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
                 'data/input/matrices/comm/comm_130.txt',
-                'data/input/graphml/translated__mwa_gleam_simple.graphml')
+                'data/input/graphml/translated_mwa_gleam_simple.graphml')
 
         heft.rank('up')
         retval = heft.greedy_policy()

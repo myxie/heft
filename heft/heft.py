@@ -254,10 +254,13 @@ class Heft(object):
         Allocate tasks to processors following the insertion based policy outline 
         in Tocuoglu et al.(2002)
         """
- 
+
         nodes = self.graph.nodes()
         r_sorted = self.rank_sort
         makespan = 0
+        p= 0
+        eft_matrix = dict()
+        oeft_matrix = dict()
         for task in r_sorted:
             if task == r_sorted[0]:
                 w = min(self.comp_matrix[task.tid])
@@ -265,40 +268,64 @@ class Heft(object):
                 task.processor = p
                 task.ast = 0
                 task.aft = w
+                if option is 'oct':
+                    tmp_aft = 1000
+                    for processor in range(len(self.processors)):
+                        oeft_matrix[(task.tid,processor)]  = self.comp_matrix[task.tid][processor] + self.oct_rank_matrix[(task.tid,processor)]
+                        if oeft_matrix[(task.tid,processor)]  < tmp_aft:
+                            tmp_aft = oeft_matrix[(task.tid,processor)]
+                            p = processor
+                    task.aft=tmp_aft
+                    task.processor= p
                 self.processors[p].append((task.ast,task.aft,str(task.tid)))
+
             else:
                 aft = 10000 # a big number`
                 for processor in range(len(self.processors)):
                     # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
                     est = self.calc_est(task, processor,r_sorted)
-                    if option is None:
-                        if est + self.comp_matrix[task.tid][processor] < aft:
-                            aft = est + self.comp_matrix[task.tid][processor]
-                            p = processor
-                    elif option is 'oct':
-                        if not self.oct_rank_matrix:
-                            self.rank('oct')
-                        eft=est+self.comp_matrix[task.tid][processor]
-                        oct_eft = eft + self.oct_rank_matrix[(task.tid,processor)] 
-                        if oct_eft < aft:
-                            p = processor
-                            aft = eft
+                    print 'est: ' + str(est)
+                    eft = est + self.comp_matrix[task.tid][processor]
+                    eft_matrix[(task.tid, processor)] = eft
+                    if eft < aft:
+                        aft = est + self.comp_matrix[task.tid][processor]
+                        p = processor
 
-    
-                task.processor = p
+                    if option is 'oct' and self.oct_rank_matrix:
+                        oeft_matrix[(task.tid,processor)]  = eft_matrix[task.tid,processor] + self.oct_rank_matrix[(task.tid,processor)]
+                        # if oeft_matrix[(task.tid,processor)]  < oct_eft:
+                        #     oct_eft = oeft_matrix[(task.tid,processor)]
+
+                    # if option is 'oct':
+                    #     if not self.oct_rank_matrix:
+                    #         self.rank('oct')
+                    #     oct_eft = eft + self.oct_rank_matrix[(task.tid,processor)]
+                    #     oeft_matrix[(task.tid,p)]=oct_eft
+
+                
                 task.ast = aft - self.comp_matrix[task.tid][p]
+                task.processor = p
                 task.aft = aft
+                if option is 'oct' and self.oct_rank_matrix:
+                    min_oeft = 1000
+                    for processor in range(len(self.processors)):
+                        if oeft_matrix[(task.tid,processor)] < min_oeft:
+                            min_oeft = oeft_matrix[(task.tid,processor)]
+                    task.processor = processor
+                    task.aft=min_oeft
+
                 if task.aft >= makespan:
                    makespan = task.aft
+
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0])
 
-        #print 'makespan' + str(makespan)
+        for row in oeft_matrix:
+            print str(row) + ' ' + str(oeft_matrix[row])
         count = 0
         for key in self.processors:
-            for element in self.processors[key]:
-                count = count + 1
-        return makespan, count
+            print self.processors[key]
+        return makespan
 
     def greedy_policy(self):
         nodes = self.graph.nodes()
