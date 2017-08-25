@@ -42,20 +42,27 @@ def run_hefts():
 
     for val in os.listdir(location):
        graphs.append(location+val)
-
-    for path in graphs:
-        print path
-        if os.path.exists(path): 
-            for heuristic in heuristics:
-                for policy in policies:
+    results = dict()
+    for heuristic in heuristics:
+        for policy in policies:
+            for path in graphs:
+                local_results = dict()
+                if os.path.exists(path): 
                     graph = nx.read_graphml(path,Task)
                     num= len(graph.nodes())
                     heft = Heft('data/input/matrices/comp/comp_{0}-3.txt'.format(num+1),\
                     'data/input/matrices/comm/comm_{0}.txt'.format(num+1),path)
                     heft.rank(heuristic)
                     retval = heft.schedule(policy)
-                    print heuristic + policy + str(retval)
+                    pair = str(heuristic) + ' ' + str(policy)
+                    if pair in results:
+                        results[pair].append(retval)
+                    else:
+                        results[pair] = [retval]
+            
+            # print heuristic + policy + str(retval)
 
+    return results
     # heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
     #     'data/input/matrices/comm/comm_130.txt',
     #     'data/input/graphml/translated__mwa_gleam_simple.graphml')
@@ -66,7 +73,9 @@ def run_hefts():
 
 
 if __name__ == '__main__':
-    run_hefts()
+    val = run_hefts()
+    for key in val:
+        print "{0}: {1}".format(key,val[key])
     
 
 
