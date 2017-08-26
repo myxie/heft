@@ -362,16 +362,15 @@ class Heft(object):
                 task.aft = self.comp_matrix[task.tid][p]
                 task.processor = p
                 self.processors[p].append((task.ast,task.aft,str(task.tid)))
-                print "{0}: {1}".format(self.processors,min_oeft)
 
             else:
                 aft = 10000 # a big number
                 min_oeft = 1000
                 for processor in range(len(self.processors)):
-                    # if self.graph.predecessors(task):
-                    est = self.calc_est(task,processor,r_sorted)
-                    # else:
-                    #     est=0
+                    if self.graph.predecessors(task):
+                        est = self.calc_est(task,processor,r_sorted)
+                    else:
+                        est=0
                     eft = est + self.comp_matrix[task.tid][processor]
                     eft_matrix[(task.tid,processor)] =eft
                     oeft_matrix[(task.tid,processor)]  =  eft_matrix[(task.tid,processor)] + self.oct_rank_matrix[(task.tid,processor)]
@@ -385,7 +384,6 @@ class Heft(object):
                     makespan = task.aft
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0]) 
-                print "{0}: {1}".format(self.processors,min_oeft)
                 count = count + 1
 
         return makespan
