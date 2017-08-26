@@ -108,7 +108,7 @@ class TestHeftMethods(unittest.TestCase):
         retval = self.heft.insertion_policy()
         task_sort = retval
 
-@unittest.skip("In Development")
+# @unittest.skip("In Development")
 class TestHeftMethodsTopcuoglu(unittest.TestCase):
     """
     This class tests HEFT on the same example graph presented by 
