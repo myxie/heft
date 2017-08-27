@@ -50,15 +50,16 @@ def run_hefts():
                 if os.path.exists(path): 
                     graph = nx.read_graphml(path,Task)
                     num= len(graph.nodes())
-                    heft = Heft('data/input/matrices/comp/comp_{0}-3.txt'.format(num+1),\
+                    heft = Heft('data/input/matrices/comp/comp_{0}-5.txt'.format(num+1),\
                     'data/input/matrices/comm/comm_{0}.txt'.format(num+1),path)
                     heft.rank(heuristic)
                     retval = heft.schedule(policy)
+                    secondary_retval = heft.critical_path()
                     pair = str(heuristic) + ' ' + str(policy)
                     if pair in results:
-                        results[pair].append(retval)
+                        results[pair].append("{0}: {1},{2}".format(path,retval,secondary_retval))
                     else:
-                        results[pair] = [retval]
+                        results[pair] = ["{0}: {1},{2}".format(path,retval,secondary_retval)]
             
             # print heuristic + policy + str(retval)
 

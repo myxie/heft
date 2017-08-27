@@ -141,6 +141,11 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
         retval = self.heft.insertion_policy()
         print 'insertion'+ str(retval)
 
+    def test_critical_path(self):
+        retval = self.heft.critical_path()
+        
+        print "critical_path"  +str(retval)
+
     def test_greedy(self):
         self.heft.rank('up')
         retval = self.heft.greedy_policy()
@@ -185,7 +190,7 @@ class TestHeftMethodsOCT(unittest.TestCase):
         self.heft.rank('oct')
         retval = self.heft.greedy_policy()
         
-@unittest.skip("In Development")
+#@unittest.skip("In Development")
 
 class TestDALiuGEBashHeft(unittest.TestCase): 
 
@@ -216,7 +221,7 @@ class TestDALiuGEBashHeft(unittest.TestCase):
         print retval 
         #print(self.heft.processors)
 
-@unittest.skip("In Development")
+#@unittest.skip("In Development")
 class TestHEFTExperiments(unittest.TestCase):
 
     def setUp(self):

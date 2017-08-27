@@ -5,6 +5,8 @@ Functions for static HEFT implementation
 import networkx as nx
 import time
 import ast
+
+from queue import *
 from pudb import set_trace
 
 def read_matrix(matrix):
@@ -197,6 +199,46 @@ class Heft(object):
         sort_list=nx.topological_sort(self.graph)
         
         return sort_list
+
+    def critical_path(self):
+        top_sort = self.top_sort_tasks()
+        dist = [-1 for x in range(len(self.graph.nodes()))]
+        dist[0] = 0
+        critical_path = []
+
+        for u in top_sort:
+            for v in self.graph.edges(u):
+                tmp_v = v[1]
+                if dist[v[1].tid] < dist[u.tid] + min(self.comp_matrix[v[1].tid])+ self.comm_matrix[v[1].tid][u.tid]:
+                    dist[v[1].tid] = dist[u.tid] + min(self.comp_matrix[v[1].tid]) + self.comm_matrix[v[1].tid][u.tid]
+                    tmp_v = v[1]
+
+        
+        final_dist=dist[len(self.graph.nodes())-1]
+        critical_path.append(len(self.graph.nodes())-1)
+        q = Queue()
+        q.put(len(self.graph.nodes())-1)
+
+
+        while not q.empty():
+            u = q.get()
+            tmp_max = 0
+            for v in self.graph.predecessors(Task(u)):
+                if dist[v.tid] > tmp_max:
+                    tmp_max = dist[v.tid]
+                    tmp_v=v.tid
+                    if tmp_v not in critical_path:
+                        critical_path.append(tmp_v)
+                    q.put(tmp_v)
+                elif dist[v.tid] is 0:
+                    tmp_v = 0 # this is the first node in the graph
+                    if tmp_v not in critical_path:
+                        critical_path.append(tmp_v)
+        cp_min = 0
+        for x in critical_path:
+            cp_min = cp_min + min(self.comp_matrix[x])
+
+        return cp_min
     
     def calc_est(self,node,processor_num,task_list):
         """
@@ -285,54 +327,6 @@ class Heft(object):
 
         return makespan
 
-
-    def calc_est_oct(self,node,processor_num,task_list):
-        """
-        Calculate the Estimated Start Time of a node on a given processor
-        """
-        
-        est = 0 # If the node does not have predecessors
-        predecessors = self.graph.predecessors(node)
-        for pretask in predecessors:
-            if pretask.processor != processor_num: # If task isn't on the same processor
-                comm_cost = self.comm_matrix[pretask.tid][node.tid]
-            else:
-                comm_cost = 0 # task is on the same processor, communication cost is 0
-
-            # self.graph.predecessors is not being updated in insertion_policy;
-            # need to use the tasks that are being updated to get the right results
-            index = task_list.index(pretask)
-            aft = task_list[index].aft
-            tmp = aft  + comm_cost
-            if tmp >= est:
-                est = tmp
-        # Now we find the time it fits in on the processor
-        processor = self.processors[processor_num] # return the list of allocated tasks
-        available_slots = []
-        if len(processor) == 0:
-            return est # Nothing in the time slots yet, so the earliest start time is whenever
-        else:
-            for x in range(len(processor)):
-                # For each start/finish time tuple that exists in the processor
-                if x == 0:
-                    if processor[0][0] != 0: #If the start time of the first tuple is not 0
-                        available_slots.append((0,processor[0][0]))# add a 0-current_start time tuple
-                    else:
-                        continue
-                else: 
-                    # Append the finish time of the previous slot and the start time of this slot
-                    available_slots.append((processor[x-1][1],processor[x][0]))
-            
-            # Add a very large number to the final time slot available, so we have a gap after 
-            available_slots.append((processor[len(processor)-1][1],10000))
-
-        for avail in available_slots:
-            if est < avail[0] and avail[0] + self.comp_matrix[node.tid][processor_num] <= avail[1]:
-                return avail[0]
-            if est >= avail[0] and est + self.comp_matrix[node.tid][processor_num] <= avail[1]:
-               return est 
-
-        return est
 
     def insertion_policy_oct(self):
         """
