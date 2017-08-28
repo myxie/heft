@@ -13,9 +13,15 @@ and then plot the resulting makespan and time it takes to run
 the algorithm on a pyplot chart. 
 """
 import os
+import csv
 
 import networkx as nx
+# import matplotlib.pyplot as plt
+
+import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import rc
+rc('font',**{'family':'serif','serif':['Computer Modern']})
 
 from heft.heft import Task, Heft
 from graph.graph import random_task_dag,random_comp_matrix,random_comm_matrix 
@@ -43,40 +49,97 @@ def run_hefts():
     for val in os.listdir(location):
        graphs.append(location+val)
     results = dict()
-    for heuristic in heuristics:
-        for policy in policies:
-            for path in graphs:
+    for path in graphs:
+        for heuristic in heuristics:
+            for policy in policies:
                 local_results = dict()
                 if os.path.exists(path): 
                     graph = nx.read_graphml(path,Task)
                     num= len(graph.nodes())
-                    heft = Heft('data/input/matrices/comp/comp_{0}-5.txt'.format(num+1),\
+                    heft = Heft('data/input/matrices/comp/comp_{0}-3.txt'.format(num+1),\
                     'data/input/matrices/comm/comm_{0}.txt'.format(num+1),path)
                     heft.rank(heuristic)
                     retval = heft.schedule(policy)
-                    secondary_retval = heft.critical_path()
+                    cp = heft.critical_path()
                     pair = str(heuristic) + ' ' + str(policy)
-                    if pair in results:
-                        results[pair].append("{0}: {1},{2}".format(path,retval,secondary_retval))
+
+                    if path in results:
+                        results[path][pair] = retval
                     else:
-                        results[pair] = ["{0}: {1},{2}".format(path,retval,secondary_retval)]
-            
-            # print heuristic + policy + str(retval)
+                        results[path]={'size':num,'cp':cp,pair:retval}
 
     return results
-    # heft = Heft('data/input/matrices/comp/comp_130-3.txt',\
-    #     'data/input/matrices/comm/comm_130.txt',
-    #     'data/input/graphml/translated__mwa_gleam_simple.graphml')
 
-    # heft.rank('up')
-    # retval = heft.insertion_policy()
-    # print 'insertion up' + str(retval)
+def make_plots():
 
+    # x_list = [x for x in range(0,1200)]
+
+    with open('results.csv', 'r') as csvfile:
+        results = csv.reader(csvfile, delimiter=',')
+        results.next()
+
+        plotter_y=dict()
+        # plotter_y=dict()
+        for row in results:
+            for x in range(1,7):
+                if x in plotter_y:
+                    plotter_y[x].append((int(row[8]),row[x]))
+                else:
+                    plotter_y[x] = [(int(row[8]),row[x])]
+
+            sorted(plotter_y[x],key=lambda x: x[0])
+                # if x in plotter_x:
+                #     plotter_x[x].append(row[8]) # this is the size of the graph
+                # else:
+                #     plotter_x[x] = [row[8]]
+
+        # map(list, zip(*[(1, 2), (3, 4), (5, 6)]))
+        map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
+
+    for x in range(1,7):
+        plt.rc('text', usetex=True)
+        plt.rc('font', family='serif')
+        plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
+        plt.plot(plotvals[0], plotvals[1],'-+', label = str(x),linewidth=0.5 )
+    
+    plt.xlabel('Nodes')
+    plt.ylabel('Schedule Makespan')
+
+    plt.legend()
+    plt.show()
+
+
+    print plotter_x
+    print plotter_y 
+
+
+
+
+
+
+    return -1 
 
 if __name__ == '__main__':
-    val = run_hefts()
-    for key in val:
-        print "{0}: {1}".format(key,val[key])
+    make_plots()
+    # results = run_hefts()
+    # # count = 0
+    # file_headers = 'name'
+    # for res in results:
+    #     if count is 0:
+    #         for val in results[res]:
+    #             file_headers = file_headers +','+val
+    #         file_headers = file_headers+"\n"
+    #         with open('results.csv','w+') as f:
+    #             f.write(file_headers)
+    #         count = count+1
+    #     line = "{0},".format(res)
+    #     for val in results[res]:
+    #         line = line + str(results[res][val])+','
+    #     line = line + '\n'
+    #     with open('results.csv','a') as f:
+    #         f.write(line)
+
+
     
 
 

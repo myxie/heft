@@ -1,0 +1,10 @@
+name,up greedy,up insertion,up oct_schedule,oct greedy,oct insertion,oct oct_schedule,cp,size
+data/input/graphml/translated_cont_img.graphml,564,711,647,564,612,558,297,148,
+data/input/graphml/translated_mwa_gleam_simple.graphml,396,144,153,422,141,151,29,72,
+data/input/graphml/translated_mwa_gleam.graphml,559,280,269,559,232,275,64,130,
+data/input/graphml/translated_test_grpby_gather.graphml,313,201,219,334,193,240,21,154,
+data/input/graphml/translated_test_mk_grpby.graphml,551,296,321,554,296,344,151,124,
+data/input/graphml/translated_facet_img.graphml,561,863,1949,561,1092,1948,236,655,
+data/input/graphml/translated_dist_sagecal.graphml,561,489,453,561,429,435,277,98,
+data/input/graphml/translated_dist_sagecal_sleep.graphml,562,848,851,562,845,885,468,281,
+data/input/graphml/translated_test_seq_gather.graphml,554,328,316,431,214,296,110,74,
