@@ -239,6 +239,18 @@ class Heft(object):
             cp_min = cp_min + min(self.comp_matrix[x])
 
         return cp_min
+
+    def sequential_execution(self):
+        seq = 100000
+        
+        for p in range(len(self.processors)):
+            comp = 0 
+            for task in self.graph.nodes():
+                comp = comp + self.comp_matrix[task.tid][p]
+            if comp < seq:
+                seq = comp
+
+        return seq
     
     def calc_est(self,node,processor_num,task_list):
         """
@@ -395,28 +407,26 @@ class Heft(object):
                 task.aft = w
                 self.processors[p].append((task.ast, task.aft, str(task.tid)))
             else:
-                est = -1
+                est = 0
                 pred = None 
-                if self.graph.predecessors(task):
-                    for predecessor in self.graph.predecessors(task):
-                        task_index = r_sorted.index(predecessor)
-                        tmp_task = r_sorted[task_index] 
-                        if tmp_task.aft > est:
-                            est = tmp_task.aft
-                            pred = tmp_task
-                else: # if we have more than 1 start nodes 
-                    est = 0
+                # if self.graph.predecessors(task):
+                for predecessor in self.graph.predecessors(task):
+                    print "Task is {0}, predecessor is {1}".format(task,predecessor)
+                    return
 
                 # We have the earliest time we can start (est), as the latest time of the predecessors
                 # Now, we check for the earliest processor that is available
-                finish = 500
+                
+                finish = 50000
                 finish_processor = 0
+
+
                 for key in self.processors:
                     if self.processors[key]:
                         item_list = self.processors[key]
                         for item in item_list:
                             tmp = item[1] 
-                            if (tmp < finish) and (tmp >= est):
+                            if (tmp < finish):
                                 finish = tmp
                                 finish_processor = key
 
@@ -429,6 +439,7 @@ class Heft(object):
                 w = self.comp_matrix[task.tid][finish_processor]
                 aft = finish + w + comm_cost
                 task.aft = aft
+                task.ast = aft - w
                 if task.aft >= makespan:
                    makespan = task.aft
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))

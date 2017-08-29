@@ -145,6 +145,9 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
         retval = self.heft.critical_path()
         
         print "critical_path"  +str(retval)
+    def test_sequential_cost(self):
+        retval = self.heft.sequential_execution()
+        print "sequential_exection " + str(retval)
 
     def test_greedy(self):
         self.heft.rank('up')
