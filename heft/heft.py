@@ -406,13 +406,28 @@ class Heft(object):
                 task.ast = 0
                 task.aft = w
                 self.processors[p].append((task.ast, task.aft, str(task.tid)))
+                
+                    
             else:
                 est = 0
                 pred = None 
-                # if self.graph.predecessors(task):
-                for predecessor in self.graph.predecessors(task):
-                    print "Task is {0}, predecessor is {1}".format(task,predecessor)
+                if self.graph.predecessors(task):
+                    for predecessor in self.graph.predecessors(task):
+                        index = r_sorted.index(predecessor)
+                        tmp = r_sorted[index]
+                        if tmp_task.aft >= est:
+                            print tmp_task.aft
+                            est = tmp_task.aft
+                            pred = tmp_task
+
+                for processor in self.processors:
+                    time_slot = self.processors[processor].sorted(key=lambda x:x[1],reverse=True)
+                    est = time_slot[0][1] #aft of the time slot
                     return
+                    # if tmp_task.aft >= est:
+                    #     print tmp_task.aft
+                    #     est = tmp_task.aft
+                    #     pred = tmp_task
 
                 # We have the earliest time we can start (est), as the latest time of the predecessors
                 # Now, we check for the earliest processor that is available
