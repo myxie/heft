@@ -67,7 +67,7 @@ def run_hefts():
                     if path in results:
                         results[path][pair] = retval
                     else:
-                        results[path]={'seq':seq,'size':num,'cp':cp,pair:retval}
+                        results[path]={'size':num,'seq':seq,'cp':cp,pair:retval}
 
     # results = run_hefts()
     count = 0
@@ -129,7 +129,7 @@ def make_plots():
     plt.show()
 
 
-def generate_metrics():
+def generate_slr():
 
     """
     This function gets the values output by the 'results' section and calculates performance metrics, include: 
@@ -179,12 +179,67 @@ def generate_metrics():
     plt.legend()
     plt.show()
 
+def generate_speedup():
 
+    """
+    This function gets the values output by the 'results' section and calculates performance metrics, include: 
+    Schedule-to-Length ratio (SLR)
+    Speedup
+    Number of occurences of a better quality schedule
+    Algorithmic running time
+    """
+
+    """
+    SLR:  sequential 
+    
+    We need to get each makespan and 'cp' value from the results.csv file and calculate the resultant slr 
+    """
+
+    with open('results.csv', 'r') as csvfile:
+        results = csv.reader(csvfile, delimiter=',')
+        results.next()
+
+        plotter_y=dict()
+        # plotter_y=dict()
+        for row in results:
+            for x in range(1,7):
+                if x in plotter_y:
+                    plotter_y[x].append((int(row[8]),(float(row[9])/float(row[x]))))
+                else:
+                    plotter_y[x] = [(int(row[8]),(float(row[9])/float(row[x])))]
+
+            sorted(plotter_y[x],key=lambda x: x[0])
+                # if x in plotter_x:
+                #     plotter_x[x].append(row[8]) # this is the size of the graph
+                # else:
+                #     plotter_x[x] = [row[8]]
+
+        # map(list, zip(*[(1, 2), (3, 4), (5, 6)]))
+        map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
+
+    for x in range(1,7):
+        plt.rc('text', usetex=True)
+        plt.rc('font', family='serif')
+        plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
+        plt.plot(plotvals[0], plotvals[1],'-o', label = str(x),linewidth=0.5 )
+
+    plt.xlabel('Nodes')     
+    plt.ylabel('Speedup')
+    plt.legend()
+    plt.show()
+
+
+def better_occurences():
+    #colum[1-7] is where our different schedulers are
+    """
+    For each row
+    """
+    return -1 
 
 if __name__ == '__main__':
     # make_plots()
-    # generate_metrics()
-    run_hefts()
+    generate_speedup()
+    # run_hefts()
     
 
 
