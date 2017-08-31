@@ -232,14 +232,64 @@ def generate_speedup():
 def better_occurences():
     #colum[1-7] is where our different schedulers are
     """
-    For each row
+    For each colum:
+        For each row:
+            Count how many of the other schedules is this one better than for this row
+            add it to a 'row' count
+        then this is the final count for the column?
     """
-    return -1 
+    matrix = []
+    with open('results.csv', 'r') as csvfile:
+        results = csv.reader(csvfile, delimiter=',')
+        results.next()
+        for x in range(1):
+            for row in results:
+                tmp = []
+                for y in range(x+1,8):
+                    tmp.append(row[y])
+                matrix.append(tmp)
+                # print "{0} has row {1}".format(row[0],val)
+
+    # better = dict()
+    # for i in range(0,7):
+    #     for j in range(i+1,7):
+    #         count = 0
+    #         num = 1
+    #         for row in matrix:
+    #             if row[i] < row[j]:
+    #                 count = count +1 
+    #             num = num+1 
+    #         better[(i,j)] = float(count)/float(num-1)
+
+    final_matrix = [[0 for x in range(0,6)] for y in range(0,6)]
+
+    for i in range(0,6):
+        for j in range(i+1,6):
+            count = 0
+            num = 1
+            for row in matrix:
+                # print "{0},{1}".format(row[i],row[j])
+                if int(row[i]) < int(row[j]):
+                    count = count+1
+                num = num+1
+
+            final_matrix[i][j] = float(count)/float(num-1)
+            final_matrix[j][i] = 1-(float(count)/float(num-1))
+
+
+    # for line in better:
+    #     print "{0}: {1}".format(line, better[line])
+
+    for row in final_matrix:
+        print row
+
+    # ?final_matrix = [x for x in [0 for y in range(0,7)]]
 
 if __name__ == '__main__':
     # make_plots()
-    generate_speedup()
+    # generate_speedup()
     # run_hefts()
+    better_occurences()
     
 
 
