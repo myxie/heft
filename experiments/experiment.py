@@ -286,10 +286,11 @@ def better_occurences():
     # ?final_matrix = [x for x in [0 for y in range(0,7)]]
 
 if __name__ == '__main__':
-    # make_plots()
-    # generate_speedup()
+    make_plots()
+    generate_slr()
+    generate_speedup()
     # run_hefts()
-    better_occurences()
+    # better_occurences()
     
 
 
