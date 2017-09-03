@@ -43,7 +43,7 @@ def run_hefts():
     heuristics = ['up', 'oct']
     policies   = ['insertion', 'oct_schedule', 'greedy']
 
-    location = 'data/input/graphml/'
+    location = '/home/hummus/Dropbox/thesis/data/input/graphml/'
     graphs = [] 
 
     for val in os.listdir(location):
@@ -56,8 +56,11 @@ def run_hefts():
                 if os.path.exists(path): 
                     graph = nx.read_graphml(path,Task)
                     num= len(graph.nodes())
-                    heft = Heft('data/input/matrices/comp/comp_{0}-3.txt'.format(num+1),\
-                    'data/input/matrices/comm/comm_{0}.txt'.format(num+1),path)
+                    print num
+                    if num > 5000:
+                        continue
+                    heft = Heft('/home/hummus/Dropbox/thesis/data/input/matrices/comp/comp_{0}-3.txt'.format(num),\
+                    '/home/hummus/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(num),path)   
                     heft.rank(heuristic)
                     retval = heft.schedule(policy)
                     cp = heft.critical_path()
@@ -286,10 +289,10 @@ def better_occurences():
     # ?final_matrix = [x for x in [0 for y in range(0,7)]]
 
 if __name__ == '__main__':
-    make_plots()
-    generate_slr()
-    generate_speedup()
-    # run_hefts()
+    # make_plots()
+    # generate_slr()
+    # generate_speedup()
+    run_hefts()
     # better_occurences()
     
 
