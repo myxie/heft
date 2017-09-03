@@ -7,7 +7,7 @@ import time
 import ast
 
 from queue import *
-from pudb import set_trace
+# from pudb import set_trace
 
 def read_matrix(matrix):
     lines = [] 

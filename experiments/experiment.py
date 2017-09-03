@@ -22,6 +22,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rc
 rc('font',**{'family':'serif','serif':['Computer Modern']})
+# plt.style.use('ggplot')
+plt.style.use('bmh')
+
+
 
 from heft.heft import Task, Heft
 from graph.graph import random_task_dag,random_comp_matrix,random_comm_matrix 
@@ -39,11 +43,13 @@ Requirements for new experiments:
         - Return this final schedule into some data format
 """
 
+schedule_pairs_dict = {1:"Up + Greedy",2:"Up + Insertion", 3:"Up + OCT-Schedule", 4:"OCT + Greedy", 5:"OCT + Insertion", 6:"OCT + OCT Schedule"}
+
 def run_hefts():
     heuristics = ['up', 'oct']
     policies   = ['insertion', 'oct_schedule', 'greedy']
 
-    location = '/home/hummus/Dropbox/thesis/data/input/graphml/'
+    location = '/home/croutons/Dropbox/thesis/data/input/graphml/'
     graphs = [] 
 
     for val in os.listdir(location):
@@ -56,11 +62,10 @@ def run_hefts():
                 if os.path.exists(path): 
                     graph = nx.read_graphml(path,Task)
                     num= len(graph.nodes())
-                    print num
                     if num > 5000:
                         continue
-                    heft = Heft('/home/hummus/Dropbox/thesis/data/input/matrices/comp/comp_{0}-3.txt'.format(num),\
-                    '/home/hummus/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(num),path)   
+                    heft = Heft('/home/croutons/Dropbox/thesis/data/input/matrices/comp/comp_{0}-3.txt'.format(num),\
+                    '/home/croutons/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(num),path)   
                     heft.rank(heuristic)
                     retval = heft.schedule(policy)
                     cp = heft.critical_path()
@@ -123,7 +128,7 @@ def make_plots():
         plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
         plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-        plt.plot(plotvals[0], plotvals[1],'-+', label = str(x),linewidth=0.5 )
+        plt.plot(plotvals[0], plotvals[1],'-+', label = schedule_pairs_dict[x],linewidth=0.5 )
     
     plt.xlabel('Nodes')
     plt.ylabel('Schedule Makespan')
@@ -175,7 +180,7 @@ def generate_slr():
         plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
         plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-        plt.plot(plotvals[0], plotvals[1],'-o', label = str(x),linewidth=0.5 )
+        plt.plot(plotvals[0], plotvals[1],'-x', label = schedule_pairs_dict[x],linewidth=0.5 )
 
     plt.xlabel('Nodes')     
     plt.ylabel('SLR')
@@ -224,7 +229,7 @@ def generate_speedup():
         plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
         plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-        plt.plot(plotvals[0], plotvals[1],'-o', label = str(x),linewidth=0.5 )
+        plt.plot(plotvals[0], plotvals[1],'-x', label = schedule_pairs_dict[x],linewidth=0.5 )
 
     plt.xlabel('Nodes')     
     plt.ylabel('Speedup')
@@ -289,10 +294,10 @@ def better_occurences():
     # ?final_matrix = [x for x in [0 for y in range(0,7)]]
 
 if __name__ == '__main__':
-    # make_plots()
-    # generate_slr()
-    # generate_speedup()
-    run_hefts()
+    make_plots()
+    generate_slr()
+    generate_speedup()
+    # run_hefts()
     # better_occurences()
     
 
