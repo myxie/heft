@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 rc('font',**{'family':'serif','serif':['Computer Modern']})
 # plt.style.use('ggplot')
-plt.style.use('bmh')
+# plt.style.use('bmh')
 
 
 
