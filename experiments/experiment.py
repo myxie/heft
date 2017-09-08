@@ -49,7 +49,7 @@ def run_hefts():
     heuristics = ['up', 'oct']
     policies   = ['insertion', 'oct_schedule', 'greedy']
 
-    location = '/home/croutons/Dropbox/thesis/data/input/graphml/'
+    location = '/home/hummus/Dropbox/thesis/data/input/graphml/'
     graphs = [] 
 
     for val in os.listdir(location):
@@ -64,8 +64,8 @@ def run_hefts():
                     num= len(graph.nodes())
                     if num > 5000:
                         continue
-                    heft = Heft('/home/croutons/Dropbox/thesis/data/input/matrices/comp/comp_{0}-3.txt'.format(num),\
-                    '/home/croutons/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(num),path)   
+                    heft = Heft('/home/hummus/Dropbox/thesis/data/input/matrices/comp/comp_{0}-16.txt'.format(num),\
+                    '/home/hummus/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(num),path)   
                     heft.rank(heuristic)
                     retval = heft.schedule(policy)
                     cp = heft.critical_path()
@@ -85,14 +85,14 @@ def run_hefts():
             for val in results[res]:
                 file_headers = file_headers +','+val
             file_headers = file_headers+"\n"
-            with open('results.csv','w+') as f:
+            with open('results.csv_16','w+') as f:
                 f.write(file_headers)
             count = count+1
         line = "{0},".format(res)
         for val in results[res]:
             line = line + str(results[res][val])+','
         line = line + '\n'
-        with open('results.csv','a') as f:
+        with open('results.csv_16','a') as f:
             f.write(line)
 
 
@@ -102,7 +102,7 @@ def make_plots():
 
     # x_list = [x for x in range(0,1200)]
 
-    with open('results.csv', 'r') as csvfile:
+    with open('results.csv_5', 'r') as csvfile:
         results = csv.reader(csvfile, delimiter=',')
         results.next()
 
@@ -154,7 +154,7 @@ def generate_slr():
     We need to get each makespan and 'cp' value from the results.csv file and calculate the resultant slr 
     """
 
-    with open('results.csv', 'r') as csvfile:
+    with open('results.csv_5', 'r') as csvfile:
         results = csv.reader(csvfile, delimiter=',')
         results.next()
 
@@ -203,7 +203,7 @@ def generate_speedup():
     We need to get each makespan and 'cp' value from the results.csv file and calculate the resultant slr 
     """
 
-    with open('results.csv', 'r') as csvfile:
+    with open('results.csv_5', 'r') as csvfile:
         results = csv.reader(csvfile, delimiter=',')
         results.next()
 
@@ -247,7 +247,7 @@ def better_occurences():
         then this is the final count for the column?
     """
     matrix = []
-    with open('results.csv', 'r') as csvfile:
+    with open('results.csv_5', 'r') as csvfile:
         results = csv.reader(csvfile, delimiter=',')
         results.next()
         for x in range(1):
@@ -294,10 +294,10 @@ def better_occurences():
     # ?final_matrix = [x for x in [0 for y in range(0,7)]]
 
 if __name__ == '__main__':
-    make_plots()
-    generate_slr()
-    generate_speedup()
-    # run_hefts()
+#   make_plots()
+#   generate_slr()
+#   generate_speedup()
+    run_hefts()
     # better_occurences()
     
 
