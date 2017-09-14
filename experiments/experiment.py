@@ -20,8 +20,8 @@ import networkx as nx
 
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import rc
-rc('font',**{'family':'serif','serif':['Computer Modern']})
+# from matplotlib import rc
+# rc('font',**{'family':'serif','serif':['Computer Modern']})
 # plt.style.use('ggplot')
 # plt.style.use('bmh')
 
@@ -103,7 +103,7 @@ def make_plots():
 
     # x_list = [x for x in range(0,1200)]
 
-    with open('results.csv_5', 'r') as csvfile:
+    with open('results_5.csv', 'r') as csvfile:
         results = csv.reader(csvfile, delimiter=',')
         results.next()
 
@@ -126,8 +126,8 @@ def make_plots():
         map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
 
     for x in range(1,7):
-        plt.rc('text', usetex=True)
-        plt.rc('font', family='serif')
+        # plt.rc('text', usetex=True)
+        # plt.rc('font', family='serif')
         plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
         plt.plot(plotvals[0], plotvals[1],schedule_pairs_symbols[x], label = schedule_pairs_dict[x],linewidth=0.5 )
     
@@ -155,7 +155,7 @@ def generate_slr():
     We need to get each makespan and 'cp' value from the results.csv file and calculate the resultant slr 
     """
 
-    with open('results.csv_5', 'r') as csvfile:
+    with open('results_5.csv', 'r') as csvfile:
         results = csv.reader(csvfile, delimiter=',')
         results.next()
 
@@ -178,8 +178,8 @@ def generate_slr():
         map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
 
     for x in range(1,7):
-        plt.rc('text', usetex=True)
-        plt.rc('font', family='serif')
+        # plt.rc('text', usetex=True)
+        # plt.rc('font', family='serif')
         plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
         plt.plot(plotvals[0], plotvals[1],schedule_pairs_symbols[x], label = schedule_pairs_dict[x],linewidth=0.5 )
 
@@ -204,7 +204,7 @@ def generate_speedup():
     We need to get each makespan and 'cp' value from the results.csv file and calculate the resultant slr 
     """
 
-    with open('results.csv_5', 'r') as csvfile:
+    with open('results_5.csv', 'r') as csvfile:
         results = csv.reader(csvfile, delimiter=',')
         results.next()
 
@@ -227,8 +227,8 @@ def generate_speedup():
         map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
 
     for x in range(1,7):
-        plt.rc('text', usetex=True)
-        plt.rc('font', family='serif')
+        # plt.rc('text', usetex=True)
+        # plt.rc('font', family='serif')
         plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
         plt.plot(plotvals[0], plotvals[1],schedule_pairs_symbols[x], label = schedule_pairs_dict[x],linewidth=0.5 )
 
