@@ -44,6 +44,7 @@ Requirements for new experiments:
 """
 
 schedule_pairs_dict = {1:"Up + Greedy",2:"Up + Insertion", 3:"Up + OCT-Schedule", 4:"OCT + Greedy", 5:"OCT + Insertion", 6:"OCT + OCT Schedule"}
+schedule_pairs_symbols = {1:'-+',2:'-x', 3:'-D', 4:'-s', 5:'-^', 6:'-*'}
 
 def run_hefts():
     heuristics = ['up', 'oct']
@@ -128,7 +129,7 @@ def make_plots():
         plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
         plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-        plt.plot(plotvals[0], plotvals[1],'-+', label = schedule_pairs_dict[x],linewidth=0.5 )
+        plt.plot(plotvals[0], plotvals[1],schedule_pairs_symbols[x], label = schedule_pairs_dict[x],linewidth=0.5 )
     
     plt.xlabel('Nodes')
     plt.ylabel('Schedule Makespan')
@@ -180,7 +181,7 @@ def generate_slr():
         plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
         plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-        plt.plot(plotvals[0], plotvals[1],'-x', label = schedule_pairs_dict[x],linewidth=0.5 )
+        plt.plot(plotvals[0], plotvals[1],schedule_pairs_symbols[x], label = schedule_pairs_dict[x],linewidth=0.5 )
 
     plt.xlabel('Nodes')     
     plt.ylabel('SLR')
@@ -229,7 +230,7 @@ def generate_speedup():
         plt.rc('text', usetex=True)
         plt.rc('font', family='serif')
         plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-        plt.plot(plotvals[0], plotvals[1],'-x', label = schedule_pairs_dict[x],linewidth=0.5 )
+        plt.plot(plotvals[0], plotvals[1],schedule_pairs_symbols[x], label = schedule_pairs_dict[x],linewidth=0.5 )
 
     plt.xlabel('Nodes')     
     plt.ylabel('Speedup')
@@ -294,10 +295,10 @@ def better_occurences():
     # ?final_matrix = [x for x in [0 for y in range(0,7)]]
 
 if __name__ == '__main__':
-#   make_plots()
-#   generate_slr()
-#   generate_speedup()
-    run_hefts()
+  make_plots()
+  generate_slr()
+  generate_speedup()
+    # run_hefts()
     # better_occurences()
     
 

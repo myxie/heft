@@ -2,10 +2,12 @@
 Functions for static HEFT implementation
 """
 
-import networkx as nx
 import time
 import ast
 
+import networkx as nx
+
+from random import randint
 from queue import *
 # from pudb import set_trace
 
@@ -126,6 +128,15 @@ class Heft(object):
         comp = self.comp_matrix[tid]
         return sum(comp)/len(comp)
 
+    def max_comp_cost(self,tid):
+        comp = self.comp_matrix[tid]
+        return max(comp)
+
+    def min_comp_cost(self, tid):
+        comp = self.comp_matrix[tid]
+        return min(comp)
+
+
     def rank_up(self,node):
         """
         Upward ranking heuristic outlined in Topcuoglu, Hariri & Wu (2002)
@@ -144,6 +155,32 @@ class Heft(object):
 
         node.ave_comp = self.ave_comp_cost(node.tid)
         node.rank = node.ave_comp + longest_rank
+
+    def rank_up_random(self,node):
+        """
+        Computes the upward rank based on either the average, max or minimum computational cost
+        """
+
+        longest_rank = 0
+        for successor in self.graph.successors(node):
+            if successor.rank is -1:
+                self.rank_up(successor)
+
+            longest_rank = max(longest_rank, self.ave_comm_cost(node.tid,successor.tid)+\
+                    successor.rank)
+
+        entropy = randint(0,1000)%3
+        if entropy is 0:
+            node.ave_comp = self.ave_comp_cost(node.tid)
+        elif entropy is 1:
+            node.ave_comp = self.max_comp_cost(node.tid)
+        elif entropy is 2: 
+            node.ave_comp = self.max_comp_cost(node.tid)
+
+        node.rank = node.ave_comp + longest_rank
+
+
+        return -1
 
     def rank_oct(self, node, pk):
         """
@@ -319,7 +356,7 @@ class Heft(object):
                 self.processors[p].append((task.ast,task.aft,str(task.tid)))
             else:
                 # print 'in else'
-                aft = 10000 # a big number
+                aft = 1000000 # a big number
                 for processor in range(len(self.processors)):
                     # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
                     est = self.calc_est(task, processor,r_sorted)
@@ -370,7 +407,7 @@ class Heft(object):
                 self.processors[p].append((task.ast,task.aft,str(task.tid)))
 
             else:
-                aft = 10000 # a big number
+                aft = 1000000 # a big number
                 min_oeft = 1000
                 for processor in range(len(self.processors)):
                     if self.graph.predecessors(task):
@@ -424,7 +461,7 @@ class Heft(object):
                 # est = 100000
                 p = 0 
                 allowed_est = est
-                est = 10000
+                est = 1000000
                 for processor in self.processors:
                     if len(self.processors[processor]) is not 0:
                         # This sorts the processor by the latest finish time on the processor, which is the earliest available time without searching for slots before
