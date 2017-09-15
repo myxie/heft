@@ -278,7 +278,7 @@ class Heft(object):
         return cp_min
 
     def sequential_execution(self):
-        seq = 100000
+        seq = 1000000
         
         for p in range(len(self.processors)):
             comp = 0 
@@ -408,7 +408,7 @@ class Heft(object):
 
             else:
                 aft = 1000000 # a big number
-                min_oeft = 1000
+                min_oeft = 100000
                 for processor in range(len(self.processors)):
                     if self.graph.predecessors(task):
                         est = self.calc_est(task,processor,r_sorted)

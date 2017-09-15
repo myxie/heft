@@ -65,7 +65,7 @@ def run_hefts():
                     num= len(graph.nodes())
                     if num > 5000:
                         continue
-                    heft = Heft('/home/hummus/Dropbox/thesis/data/input/matrices/comp/comp_{0}-16.txt'.format(num),\
+                    heft = Heft('/home/hummus/Dropbox/thesis/data/input/matrices/comp/comp_{0}-2.txt'.format(num),\
                     '/home/hummus/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(num),path)   
                     heft.rank(heuristic)
                     retval = heft.schedule(policy)
@@ -86,14 +86,14 @@ def run_hefts():
             for val in results[res]:
                 file_headers = file_headers +','+val
             file_headers = file_headers+"\n"
-            with open('results.csv_16','w+') as f:
+            with open('results_2.csv','w+') as f:
                 f.write(file_headers)
             count = count+1
         line = "{0},".format(res)
         for val in results[res]:
             line = line + str(results[res][val])+','
         line = line + '\n'
-        with open('results.csv_16','a') as f:
+        with open('results_2.csv','a') as f:
             f.write(line)
 
 
@@ -103,7 +103,7 @@ def make_plots():
 
     # x_list = [x for x in range(0,1200)]
 
-    with open('results_5.csv', 'r') as csvfile:
+    with open('results_2.csv', 'r') as csvfile:
         results = csv.reader(csvfile, delimiter=',')
         results.next()
 
@@ -296,9 +296,9 @@ def better_occurences():
 
 if __name__ == '__main__':
   make_plots()
-  generate_slr()
-  generate_speedup()
-    # run_hefts()
+  # generate_slr()
+  # generate_speedup()
+  # run_hefts()
     # better_occurences()
     
 
