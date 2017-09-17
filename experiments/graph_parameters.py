@@ -1,6 +1,7 @@
 import os
 import csv
 import collections
+import ast
 
 import networkx as nx
 # import matplotlib.pyplot as plt
@@ -11,6 +12,8 @@ from matplotlib import rc
 rc('font',**{'family':'serif','serif':['Computer Modern']})
 
 from heft.heft import Task, Heft
+
+
 
 """
 Graph parameterisation script for DALiuGE Graphs
@@ -33,6 +36,16 @@ Fork-join alpha error
 Parallel alpha error
 Sequential branching 
 """
+
+def read_matrix(matrix):
+    lines = [] 
+    with open(matrix) as f:
+        next(f)
+        for line in f:
+            line = ast.literal_eval(line)
+            lines.append(line)
+    return lines 
+
 
 def graph_levels(path):
     graph = nx.read_graphml(path, Task)
@@ -110,8 +123,8 @@ def num_params():
         size = len(graph.nodes())
 
         levels = graph_levels(path)
-        parallel_level = levels-2
-        fork_level = fork_graph_levels(path)
+        parallel_level = max(levels-2,1)
+        fork_level = max(fork_graph_levels(path),1)
         results[path]['levels'] = levels
         # results[path]['parallel_level']= parallel_level
         # results[path]['fork_graph_levels'] = fork_level
@@ -155,22 +168,56 @@ def num_params():
         with open('graph_parameters.csv','a') as f:
             f.write(line)
 
+    return 0
+
+
+def communcation_computation_cost(path):
+    """
+    Sum of computation costs of each node * number of nodes/ Sum of communication costs*number of edges
+    """
+    graph = nx.read_graphml(test,Task)
+    size = len(graph.nodes())
+    edges = graph.edges()
+    
+    comp_matrix = read_matrix('/home/hummus/Dropbox/thesis/data/input/matrices/comp/comp_{0}-3.txt'.format(size))
+    comm_matrix = read_matrix('/home/hummus/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(size))
+
+    comp_sum = 1000000
+    comm_sum = 0
+
+    for p in range(0,3):
+        tmp = 0
+        for x in range(0,size):
+            tmp = tmp + comp_matrix[x][p]
+        comp_sum = min(tmp,comp_sum)
+
+    for node in graph.nodes()
+        for edge in graph.edges(node)
+        comm_sum = comm_sum + comm_matrix
+
+    numerator = comp_sum*size
+    denominator = comm_sum*edges
+    print denominator
+    ccr = numerator/float(denominator)
+    
+    return ccr
 
 
 
 if __name__ == '__main__':
     # num_params()
-    graph = nx.read_graphml(test,Task)
-    size = len(graph.nodes())
-    width = graph_width(test)
-    parallel_levels = graph_levels(test)-2
-    fork_levels = fork_graph_levels(test)
+    communcation_computation_cost(test)
+    # graph = nx.read_graphml(test,Task)
+    # size = len(graph.nodes())
+    # width = graph_width(test)
+    # parallel_levels = graph_levels(test)-2
+    # fork_levels = fork_graph_levels(test)
 
-    print size
-    print width
-    alpha_width = size/width
-    alpha_p_level = ((size)/(size-2))*parallel_levels
-    alpha_fj_level = ((size)/(size-fork_levels))*fork_levels
+    # print size
+    # print width
+    # alpha_width = size/width
+    # alpha_p_level = ((size)/(size-2))*parallel_levels
+    # alpha_fj_level = ((size)/(sizer-fork_levels))*fork_levels
 
     # print alpha_width
     # print alpha_p_level
@@ -178,9 +225,9 @@ if __name__ == '__main__':
 
     # print abs(alpha_fj_level - alpha_width)
 
-    print 1- (abs(alpha_p_level - alpha_width))/float(alpha_width)
+    # print 1- (abs(alpha_p_level - alpha_width))/float(alpha_width)
 
-    print 1- (abs(alpha_fj_level - alpha_width))/float(alpha_width)
+    # print 1- (abs(alpha_fj_level - alpha_width))/float(alpha_width)
 
 
 
