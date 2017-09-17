@@ -15,9 +15,9 @@ from heft.heft import Task, Heft
 """
 Graph parameterisation script for DALiuGE Graphs
 """
-test = '/home/hummus/Dropbox/thesis/data/input/graphml/translated_test_seq_gather.graphml'
+test = '/home/croutons/Dropbox/thesis/data/input/graphml/translated_test_seq_gather.graphml'
 
-location = '/home/hummus/Dropbox/thesis/data/input/graphml/'
+location = '/home/croutons/Dropbox/thesis/data/input/graphml/'
 graphs = [] 
 
 for val in os.listdir(location):
@@ -123,14 +123,17 @@ def num_params():
         alpha_p_level = ((size)/(size-2))*parallel_level
         alpha_fj_level = ((size)/(size-fork_level))*fork_level
 
-        parallel_alpha_diff = (abs(alpha_p_level - alpha_width))/float(alpha_width)
-        alpha_e_p = False
-        if parallel_alpha_diff <=0.2:
-            alpha_e_p = True
-        fj_alpha_diff = (abs(alpha_fj_level - alpha_width))/float(alpha_width)
-        alpha_e_fj = False
-        if fj_alpha_diff <=0.2:
-            alpha_e_fj = True
+        p_alpha_width_diff = (abs(alpha_p_level - alpha_width))/float(alpha_width)
+        p_alpha_parallel_diff = (abs(alpha_p_level - alpha_width))/float(alpha_p_level)
+        alpha_e_p = 0
+        if (p_alpha_width_diff <=0.2) or (p_alpha_parallel_diff <=0.2):
+            alpha_e_p = 1 
+
+        fj_alpha_width_diff = (abs(alpha_fj_level - alpha_width))/float(alpha_width)
+        fj_alpha_fj_diff = (abs(alpha_fj_level - alpha_width))/float(alpha_fj_level)
+        alpha_e_fj = 0
+        if (fj_alpha_width_diff <=0.2) or (fj_alpha_fj_diff <=0.2):
+            alpha_e_fj = 1
 
         results[path]['parallel'] = alpha_e_p
         results[path]['fork_join'] = alpha_e_fj
