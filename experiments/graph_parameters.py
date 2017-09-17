@@ -15,9 +15,9 @@ from heft.heft import Task, Heft
 """
 Graph parameterisation script for DALiuGE Graphs
 """
-test = '/home/croutons/Dropbox/thesis/data/input/graphml/translated_test_seq_gather.graphml'
+test = '/home/hummus/Dropbox/thesis/data/input/graphml/translated_test_seq_gather.graphml'
 
-location = '/home/croutons/Dropbox/thesis/data/input/graphml/'
+location = '/home/hummus/Dropbox/thesis/data/input/graphml/'
 graphs = [] 
 
 for val in os.listdir(location):
@@ -125,18 +125,17 @@ def num_params():
 
         p_alpha_width_diff = (abs(alpha_p_level - alpha_width))/float(alpha_width)
         p_alpha_parallel_diff = (abs(alpha_p_level - alpha_width))/float(alpha_p_level)
-        alpha_e_p = 0
-        if (p_alpha_width_diff <=0.2) or (p_alpha_parallel_diff <=0.2):
-            alpha_e_p = 1 
+
+        parallel_val_final = 1 - min(p_alpha_width_diff,p_alpha_parallel_diff)
+
 
         fj_alpha_width_diff = (abs(alpha_fj_level - alpha_width))/float(alpha_width)
         fj_alpha_fj_diff = (abs(alpha_fj_level - alpha_width))/float(alpha_fj_level)
-        alpha_e_fj = 0
-        if (fj_alpha_width_diff <=0.2) or (fj_alpha_fj_diff <=0.2):
-            alpha_e_fj = 1
+        
+        fj_val_final = 1 - min(fj_alpha_width_diff,fj_alpha_fj_diff)
 
-        results[path]['parallel'] = alpha_e_p
-        results[path]['fork_join'] = alpha_e_fj
+        results[path]['parallel'] = parallel_val_final
+        results[path]['fork_join'] = fj_val_final
 
     count = 0
     file_headers='name'
@@ -160,28 +159,28 @@ def num_params():
 
 
 if __name__ == '__main__':
-    num_params()
-    # graph = nx.read_graphml(test,Task)
-    # size = len(graph.nodes())
-    # width = graph_width(test)
-    # parallel_levels = graph_levels(test)-2
-    # fork_levels = fork_graph_levels(test)
+    # num_params()
+    graph = nx.read_graphml(test,Task)
+    size = len(graph.nodes())
+    width = graph_width(test)
+    parallel_levels = graph_levels(test)-2
+    fork_levels = fork_graph_levels(test)
 
-    # print size
-    # print width
-    # alpha_width = size/width
-    # alpha_p_level = ((size)/(size-2))*parallel_levels
-    # alpha_fj_level = ((size)/(size-fork_levels))*fork_levels
+    print size
+    print width
+    alpha_width = size/width
+    alpha_p_level = ((size)/(size-2))*parallel_levels
+    alpha_fj_level = ((size)/(size-fork_levels))*fork_levels
 
-    # # print alpha_width
-    # # print alpha_p_level
-    # # print alpha_fj_level
+    # print alpha_width
+    # print alpha_p_level
+    # print alpha_fj_level
 
-    # # print abs(alpha_fj_level - alpha_width)
+    # print abs(alpha_fj_level - alpha_width)
 
-    # print (abs(alpha_p_level - alpha_width))/float(alpha_width)
+    print 1- (abs(alpha_p_level - alpha_width))/float(alpha_width)
 
-    # print (abs(alpha_fj_level - alpha_width))/float(alpha_width)
+    print 1- (abs(alpha_fj_level - alpha_width))/float(alpha_width)
 
 
 
