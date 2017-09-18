@@ -119,6 +119,15 @@ def num_params():
         results[path]['BF']=float(edges)/float(nodes)
 
     for path in graphs:
+        tmp_graph = nx.read_graphml(path,Task)
+        if len(tmp_graph.nodes()) > 5000:
+            results[path]['ccr'] = None
+            continue
+        results[path]['ccr'] = communcation_computation_cost(path)
+
+
+    for path in graphs:
+
         graph = nx.read_graphml(test,Task)
         size = len(graph.nodes())
 
@@ -175,7 +184,7 @@ def communcation_computation_cost(path):
     """
     Sum of computation costs of each node * number of nodes/ Sum of communication costs*number of edges
     """
-    graph = nx.read_graphml(test,Task)
+    graph = nx.read_graphml(path,Task)
     size = len(graph.nodes())
     edges = graph.edges()
     
@@ -191,22 +200,28 @@ def communcation_computation_cost(path):
             tmp = tmp + comp_matrix[x][p]
         comp_sum = min(tmp,comp_sum)
 
-    for node in graph.nodes()
-        for edge in graph.edges(node)
-        comm_sum = comm_sum + comm_matrix
+    for node in graph.nodes():
+        print node.tid
+        for successor in graph.successors(node):
+            # print comm_sum
+            comm_sum = comm_sum + comm_matrix[node.tid][successor.tid]
 
     numerator = comp_sum*size
-    denominator = comm_sum*edges
-    print denominator
+    denominator = comm_sum*len(edges)
+    #print denominator
     ccr = numerator/float(denominator)
-    
+    print ccr 
     return ccr
 
 
 
 if __name__ == '__main__':
-    # num_params()
-    communcation_computation_cost(test)
+    num_params()
+    # results = dict()
+
+
+    # print results['ccr']
+    # print  communcation_computation_cost(test)
     # graph = nx.read_graphml(test,Task)
     # size = len(graph.nodes())
     # width = graph_width(test)

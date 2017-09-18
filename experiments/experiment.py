@@ -44,7 +44,7 @@ Requirements for new experiments:
 """
 
 schedule_pairs_dict = {1:"Up + Greedy",2:"Up + Insertion", 3:"Up + OCT-Schedule", 4:"OCT + Greedy", 5:"OCT + Insertion", 6:"OCT + OCT Schedule"}
-schedule_pairs_symbols = {1:'-+',2:'-x', 3:'-D', 4:'-s', 5:'-^', 6:'-*'}
+schedule_pairs_symbols = {1:'+',2:'x', 3:'D', 4:'s', 5:'^', 6:'*'}
 
 def run_hefts():
     heuristics = ['up', 'oct']
@@ -131,6 +131,8 @@ def make_plots():
         plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
         plt.plot(plotvals[0], plotvals[1],schedule_pairs_symbols[x], label = schedule_pairs_dict[x],linewidth=0.5 )
     
+    plt.xlim(xmax=1000)
+    plt.ylim(ymax=20000)
     plt.xlabel('Nodes')
     plt.ylabel('Schedule Makespan')
 
