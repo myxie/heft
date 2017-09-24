@@ -33,7 +33,7 @@ class TestGraphMethods(unittest.TestCase):
         b = Task(2)
         digraph = nx.DiGraph()
         digraph.add_weighted_edges_from([(a, b, 2)])
-        edge = digraph.edges()[0] # edges() returns list 
+        edge = list(digraph.edges())[0] # edges() returns list 
         self.assertTrue(edge == (a,b))
 
     def test_task_networkx_remove_edges(self):
@@ -43,10 +43,10 @@ class TestGraphMethods(unittest.TestCase):
         d = Task(6)
         digraph = nx.DiGraph()
         digraph.add_weighted_edges_from([(a, b, 2), (b,c,4)])
-        edge = digraph.edges()[1]
+        edge = list(digraph.edges())[1]
         self.assertTrue(edge == (b,c))
         digraph.remove_edge(b,c)
-        edges = digraph.edges()
+        edges = list(digraph.edges())
         self.assertFalse(edge in edges)
 
     @unittest.skip("In Development")

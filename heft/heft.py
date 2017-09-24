@@ -480,21 +480,6 @@ class Heft(object):
                             est = allowed_est
                             p = processor                   
 
-                    # If it IS 0, then est is just whatever the earliest start time is as defined based on the predecessor (i.e. if there are no predecessors, then great, est =0;
-                    # if there are predecessors, then the est )
-
-                # finish = 50000
-                # finish_processor = 0
-
-                # for key in self.processors:
-                #     if self.processors[key]:
-                #         item_list = self.processors[key]
-                #         for item in item_list:
-                #             tmp = item[1] 
-                #             if (tmp < finish):
-                #                 finish = tmp
-                #                 finish_processor = key
-
 
                 comm_cost = 0
                 if self.graph.predecessors(task):          
@@ -514,48 +499,6 @@ class Heft(object):
         print self.processors
 
         return makespan 
-
-                # processor = self.processors[processor_num] # return the list of allocated tasks
-                # available_slots = []
-                # if len(processor) == 0:
-                #     return est # Nothing in the time slots yet, so the earliest start time is whenever
-                # else:
-                #     for x in range(len(processor)):
-                #         # For each start/finish time tuple that exists in the processor
-                #         if x == 0:
-                #             if processor[0][0] != 0: #If the start time of the first tuple is not 0
-                #                 available_slots.append((0,processor[0][0]))# add a 0-current_start time tuple
-                #             else:
-                #                 continue
-                #         else: 
-                #             # Append the finish time of the previous slot and the start time of this slot
-                #             available_slots.append((processor[x-1][1],processor[x][0]))
-                    
-                #     # Add a very large number to the final time slot available, so we have a gap after 
-                #     available_slots.append((processor[len(processor)-1][1],10000))
-
-                # for avail in available_slots:
-                #     if est < avail[0] and avail[0]+ self.comp_matrix[node.tid][processor_num] <= avail[1]:
-                #         return avail[0]
-                #     if est >= avail[0] and est + self.comp_matrix[node.tid][processor_num] <= avail[1]:
-                #        return est 
-                # else:
-                #     for processor in self.processors:
-                #         if self.processors[processor]:
-                #             time_slot = self.processors[processor].sort(key=lambda x:x[1],reverse=True)[0]
-                #             if time_slot[1] > est:
-                #                 est = time_slot[1]
-                    # time_slot = self.processors[processor].sorted(key=lambda x:x[1],reverse=True)
-                    # est = time_slot[0][1] #aft of the time slot
-                    # return
-                    # if tmp_task.aft >= est:
-                    #     print tmp_task.aft
-                    #     est = tmp_task.aft
-                    #     pred = tmp_task
-
-                # We have the earliest time we can start (est), as the latest time of the predecessors
-                # Now, we check for the earliest processor that is available
-                
 
 
     def schedule(self, schedule='insertion'):
