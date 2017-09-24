@@ -447,17 +447,17 @@ class Heft(object):
             else:
                 est = 0
                 tmp_task = None
-                for pretask in self.graph.predecessors(task):
-                        index = r_sorted.index(pretask)
-                        tmp_task = r_sorted[index]
-                        aft = r_sorted[index].aft
-                        print "Task {0} has pre-task {1} with aft: {2}".format(task.tid,tmp_task.tid,aft)
-                        tmp = aft
-                        if tmp >= est:
-                            est = tmp
-                            tmp_task = pretask
+                for pretask in list(self.graph.predecessors(task)):
+                    index = r_sorted.index(pretask)
+                    tmp_task = r_sorted[index]
+                    aft = r_sorted[index].aft
+                    print "Task {0} has pre-task {1} with aft: {2}".format(task.tid,tmp_task.tid,aft)
+                    tmp = aft
+                    if tmp >= est:
+                        est = tmp
+                        tmp_task = pretask
 
-                print "Pre-task with the highest AFT is Task{0}, with aft of {1}".format(tmp_task,est)
+                print "Pre-task of task {2}with the highest AFT is Task{0}, with aft of {1}".format(tmp_task,est,task)
                 # est = 100000
                 p = 0 
                 allowed_est = est
@@ -482,7 +482,7 @@ class Heft(object):
 
 
                 comm_cost = 0
-                if self.graph.predecessors(task):          
+                if list(self.graph.predecessors(task)):          
                     if tmp_task.processor is not p:
                         comm_cost = self.comm_matrix[tmp_task.tid][task.tid]
                 
