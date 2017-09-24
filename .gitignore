@@ -7,3 +7,4 @@ GraphML*
 *.bak
 *.swp
 data/input/tmp
+.idea

@@ -8,7 +8,7 @@ import ast
 import networkx as nx
 
 from random import randint
-from queue import *
+from Queue import *
 # from pudb import set_trace
 
 def read_matrix(matrix):
@@ -71,7 +71,7 @@ class Heft(object):
         self.oct_rank_matrix = dict()
 
         keys =  [x for x in range(0,num_processors)]
-        #for node in self.graph.nodes():
+        #for node in list(list(self.graph.nodes())):
         #    node.oct_rank_dict = {key: -1 for key in keys}
         for x in range(0,num_processors):
             self.processors[x]=[]
@@ -82,17 +82,17 @@ class Heft(object):
 
     def rank(self, method,processor=0):
         if method == 'up':
-            for node in sorted(self.graph.nodes()):
+            for node in sorted(list(list(self.graph.nodes()))):
                 self.rank_up(node)
             self.rank_sort = self.rank_sort_tasks()
             self.top_sort = self.top_sort_tasks()
 
         elif method == 'oct':
             for val in range(0,len(self.processors)):
-                for node in sorted(self.graph.nodes(),reverse=True): 
+                for node in sorted(list(list(self.graph.nodes())),reverse=True): 
                     self.rank_oct(node,val)
             
-            for node in self.graph.nodes():
+            for node in list(list(self.graph.nodes())):
                 ave = 0
                 for (n, p) in self.oct_rank_matrix:
                     if n is node.tid:
@@ -109,7 +109,7 @@ class Heft(object):
 
     def show_rank(self):
 
-        for node in self.graph.nodes():
+        for node in list(list(self.graph.nodes())):
             print node.rank
 
     def ave_comm_cost(self,node,successor):
@@ -221,7 +221,7 @@ class Heft(object):
         Sort Tasks by rank provided. According to Topcuolgu et al.(2002), 
         this is a topological order of tasks
         """
-        nodes = self.graph.nodes()
+        nodes = list(list(self.graph.nodes()))
         nodes.sort(key=lambda x: x.rank, reverse=True)
 
         return nodes
@@ -239,7 +239,7 @@ class Heft(object):
 
     def critical_path(self):
         top_sort = self.top_sort_tasks()
-        dist = [-1 for x in range(len(self.graph.nodes()))]
+        dist = [-1 for x in range(len(list(list(self.graph.nodes()))))]
         dist[0] = 0
         critical_path = []
 
@@ -251,10 +251,10 @@ class Heft(object):
                     tmp_v = v[1]
 
         
-        final_dist=dist[len(self.graph.nodes())-1]
-        critical_path.append(len(self.graph.nodes())-1)
+        final_dist=dist[len(list(list(self.graph.nodes())))-1]
+        critical_path.append(len(list(list(self.graph.nodes())))-1)
         q = Queue()
-        q.put(len(self.graph.nodes())-1)
+        q.put(len(list(list(self.graph.nodes())))-1)
 
 
         while not q.empty():
@@ -282,7 +282,7 @@ class Heft(object):
         
         for p in range(len(self.processors)):
             comp = 0 
-            for task in self.graph.nodes():
+            for task in list(list(self.graph.nodes())):
                 comp = comp + self.comp_matrix[task.tid][p]
             if comp < seq:
                 seq = comp
@@ -343,7 +343,7 @@ class Heft(object):
         Allocate tasks to processors following the insertion based policy outline 
         in Tocuoglu et al.(2002)
         """
-        nodes = self.graph.nodes()
+        nodes = list(list(self.graph.nodes()))
         r_sorted = self.rank_sort
         makespan = 0
         for task in r_sorted:
@@ -383,7 +383,7 @@ class Heft(object):
         in Tocuoglu et al.(2002)
         """
 
-        nodes = self.graph.nodes()
+        nodes = list(list(self.graph.nodes()))
         r_sorted = self.rank_sort
         makespan = 0
         if not self.oct_rank_matrix:
@@ -432,7 +432,7 @@ class Heft(object):
         return makespan
 
     def greedy_policy(self):
-        nodes = self.graph.nodes()
+        nodes = list(list(self.graph.nodes()))
         r_sorted = self.rank_sort
         makespan = 0
         for task in r_sorted:
