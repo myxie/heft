@@ -22,8 +22,8 @@ test = '/home/artichoke/Dropbox/thesis/data/input/graphml/translated_test_seq_ga
 
 location = '/home/artichoke/Dropbox/thesis/data/input/graphml/'
 graphs = [] 
-num_processors = 5
-
+num_processors = 2
+max_comm_num = 500
 for val in os.listdir(location):
    graphs.append(location+val)
 
@@ -168,14 +168,14 @@ def num_params():
                 file_headers = file_headers+','+val
             file_headers=file_headers+'\n'
 
-            with open('graph_parameters_{0}.csv'.format(num_processors),'w+') as f:
+            with open('graph_parameters_{0}_{1}.csv'.format(num_processors,max_comm_num),'w+') as f:
                 f.write(file_headers)
             count = count+1
         line = "{0},".format(res)
         for val in results[res]:
             line = line + str(results[res][val])+','
         line = line +'\n'
-        with open('graph_parameters_{0}.csv'.format(num_processors),'a') as f:
+        with open('graph_parameters_{0}_{1}.csv'.format(num_processors,max_comm_num),'a') as f:
             f.write(line)
 
     return 0
@@ -190,7 +190,7 @@ def communcation_computation_cost(path):
     edges = list(graph.edges())
     
     comp_matrix = read_matrix('/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_{0}-{1}.txt'.format(size,num_processors))
-    comm_matrix = read_matrix('/home/artichoke/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(size))
+    comm_matrix = read_matrix('/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/comm_{1}.txt'.format(max_comm_num,size))
 
     comp_sum = 1000000
     comm_sum = 0

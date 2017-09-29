@@ -50,8 +50,8 @@ def run_hefts():
 
     location = '/home/artichoke/Dropbox/thesis/data/input/graphml/'
     graphs = [] 
-    processor_num = 4
-
+    processor_num = 2
+    max_comm_cost = 500
     for val in os.listdir(location):
        graphs.append(location+val)
     results = dict()
@@ -66,7 +66,7 @@ def run_hefts():
                         if num_nodes > 5000:
                             continue
                         heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_{0}-{1}.txt'.format(num_nodes,processor_num),\
-                        '/home/artichoke/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(num_nodes),path)   
+                        '/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/comm_{1}.txt'.format(max_comm_cost,num_nodes),path)   
                         heft.rank(heuristic)
                         retval = heft.schedule(policy)
                         cp = heft.critical_path()
@@ -87,14 +87,14 @@ def run_hefts():
             for val in results[res]:
                 file_headers = file_headers +','+val
             file_headers = file_headers+"\n"
-            with open('results_{0}.csv'.format(processor_num),'w+') as f:
+            with open('results_{0}_{1}.csv'.format(processor_num,max_comm_cost),'w+') as f:
                 f.write(file_headers)
             count = count+1
         line = "{0},".format(res)
         for val in results[res]:
             line = line + str(results[res][val])+','
         line = line + '\n'
-        with open('results_{0}.csv'.format(processor_num),'a') as f:
+        with open('results_{0}_{1}.csv'.format(processor_num,max_comm_cost),'a') as f:
             f.write(line)
 
 

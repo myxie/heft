@@ -30,7 +30,7 @@ class Task(object):
         self.tid = int(tid)# task id - this is unique
         self.ave_comp = -1 # average computation cost 
         self.rank = -1 # This is updated during the 'Task Prioritisation' phase 
-        self.oct_rank =dict() 
+        self.oct_rank = dict() 
         self.processor = -1
         self.ast = 0 
         self.aft = 0 

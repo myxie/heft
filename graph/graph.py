@@ -19,7 +19,7 @@ def random_comp_matrix(processors, nodes, cost):
 
     for x in range(nodes):
         computation_matrix[x] = random.sample(range(cost),processors)
-    name = '/home/hummus/Dropbox/thesis/data/input/matrices/comp/comp_{0}-{1}.txt'.format(nodes,processors)    
+    name = '/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_{0}-{1}.txt'.format(nodes,processors)    
     file = open(name,'w')
     file.write("P1,P2,...,Pn\n") 
     for n in range(len(computation_matrix)):
@@ -29,7 +29,7 @@ def random_comp_matrix(processors, nodes, cost):
     
     return computation_matrix
 
-def random_comm_matrix(nodes, cost):
+def random_comm_matrix(nodes, lower, upper):
     """
     Function that generates a random communication cost (n x n) matrix for a number of tasks
     
@@ -42,11 +42,11 @@ def random_comm_matrix(nodes, cost):
     communication_matrix = [[0 for x in range(nodes)] for x in range(nodes)] 
     for x in range(nodes-1):
         for y in range(x+1,nodes):
-            communication_matrix[x][y]=random.randint(0,cost)
+            communication_matrix[x][y]=random.randint(lower,upper)
             communication_matrix[y][x]=communication_matrix[x][y]
             print communication_matrix[x][y]
 
-    name = '/home/hummus/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(nodes)    
+    name = '/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/comm_{1}.txt'.format(upper,nodes)    
     file = open(name,'w')
     file.write("N1,N2,...,Nx\n") 
     for n in range(len(communication_matrix)):
