@@ -30,8 +30,6 @@ import matplotlib.pyplot as plt
 from heft.heft import Task, Heft
 from graph.graph import random_task_dag,random_comp_matrix,random_comm_matrix 
 
-
-
 """
 Requirements for new experiments:
     * Run through a folder of DALiuGE Graphs and read all the .graphml files
@@ -50,8 +48,9 @@ def run_hefts():
     heuristics = ['up', 'oct']
     policies   = ['insertion', 'oct_schedule', 'greedy']
 
-    location = '/home/hummus/Dropbox/thesis/data/input/graphml/'
+    location = '/home/artichoke/Dropbox/thesis/data/input/graphml/'
     graphs = [] 
+    processor_num = 4
 
     for val in os.listdir(location):
        graphs.append(location+val)
@@ -59,24 +58,26 @@ def run_hefts():
     for path in graphs:
         for heuristic in heuristics:
             for policy in policies:
-                local_results = dict()
-                if os.path.exists(path): 
-                    graph = nx.read_graphml(path,Task)
-                    num= len(graph.nodes())
-                    if num > 5000:
-                        continue
-                    heft = Heft('/home/hummus/Dropbox/thesis/data/input/matrices/comp/comp_{0}-2.txt'.format(num),\
-                    '/home/hummus/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(num),path)   
-                    heft.rank(heuristic)
-                    retval = heft.schedule(policy)
-                    cp = heft.critical_path()
-                    seq = heft.sequential_execution()
-                    pair = str(heuristic) + ' ' + str(policy)
+                    print path
+                    local_results = dict()
+                    if os.path.exists(path): 
+                        graph = nx.read_graphml(path,Task)
+                        num_nodes= len(graph.nodes())
+                        if num_nodes > 5000:
+                            continue
+                        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_{0}-{1}.txt'.format(num_nodes,processor_num),\
+                        '/home/artichoke/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(num_nodes),path)   
+                        heft.rank(heuristic)
+                        retval = heft.schedule(policy)
+                        cp = heft.critical_path()
+                        seq = heft.sequential_execution()
+                        pair = str(heuristic) + ' ' + str(policy)
 
-                    if path in results:
-                        results[path][pair] = retval
-                    else:
-                        results[path]={'size':num,'seq':seq,'cp':cp,pair:retval}
+                        graph_name = path.split('/')[8] 
+                        if graph_name in results:
+                            results[graph_name][pair] = retval
+                        else:
+                            results[graph_name]={pair:retval,'size':num_nodes,'seq':seq,'cp':cp,}
 
     # results = run_hefts()
     count = 0
@@ -86,14 +87,14 @@ def run_hefts():
             for val in results[res]:
                 file_headers = file_headers +','+val
             file_headers = file_headers+"\n"
-            with open('results_2.csv','w+') as f:
+            with open('results_{0}.csv'.format(processor_num),'w+') as f:
                 f.write(file_headers)
             count = count+1
         line = "{0},".format(res)
         for val in results[res]:
             line = line + str(results[res][val])+','
         line = line + '\n'
-        with open('results_2.csv','a') as f:
+        with open('results_{0}.csv'.format(processor_num),'a') as f:
             f.write(line)
 
 
@@ -297,9 +298,9 @@ def better_occurences():
     # ?final_matrix = [x for x in [0 for y in range(0,7)]]
 
 if __name__ == '__main__':
-  make_plots()
+  # make_plots()
   # generate_slr()
   # generate_speedup()
-  # run_hefts()
+  run_hefts()
     # better_occurences()
 

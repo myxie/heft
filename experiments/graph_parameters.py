@@ -18,10 +18,11 @@ from heft.heft import Task, Heft
 """
 Graph parameterisation script for DALiuGE Graphs
 """
-test = '/home/hummus/Dropbox/thesis/data/input/graphml/translated_test_seq_gather.graphml'
+test = '/home/artichoke/Dropbox/thesis/data/input/graphml/translated_test_seq_gather.graphml'
 
-location = '/home/hummus/Dropbox/thesis/data/input/graphml/'
+location = '/home/artichoke/Dropbox/thesis/data/input/graphml/'
 graphs = [] 
+num_processors = 5
 
 for val in os.listdir(location):
    graphs.append(location+val)
@@ -53,10 +54,10 @@ def graph_levels(path):
     levels = [0 for x in range(0,num)] 
     
     for node in graph.nodes():
-        if graph.predecessors(node) is None:
+        if list(graph.predecessors(node)) is None:
             levels[node.tid]=1
         else:
-            pred = graph.predecessors(node)
+            pred = list(graph.predecessors(node))
             tmp = -1
             for task in pred:
                 level = levels[task.tid]
@@ -72,10 +73,10 @@ def fork_graph_levels(path):
     levels = [0 for x in range(0,num)] 
     
     for node in graph.nodes():
-        if graph.predecessors(node) is None:
+        if list(graph.predecessors(node)) is None:
             levels[node.tid]=1
         else:
-            pred = graph.predecessors(node)
+            pred = list(graph.predecessors(node))
             tmp = -1
             for task in pred:
                 level = levels[task.tid]
@@ -94,12 +95,12 @@ def graph_width(path):
     graph = nx.read_graphml(path,Task)
     width = 1
     for node in graph.nodes():
-        if graph.predecessors(node):
-            if width < len(graph.predecessors(node)):
-                width = len(graph.predecessors(node))
-        if graph.successors(node):
-            if width < len(graph.successors(node)):
-                width = len(graph.predecessors(node))
+        if list(graph.predecessors(node)):
+            if width < len(list(graph.predecessors(node))):
+                width = len(list(graph.predecessors(node)))
+        if list(graph.successors(node)):
+            if width < len(list(graph.successors(node))):
+                width = len(list(graph.predecessors(node)))
 
     return width
 
@@ -114,8 +115,8 @@ def num_params():
 
     for path in graphs:
         graph = nx.read_graphml(path,Task)
-        nodes = len(graph.nodes())
-        edges = len(graph.edges())
+        nodes = len(list(graph.nodes()))
+        edges = len(list(graph.edges()))
         results[path]['BF']=float(edges)/float(nodes)
 
     for path in graphs:
@@ -167,14 +168,14 @@ def num_params():
                 file_headers = file_headers+','+val
             file_headers=file_headers+'\n'
 
-            with open('graph_parameters.csv','w+') as f:
+            with open('graph_parameters_{0}.csv'.format(num_processors),'w+') as f:
                 f.write(file_headers)
             count = count+1
         line = "{0},".format(res)
         for val in results[res]:
             line = line + str(results[res][val])+','
         line = line +'\n'
-        with open('graph_parameters.csv','a') as f:
+        with open('graph_parameters_{0}.csv'.format(num_processors),'a') as f:
             f.write(line)
 
     return 0
@@ -186,23 +187,23 @@ def communcation_computation_cost(path):
     """
     graph = nx.read_graphml(path,Task)
     size = len(graph.nodes())
-    edges = graph.edges()
+    edges = list(graph.edges())
     
-    comp_matrix = read_matrix('/home/hummus/Dropbox/thesis/data/input/matrices/comp/comp_{0}-3.txt'.format(size))
-    comm_matrix = read_matrix('/home/hummus/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(size))
+    comp_matrix = read_matrix('/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_{0}-{1}.txt'.format(size,num_processors))
+    comm_matrix = read_matrix('/home/artichoke/Dropbox/thesis/data/input/matrices/comm/comm_{0}.txt'.format(size))
 
     comp_sum = 1000000
     comm_sum = 0
 
-    for p in range(0,3):
+    for p in range(0,num_processors):
         tmp = 0
         for x in range(0,size):
             tmp = tmp + comp_matrix[x][p]
         comp_sum = min(tmp,comp_sum)
 
-    for node in graph.nodes():
+    for node in list(graph.nodes()):
         print node.tid
-        for successor in graph.successors(node):
+        for successor in list(graph.successors(node)):
             # print comm_sum
             comm_sum = comm_sum + comm_matrix[node.tid][successor.tid]
 

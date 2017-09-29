@@ -82,17 +82,17 @@ class Heft(object):
 
     def rank(self, method,processor=0):
         if method == 'up':
-            for node in sorted(list(list(self.graph.nodes()))):
+            for node in sorted(list(self.graph.nodes())):
                 self.rank_up(node)
             self.rank_sort = self.rank_sort_tasks()
             self.top_sort = self.top_sort_tasks()
 
         elif method == 'oct':
             for val in range(0,len(self.processors)):
-                for node in sorted(list(list(self.graph.nodes())),reverse=True): 
+                for node in sorted(list(self.graph.nodes()),reverse=True): 
                     self.rank_oct(node,val)
             
-            for node in list(list(self.graph.nodes())):
+            for node in list(self.graph.nodes()):
                 ave = 0
                 for (n, p) in self.oct_rank_matrix:
                     if n is node.tid:
@@ -109,7 +109,7 @@ class Heft(object):
 
     def show_rank(self):
 
-        for node in list(list(self.graph.nodes())):
+        for node in list(self.graph.nodes()):
             print node.rank
 
     def ave_comm_cost(self,node,successor):
@@ -221,7 +221,7 @@ class Heft(object):
         Sort Tasks by rank provided. According to Topcuolgu et al.(2002), 
         this is a topological order of tasks
         """
-        nodes = list(list(self.graph.nodes()))
+        nodes = list(self.graph.nodes())
         nodes.sort(key=lambda x: x.rank, reverse=True)
 
         return nodes
@@ -239,12 +239,12 @@ class Heft(object):
 
     def critical_path(self):
         top_sort = self.top_sort_tasks()
-        dist = [-1 for x in range(len(list(list(self.graph.nodes()))))]
+        dist = [-1 for x in range(len(list(self.graph.nodes())))]
         dist[0] = 0
         critical_path = []
 
         for u in top_sort:
-            for v in self.graph.edges(u):
+            for v in list(self.graph.edges(u)):
                 tmp_v = v[1]
                 if dist[v[1].tid] < dist[u.tid] + min(self.comp_matrix[v[1].tid])+ self.comm_matrix[v[1].tid][u.tid]:
                     dist[v[1].tid] = dist[u.tid] + min(self.comp_matrix[v[1].tid]) + self.comm_matrix[v[1].tid][u.tid]
@@ -254,13 +254,13 @@ class Heft(object):
         final_dist=dist[len(list(list(self.graph.nodes())))-1]
         critical_path.append(len(list(list(self.graph.nodes())))-1)
         q = Queue()
-        q.put(len(list(list(self.graph.nodes())))-1)
+        q.put(len(list(self.graph.nodes()))-1)
 
 
         while not q.empty():
             u = q.get()
             tmp_max = 0
-            for v in self.graph.predecessors(Task(u)):
+            for v in list(self.graph.predecessors(Task(u))):
                 if dist[v.tid] > tmp_max:
                     tmp_max = dist[v.tid]
                     tmp_v=v.tid
@@ -282,7 +282,7 @@ class Heft(object):
         
         for p in range(len(self.processors)):
             comp = 0 
-            for task in list(list(self.graph.nodes())):
+            for task in list(self.graph.nodes()):
                 comp = comp + self.comp_matrix[task.tid][p]
             if comp < seq:
                 seq = comp
@@ -343,7 +343,7 @@ class Heft(object):
         Allocate tasks to processors following the insertion based policy outline 
         in Tocuoglu et al.(2002)
         """
-        nodes = list(list(self.graph.nodes()))
+        nodes = list(self.graph.nodes())
         r_sorted = self.rank_sort
         makespan = 0
         for task in r_sorted:
@@ -383,7 +383,7 @@ class Heft(object):
         in Tocuoglu et al.(2002)
         """
 
-        nodes = list(list(self.graph.nodes()))
+        nodes = list(self.graph.nodes())
         r_sorted = self.rank_sort
         makespan = 0
         if not self.oct_rank_matrix:
@@ -432,7 +432,7 @@ class Heft(object):
         return makespan
 
     def greedy_policy(self):
-        nodes = list(list(self.graph.nodes()))
+        nodes = list(self.graph.nodes())
         r_sorted = self.rank_sort
         makespan = 0
         for task in r_sorted:
@@ -451,13 +451,13 @@ class Heft(object):
                     index = r_sorted.index(pretask)
                     tmp_task = r_sorted[index]
                     aft = r_sorted[index].aft
-                    print "Task {0} has pre-task {1} with aft: {2}".format(task.tid,tmp_task.tid,aft)
+                    # print "Task {0} has pre-task {1} with aft: {2}".format(task.tid,tmp_task.tid,aft)
                     tmp = aft
                     if tmp >= est:
                         est = tmp
                         tmp_task = pretask
 
-                print "Pre-task of task {2}with the highest AFT is Task{0}, with aft of {1}".format(tmp_task,est,task)
+                # print "Pre-task of task {2}with the highest AFT is Task{0}, with aft of {1}".format(tmp_task,est,task)
                 # est = 100000
                 p = 0 
                 allowed_est = est
@@ -473,7 +473,7 @@ class Heft(object):
                             est = time_slot[1]
                             p = processor
 
-                print "Est for task {0} is {1}".format(task, est)
+                # print "Est for task {0} is {1}".format(task, est)
                 for processor in self.processors:
                     if len(self.processors[processor]) is 0:
                         if est > allowed_est:
@@ -496,7 +496,7 @@ class Heft(object):
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[1],reverse=True)
 
-        print self.processors
+        # print self.processors
 
         return makespan 
 
