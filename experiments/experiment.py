@@ -44,14 +44,16 @@ Requirements for new experiments:
 schedule_pairs_dict = {1:"Up + Greedy",2:"Up + Insertion", 3:"Up + OCT-Schedule", 4:"OCT + Greedy", 5:"OCT + Insertion", 6:"OCT + OCT Schedule"}
 schedule_pairs_symbols = {1:'+',2:'x', 3:'D', 4:'s', 5:'^', 6:'*'}
 
-def run_hefts():
-    heuristics = ['up', 'oct']
+def run_hefts(processor_num):
+    heuristics = ['up','oct','random']
+    # policies = ['insertion']
     policies   = ['insertion', 'oct_schedule', 'greedy']
 
     location = '/home/artichoke/Dropbox/thesis/data/input/graphml/'
     graphs = [] 
-    processor_num = 2
-    max_comm_cost = 500
+    # processor_num = 2
+    max_comm_cost = 50
+    max_comp_cost = 50
     for val in os.listdir(location):
        graphs.append(location+val)
     results = dict()
@@ -65,7 +67,7 @@ def run_hefts():
                         num_nodes= len(graph.nodes())
                         if num_nodes > 5000:
                             continue
-                        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_{0}-{1}.txt'.format(num_nodes,processor_num),\
+                        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp_{0}/comp_{1}-{2}.txt'.format(max_comp_cost,num_nodes,processor_num),\
                         '/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/comm_{1}.txt'.format(max_comm_cost,num_nodes),path)   
                         heft.rank(heuristic)
                         retval = heft.schedule(policy)
@@ -87,14 +89,14 @@ def run_hefts():
             for val in results[res]:
                 file_headers = file_headers +','+val
             file_headers = file_headers+"\n"
-            with open('results_{0}_{1}.csv'.format(processor_num,max_comm_cost),'w+') as f:
+            with open('results_comp_{0}_comm_{1}_{2}.csv'.format(max_comp_cost,max_comm_cost,processor_num),'w+') as f:
                 f.write(file_headers)
             count = count+1
         line = "{0},".format(res)
         for val in results[res]:
             line = line + str(results[res][val])+','
         line = line + '\n'
-        with open('results_{0}_{1}.csv'.format(processor_num,max_comm_cost),'a') as f:
+        with open('results_comp_{0}_comm_{1}_{2}.csv'.format(max_comp_cost,max_comm_cost,processor_num),'a') as f:
             f.write(line)
 
 
@@ -301,6 +303,7 @@ if __name__ == '__main__':
   # make_plots()
   # generate_slr()
   # generate_speedup()
-  run_hefts()
+  for val in [2,3,4,5]:
+    run_hefts(val)
     # better_occurences()
 

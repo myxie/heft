@@ -86,7 +86,13 @@ class Heft(object):
                 self.rank_up(node)
             self.rank_sort = self.rank_sort_tasks()
             self.top_sort = self.top_sort_tasks()
-
+        
+        if method == 'random':
+            for node in sorted(list(self.graph.nodes())):
+                self.rank_up_random(node)
+            self.rank_sort = self.rank_sort_tasks()
+            self.top_sort = self.top_sort_tasks()
+            
         elif method == 'oct':
             for val in range(0,len(self.processors)):
                 for node in sorted(list(self.graph.nodes()),reverse=True): 
@@ -328,7 +334,7 @@ class Heft(object):
                     available_slots.append((processor[x-1][1],processor[x][0]))
             
             # Add a very large number to the final time slot available, so we have a gap after 
-            available_slots.append((processor[len(processor)-1][1],10000))
+            available_slots.append((processor[len(processor)-1][1],1000000))
 
         for avail in available_slots:
             if est < avail[0] and avail[0]+ self.comp_matrix[node.tid][processor_num] <= avail[1]:

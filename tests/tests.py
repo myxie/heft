@@ -153,6 +153,11 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
         self.heft.rank('up')
         retval = self.heft.greedy_policy()
         print 'greedy' + str(retval)
+
+    def test_rank_random(self):
+        self.heft.rank('random')
+        retval = self.heft.insertion_policy()
+        print "random rank:" + str(retval)
         
 #@unittest.skip("In Development")
 class TestHeftMethodsOCT(unittest.TestCase):
@@ -202,8 +207,8 @@ class TestDALiuGEBashHeft(unittest.TestCase):
     """
 
     def setUp(self):
-        self.heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_10-2.txt',\
-                '/home/artichoke/Dropbox/thesis/data/input/matrices/comm/comm_10.txt',\
+        self.heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp_50/comp_10-2.txt',\
+                '/home/artichoke/Dropbox/thesis/data/input/matrices/comm_50/comm_10.txt',\
                 'tests/translated_importer.graphml')
     
     def tearDown(self):
@@ -238,8 +243,8 @@ class TestHEFTExperiments(unittest.TestCase):
         We want to read in the cost matrices that correspond to the 
         the number of nodes in the graph
         """
-        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_130-3.txt',\
-                '/home/artichoke/Dropbox/thesis/data/input/matrices/comm/comm_130.txt',
+        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp_50/comp_130-3.txt',\
+                '/home/artichoke/Dropbox/thesis/data/input/matrices/comm_50/comm_130.txt',
                 '/home/artichoke/Dropbox/thesis/data/input/graphml/translated_mwa_gleam_simple.graphml')
 
         heft.rank('up')
@@ -254,8 +259,8 @@ class TestHEFTExperiments(unittest.TestCase):
         We want to read in the cost matrices that correspond to the 
         the number of nodes in the graph
         """
-        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_130-3.txt',\
-                '/home/artichoke/Dropbox/thesis/data/input/matrices/comm/comm_130.txt',
+        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp_50/comp_130-3.txt',\
+                '/home/artichoke/Dropbox/thesis/data/input/matrices/comm_50/comm_130.txt',
                 '/home/artichoke/Dropbox/thesis/data/input/graphml/translated_mwa_gleam_simple.graphml')
 
         heft.rank('oct')
@@ -266,8 +271,8 @@ class TestHEFTExperiments(unittest.TestCase):
         #    print "%s: %s" % (tpl, heft.oct_rank_matrix[tpl])
     def test_more_things_greedy_oct(self):
 
-        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_130-3.txt',\
-                '/home/artichoke/Dropbox/thesis/data/input/matrices/comm/comm_130.txt',
+        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp_50/comp_130-3.txt',\
+                '/home/artichoke/Dropbox/thesis/data/input/matrices/comm_50/comm_130.txt',
                 '/home/artichoke/Dropbox/thesis/data/input/graphml/translated_mwa_gleam_simple.graphml')
 
         heft.rank('oct')
@@ -284,8 +289,8 @@ class TestHEFTExperiments(unittest.TestCase):
         We want to read in the cost matrices that correspond to the 
         the number of nodes in the graph
         """
-        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_130-3.txt',\
-                '/home/artichoke/Dropbox/thesis/data/input/matrices/comm/comm_130.txt',
+        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp_50/comp_130-3.txt',\
+                '/home/artichoke/Dropbox/thesis/data/input/matrices/comm_50/comm_130.txt',
                 '/home/artichoke/Dropbox/thesis/data/input/graphml/translated_mwa_gleam_simple.graphml')
 
         heft.rank('up')

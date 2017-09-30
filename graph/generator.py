@@ -20,14 +20,15 @@ graphs = []
 
 for val in os.listdir(location):
     graphs.append(location+val)
-count = 0 
+
 for path in graphs:
+    print path
     graph = nx.read_graphml(path,Task)
     num_nodes= len(graph.nodes())
 
     if num_nodes > 5000:
         continue
-    random_comm_matrix(num_nodes,200,500)
-
+    print path
+    random_comp_matrix(2,num_nodes,200,500)
 
 # 771, 108,1202,135,3,19603,3467,1095,7719,12498,3271,29227,2899,1615,4583,2068

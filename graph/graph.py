@@ -5,7 +5,7 @@ import networkx as nx
 
 from heft.heft import Task
 
-def random_comp_matrix(processors, nodes, cost):
+def random_comp_matrix(processors, nodes, lower,upper):
     """
     Function that generates a random cost matrix for a number of tasks
     
@@ -18,8 +18,8 @@ def random_comp_matrix(processors, nodes, cost):
     computation_matrix = dict()
 
     for x in range(nodes):
-        computation_matrix[x] = random.sample(range(cost),processors)
-    name = '/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_{0}-{1}.txt'.format(nodes,processors)    
+        computation_matrix[x] = random.sample(range(lower,upper),processors)
+    name = '/home/artichoke/Dropbox/thesis/data/input/matrices/comp_{0}/comp_{1}-{2}.txt'.format(upper,nodes,processors)    
     file = open(name,'w')
     file.write("P1,P2,...,Pn\n") 
     for n in range(len(computation_matrix)):
