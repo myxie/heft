@@ -5,6 +5,7 @@ import ast
 
 import networkx as nx
 # import matplotlib.pyplot as plt
+import argparse
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,8 +23,6 @@ test = '/home/artichoke/Dropbox/thesis/data/input/graphml/translated_test_seq_ga
 
 location = '/home/artichoke/Dropbox/thesis/data/input/graphml/'
 graphs = [] 
-num_processors = 2
-max_comm_num = 500
 for val in os.listdir(location):
    graphs.append(location+val)
 
@@ -48,7 +47,7 @@ def read_matrix(matrix):
     return lines 
 
 
-def graph_levels(path):
+def graph_width_and_levels(path):
     graph = nx.read_graphml(path, Task)
     num = len(graph.nodes())
     levels = [0 for x in range(0,num)] 
@@ -64,8 +63,13 @@ def graph_levels(path):
                 if level > tmp:
                     tmp = level
             levels[node.tid]=tmp+1
+    
+    print levels
 
-    return levels[len(levels)-1]
+    counter = collections.Counter(levels)
+    width =max(counter.values())
+
+    return levels[len(levels)-1],width
 
 def fork_graph_levels(path):
     graph = nx.read_graphml(path, Task)
@@ -105,7 +109,7 @@ def graph_width(path):
     return width
 
 
-def num_params():
+def num_params(num_processors,max_comp_num,max_comm_num):
 
     results = dict()
 
@@ -117,14 +121,14 @@ def num_params():
         graph = nx.read_graphml(path,Task)
         nodes = len(list(graph.nodes()))
         edges = len(list(graph.edges()))
-        results[path]['BF']=float(edges)/float(nodes)
+        results[path]['edges']=edges
 
     for path in graphs:
         tmp_graph = nx.read_graphml(path,Task)
         if len(tmp_graph.nodes()) > 5000:
             results[path]['ccr'] = None
             continue
-        results[path]['ccr'] = communcation_computation_cost(path)
+        results[path]['ccr'] = communcation_computation_cost(path,num_processors,max_comp_num,max_comm_num)
 
 
     for path in graphs:
@@ -132,14 +136,14 @@ def num_params():
         graph = nx.read_graphml(test,Task)
         size = len(graph.nodes())
 
-        levels = graph_levels(path)
+        levels,width = graph_width_and_levels(path)
         parallel_level = max(levels-2,1)
         fork_level = max(fork_graph_levels(path),1)
         results[path]['levels'] = levels
-        # results[path]['parallel_level']= parallel_level
+       # results[path]['parallel_level']= parallel_level
         # results[path]['fork_graph_levels'] = fork_level
 
-        width = graph_width(path)
+        # width = graph_width(path)
         results[path]['width']=width
 
         alpha_width = size/float(width)
@@ -165,23 +169,23 @@ def num_params():
     for res in results:
         if count is 0:
             for val in results[res]:
-                file_headers = file_headers+','+val
+                file_headers = file_headers+','+str(val)
             file_headers=file_headers+'\n'
 
-            with open('graph_parameters_{0}_{1}.csv'.format(num_processors,max_comm_num),'w+') as f:
+            with open('graph_parameters_comm-{0}_comp-{1}_{2}.csv'.format(max_comm_num, max_comp_num,num_processors),'w+') as f:
                 f.write(file_headers)
             count = count+1
         line = "{0},".format(res)
         for val in results[res]:
             line = line + str(results[res][val])+','
         line = line +'\n'
-        with open('graph_parameters_{0}_{1}.csv'.format(num_processors,max_comm_num),'a') as f:
+        with open('graph_parameters_comm-{0}_comp-{1}_{2}.csv'.format(max_comm_num, max_comp_num,num_processors),'a') as f:
             f.write(line)
 
     return 0
 
 
-def communcation_computation_cost(path):
+def communcation_computation_cost(path,num_processors,max_comp_num,max_comm_num):
     """
     Sum of computation costs of each node * number of nodes/ Sum of communication costs*number of edges
     """
@@ -189,11 +193,12 @@ def communcation_computation_cost(path):
     size = len(graph.nodes())
     edges = list(graph.edges())
     
-    comp_matrix = read_matrix('/home/artichoke/Dropbox/thesis/data/input/matrices/comp/comp_{0}-{1}.txt'.format(size,num_processors))
+    comp_matrix = read_matrix('/home/artichoke/Dropbox/thesis/data/input/matrices/comp_{0}/comp_{1}-{2}.txt'.format(max_comp_num,size,num_processors))
     comm_matrix = read_matrix('/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/comm_{1}.txt'.format(max_comm_num,size))
 
     comp_sum = 1000000
     comm_sum = 0
+
 
     for p in range(0,num_processors):
         tmp = 0
@@ -207,8 +212,8 @@ def communcation_computation_cost(path):
             # print comm_sum
             comm_sum = comm_sum + comm_matrix[node.tid][successor.tid]
 
-    numerator = comp_sum*size
-    denominator = comm_sum*len(edges)
+    denominator = comp_sum*size 
+    numerator = comm_sum*len(edges)
     #print denominator
     ccr = numerator/float(denominator)
     print ccr 
@@ -217,8 +222,28 @@ def communcation_computation_cost(path):
 
 
 if __name__ == '__main__':
-    num_params()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--processor", help="number of processors")
+    parser.add_argument("--comm",help="maximum communication cost")
+    parser.add_argument("--comp",help="maximum computation cost")
+    args = parser.parse_args()
+    num_processors = 2
+    max_comm_num = 50 
+    max_comp_num = 50  
+
+    if args.processor:
+        num_processors = int(args.processor)
+        print("Number of processors: {0}".format(args.processor))
+    if args.comm:
+        max_comm_num = int(args.comm)
+        print("Maximum communication cost: {0}".format(args.comm))
+    if args.comp:
+        max_comp_num = int(args.comp)
+        print("Maximum computation cost: {0}".format(args.comp))
+     
+    num_params(num_processors,max_comp_num,max_comm_num)
     # results = dict()
+    # graph_levels(test)
 
 
     # print results['ccr']

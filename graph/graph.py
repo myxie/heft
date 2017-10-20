@@ -1,6 +1,8 @@
 # Functions associated with creating a Graph that can be used in the HEFT algorithm
 
 import random
+import os
+
 import networkx as nx
 
 from heft.heft import Task
@@ -19,6 +21,8 @@ def random_comp_matrix(processors, nodes, lower,upper):
 
     for x in range(nodes):
         computation_matrix[x] = random.sample(range(lower,upper),processors)
+    if not os.path.isdir('/home/artichoke/Dropbox/thesis/data/input/matrices/comp_{0}/'.format(upper)):
+        os.makedirs('/home/artichoke/Dropbox/thesis/data/input/matrices/comp_{0}/'.format(upper))
     name = '/home/artichoke/Dropbox/thesis/data/input/matrices/comp_{0}/comp_{1}-{2}.txt'.format(upper,nodes,processors)    
     file = open(name,'w')
     file.write("P1,P2,...,Pn\n") 
@@ -45,7 +49,8 @@ def random_comm_matrix(nodes, lower, upper):
             communication_matrix[x][y]=random.randint(lower,upper)
             communication_matrix[y][x]=communication_matrix[x][y]
             print communication_matrix[x][y]
-
+    if not os.path.isdir('/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/'.format(upper)):
+        os.makedirs('/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/'.format(upper))
     name = '/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/comm_{1}.txt'.format(upper,nodes)    
     file = open(name,'w')
     file.write("N1,N2,...,Nx\n") 

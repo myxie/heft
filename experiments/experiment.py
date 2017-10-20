@@ -252,14 +252,18 @@ def better_occurences():
             add it to a 'row' count
         then this is the final count for the column?
     """
+    title=""
     matrix = []
-    with open('results.csv_5', 'r') as csvfile:
+    with open('/home/artichoke/Dropbox/thesis/data/results/schedule_data/16-10-2017_schedule_2-processors_comp50-comm50.csv', 'r') as csvfile:
         results = csv.reader(csvfile, delimiter=',')
-        results.next()
-        for x in range(1):
+        for row in results:
+            title=row
+            break
+        # results.next()
+        for x in range(0,9):
             for row in results:
                 tmp = []
-                for y in range(x+1,8):
+                for y in range(x+1,10):
                     tmp.append(row[y])
                 matrix.append(tmp)
                 # print "{0} has row {1}".format(row[0],val)
@@ -275,10 +279,10 @@ def better_occurences():
     #             num = num+1 
     #         better[(i,j)] = float(count)/float(num-1)
 
-    final_matrix = [[0 for x in range(0,6)] for y in range(0,6)]
+    final_matrix = [[0 for x in range(0,9)] for y in range(0,9)]
 
-    for i in range(0,6):
-        for j in range(i+1,6):
+    for i in range(0,9):
+        for j in range(i+1,9):
             count = 0
             num = 1
             for row in matrix:
@@ -293,17 +297,42 @@ def better_occurences():
 
     # for line in better:
     #     print "{0}: {1}".format(line, better[line])
+    # dump = open("test.csv", "w") 
+    # title = ''.join(title)
+    print title
+    with open("output.csv", "wb") as f:
+        writer = csv.writer(f)
+        writer.writerows(final_matrix)
 
-    for row in final_matrix:
-        print row
+    # for row in final_matrix:
+    #     tmp = ''.join(str(x) +',' for x in row)
+    #     dump.write(tmp)
 
     # ?final_matrix = [x for x in [0 for y in range(0,7)]]
 
 if __name__ == '__main__':
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("--processor", help="number of processors")
+    # parser.add_argument("--comm",help="maximum communication cost")
+    # parser.add_argument("--comp",help="maximum computation cost")
+    # args = parser.parse_args()
+    # num_processors = 2
+    # max_comm_num = 50 
+    # max_comp_num = 50  
+
+    # if args.processor:
+    #     num_processors = int(args.processor)
+    #     print("Number of processors: {0}".format(args.processor))
+    # if args.comm:
+    #     max_comm_num = int(args.comm)
+    #     print("Maximum communication cost: {0}".format(args.comm))
+    # if args.comp:
+    #     max_comp_num = int(args.comp)
+    #     print("Maximum computation cost: {0}".format(args.comp))
   # make_plots()
   # generate_slr()
   # generate_speedup()
-  for val in [2,3,4,5]:
-    run_hefts(val)
-    # better_occurences()
+  # for val in [8]:
+  #   run_hefts(val)
+  better_occurences()
 

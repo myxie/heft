@@ -229,6 +229,11 @@ class TestDALiuGEBashHeft(unittest.TestCase):
         print retval 
         #print(self.heft.processors)
 
+class TestGenerateExampleOCTMatrix(unittest.TestCase):
+    
+    def test_setup_oct_graph(self):
+        heft = 1
+
 #@unittest.skip("In Development")
 class TestHEFTExperiments(unittest.TestCase):
 

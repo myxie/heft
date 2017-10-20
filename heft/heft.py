@@ -276,7 +276,7 @@ class Heft(object):
                 elif dist[v.tid] is 0:
                     tmp_v = 0 # this is the first node in the graph
                     if tmp_v not in critical_path:
-                        critical_path.append(tmp_v)
+                        critical_path.append(tmp_v  )
         cp_min = 0
         for x in critical_path:
             cp_min = cp_min + min(self.comp_matrix[x])
