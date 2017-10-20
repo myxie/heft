@@ -8,3 +8,4 @@ GraphML*
 *.swp
 data/input/tmp
 .idea
+csv/
