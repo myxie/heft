@@ -53,7 +53,7 @@ def run_hefts(processor_num):
     graphs = [] 
     # processor_num = 2
     max_comm_cost = 50
-    max_comp_cost = 50
+    max_comp_cost = 500
     for val in os.listdir(location):
        graphs.append(location+val)
     results = dict()
@@ -102,146 +102,6 @@ def run_hefts(processor_num):
 
     return results
 
-def make_plots():
-
-    # x_list = [x for x in range(0,1200)]
-
-    with open('results_3.csv', 'r') as csvfile:
-        results = csv.reader(csvfile, delimiter=',')
-        results.next()
-
-        plotter_y=dict()
-        # plotter_y=dict()
-        for row in results:
-            for x in range(1,7):
-                if x in plotter_y:
-                    plotter_y[x].append((int(row[8]),row[x]))
-                else:
-                    plotter_y[x] = [(int(row[8]),row[x])]
-
-            sorted(plotter_y[x],key=lambda x: x[0])
-                # if x in plotter_x:
-                #     plotter_x[x].append(row[8]) # this is the size of the graph
-                # else:
-                #     plotter_x[x] = [row[8]]
-
-        # map(list, zip(*[(1, 2), (3, 4), (5, 6)]))
-        map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-
-    for x in range(1,7):
-        # plt.rc('text', usetex=True)
-        # plt.rc('font', family='serif')
-        plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-        plt.plot(plotvals[0], plotvals[1],schedule_pairs_symbols[x], label = schedule_pairs_dict[x],linewidth=0.5 )
-    
-    plt.xlim(xmax=1000)
-    plt.ylim(ymax=20000)
-    plt.xlabel('Nodes')
-    plt.ylabel('Schedule Makespan')
-
-    plt.legend()
-    plt.show()
-
-
-def generate_slr():
-
-    """
-    This function gets the values output by the 'results' section and calculates performance metrics, include: 
-    Schedule-to-Length ratio (SLR)
-    Speedup
-    Number of occurences of a better quality schedule
-    Algorithmic running time
-    """
-
-
-    """
-    SLR:  makespan/min_CP 
-    
-    We need to get each makespan and 'cp' value from the results.csv file and calculate the resultant slr 
-    """
-
-    with open('results_5.csv', 'r') as csvfile:
-        results = csv.reader(csvfile, delimiter=',')
-        results.next()
-
-        plotter_y=dict()
-        # plotter_y=dict()
-        for row in results:
-            for x in range(1,7):
-                if x in plotter_y:
-                    plotter_y[x].append((int(row[8]),(float(row[x])/float(row[7]))))
-                else:
-                    plotter_y[x] = [(int(row[8]),(float(row[x])/float(row[7])))]
-
-            sorted(plotter_y[x],key=lambda x: x[0])
-                # if x in plotter_x:
-                #     plotter_x[x].append(row[8]) # this is the size of the graph
-                # else:
-                #     plotter_x[x] = [row[8]]
-
-        # map(list, zip(*[(1, 2), (3, 4), (5, 6)]))
-        map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-
-    for x in range(1,7):
-        # plt.rc('text', usetex=True)
-        # plt.rc('font', family='serif')
-        plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-        plt.plot(plotvals[0], plotvals[1],schedule_pairs_symbols[x], label = schedule_pairs_dict[x],linewidth=0.5 )
-
-    plt.xlabel('Nodes')     
-    plt.ylabel('SLR')
-    plt.legend()
-    plt.show()
-
-def generate_speedup():
-
-    """
-    This function gets the values output by the 'results' section and calculates performance metrics, include: 
-    Schedule-to-Length ratio (SLR)
-    Speedup
-    Number of occurences of a better quality schedule
-    Algorithmic running time
-    """
-
-    """
-    SLR:  sequential 
-    
-    We need to get each makespan and 'cp' value from the results.csv file and calculate the resultant slr 
-    """
-
-    with open('results_5.csv', 'r') as csvfile:
-        results = csv.reader(csvfile, delimiter=',')
-        results.next()
-
-        plotter_y=dict()
-        # plotter_y=dict()
-        for row in results:
-            for x in range(1,7):
-                if x in plotter_y:
-                    plotter_y[x].append((int(row[8]),(float(row[9])/float(row[x]))))
-                else:
-                    plotter_y[x] = [(int(row[8]),(float(row[9])/float(row[x])))]
-
-            sorted(plotter_y[x],key=lambda x: x[0])
-                # if x in plotter_x:
-                #     plotter_x[x].append(row[8]) # this is the size of the graph
-                # else:
-                #     plotter_x[x] = [row[8]]
-
-        # map(list, zip(*[(1, 2), (3, 4), (5, 6)]))
-        map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-
-    for x in range(1,7):
-        # plt.rc('text', usetex=True)
-        # plt.rc('font', family='serif')
-        plotvals = map(list, zip(*(sorted(plotter_y[x],key=lambda x: x[0]))))
-        plt.plot(plotvals[0], plotvals[1],schedule_pairs_symbols[x], label = schedule_pairs_dict[x],linewidth=0.5 )
-
-    plt.xlabel('Nodes')     
-    plt.ylabel('Speedup')
-    plt.legend()
-    plt.show()
-
 
 def better_occurences():
     #colum[1-7] is where our different schedulers are
@@ -267,18 +127,6 @@ def better_occurences():
                     tmp.append(row[y])
                 matrix.append(tmp)
                 # print "{0} has row {1}".format(row[0],val)
-
-    # better = dict()
-    # for i in range(0,7):
-    #     for j in range(i+1,7):
-    #         count = 0
-    #         num = 1
-    #         for row in matrix:
-    #             if row[i] < row[j]:
-    #                 count = count +1 
-    #             num = num+1 
-    #         better[(i,j)] = float(count)/float(num-1)
-
     final_matrix = [[0 for x in range(0,9)] for y in range(0,9)]
 
     for i in range(0,9):
@@ -295,20 +143,11 @@ def better_occurences():
             final_matrix[j][i] = 1-(float(count)/float(num-1))
 
 
-    # for line in better:
-    #     print "{0}: {1}".format(line, better[line])
-    # dump = open("test.csv", "w") 
-    # title = ''.join(title)
     print title
     with open("output.csv", "wb") as f:
         writer = csv.writer(f)
         writer.writerows(final_matrix)
 
-    # for row in final_matrix:
-    #     tmp = ''.join(str(x) +',' for x in row)
-    #     dump.write(tmp)
-
-    # ?final_matrix = [x for x in [0 for y in range(0,7)]]
 
 if __name__ == '__main__':
     # parser = argparse.ArgumentParser()
@@ -332,7 +171,7 @@ if __name__ == '__main__':
   # make_plots()
   # generate_slr()
   # generate_speedup()
-  # for val in [8]:
-  #   run_hefts(val)
-  better_occurences()
+  for val in [3,4]:  
+    run_hefts(val)
+  # better_occurences()
 

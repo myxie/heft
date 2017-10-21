@@ -30,9 +30,9 @@ def generate_cost_matrix(comp_cost_min,comp_cost_max,comm_cost_min,comm_cost_max
         if num_nodes > 5000:
             continue
         print path
-        for x in range(2,9):
+        for x in range(3,9):
             random_comp_matrix(x,num_nodes,comp_cost_min,comp_cost_max)
-            random_comm_matrix(num_nodes,comm_cost_min,comm_cost_max) 
+            # random_comm_matrix(num_nodes,comm_cost_min,comm_cost_max) 
 
 
 if __name__ == '__main__':
@@ -50,7 +50,6 @@ if __name__ == '__main__':
     
     min_comp=0
     max_comp = 50 
-
 
     if args.min_comp:
         min_comp = int(args.min_comp)
