@@ -14,7 +14,7 @@ the algorithm on a pyplot chart.
 """
 import os
 import csv
-
+import argparse
 import networkx as nx
 # import matplotlib.pyplot as plt
 
@@ -44,16 +44,15 @@ Requirements for new experiments:
 schedule_pairs_dict = {1:"Up + Greedy",2:"Up + Insertion", 3:"Up + OCT-Schedule", 4:"OCT + Greedy", 5:"OCT + Insertion", 6:"OCT + OCT Schedule"}
 schedule_pairs_symbols = {1:'+',2:'x', 3:'D', 4:'s', 5:'^', 6:'*'}
 
-def run_hefts(processor_num):
+def run_hefts(processor_num,location,matrices,max_comp_num,max_comm_num):
     heuristics = ['up','oct','random']
     # policies = ['insertion']
     policies   = ['insertion', 'oct_schedule', 'greedy']
 
-    location = '/home/artichoke/Dropbox/thesis/data/input/graphml/'
     graphs = [] 
     # processor_num = 2
-    max_comm_cost = 50
-    max_comp_cost = 500
+    max_comm_cost = max_comm_num
+    max_comp_cost = max_comp_num
     for val in os.listdir(location):
        graphs.append(location+val)
     results = dict()
@@ -67,8 +66,9 @@ def run_hefts(processor_num):
                         num_nodes= len(graph.nodes())
                         if num_nodes > 5000:
                             continue
-                        heft = Heft('/home/artichoke/Dropbox/thesis/data/input/matrices/comp_{0}/comp_{1}-{2}.txt'.format(max_comp_cost,num_nodes,processor_num),\
-                        '/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/comm_{1}.txt'.format(max_comm_cost,num_nodes),path)   
+                        comp_location=matrices+ 'comp_{0}/comp_{1}-{2}.txt'.format(max_comp_cost,num_nodes,processor_num)
+                        comm_location = matrices + 'comm_{0}/comm_{1}.txt'.format(max_comm_cost,num_nodes)
+                        heft = Heft(comp_location,comm_location,path)   
                         heft.rank(heuristic)
                         retval = heft.schedule(policy)
                         cp = heft.critical_path()
@@ -89,14 +89,14 @@ def run_hefts(processor_num):
             for val in results[res]:
                 file_headers = file_headers +','+val
             file_headers = file_headers+"\n"
-            with open('results_comp_{0}_comm_{1}_{2}.csv'.format(max_comp_cost,max_comm_cost,processor_num),'w+') as f:
+            with open('/home/croutons/Dropbox/results_comp_{0}_comm_{1}_{2}.csv'.format(max_comp_cost,max_comm_cost,processor_num),'w+') as f:
                 f.write(file_headers)
             count = count+1
         line = "{0},".format(res)
         for val in results[res]:
             line = line + str(results[res][val])+','
         line = line + '\n'
-        with open('results_comp_{0}_comm_{1}_{2}.csv'.format(max_comp_cost,max_comm_cost,processor_num),'a') as f:
+        with open('/home/croutons/Dropbox/results_comp_{0}_comm_{1}_{2}.csv'.format(max_comp_cost,max_comm_cost,processor_num),'a') as f:
             f.write(line)
 
 
@@ -150,28 +150,42 @@ def better_occurences():
 
 
 if __name__ == '__main__':
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("--processor", help="number of processors")
-    # parser.add_argument("--comm",help="maximum communication cost")
-    # parser.add_argument("--comp",help="maximum computation cost")
-    # args = parser.parse_args()
-    # num_processors = 2
-    # max_comm_num = 50 
-    # max_comp_num = 50  
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--min_processor", help="number of processors")
+    parser.add_argument("--max_processor",help="number of processors")
+    parser.add_argument("--graph_location",help="location of graphs")
+    parser.add_argument("--matrix_location",help="location of cost matrices")
+    parser.add_argument("--comm",help="maximum communication cost")
+    parser.add_argument("--comp",help="maximum computation cost")
+    args = parser.parse_args()
+    graph_location = '/home/artichoke/Dropbox/thesis/data/input/graphml/'
+    min_processor = 2
+    max_processor = 2
+    max_comm_num = 50 
+    max_comp_num = 50  
 
-    # if args.processor:
-    #     num_processors = int(args.processor)
-    #     print("Number of processors: {0}".format(args.processor))
-    # if args.comm:
-    #     max_comm_num = int(args.comm)
-    #     print("Maximum communication cost: {0}".format(args.comm))
-    # if args.comp:
-    #     max_comp_num = int(args.comp)
-    #     print("Maximum computation cost: {0}".format(args.comp))
-  # make_plots()
-  # generate_slr()
-  # generate_speedup()
-  for val in [3,4]:  
-    run_hefts(val)
-  # better_occurences()
+    if args.min_processor:
+        min_processor = int(args.min_processor)
+        print("Min number of processors: {0}".format(args.max_processor))
+    if args.max_processor:
+        num_processors = int(args.max_processor)
+        print("Max number of processors: {0}".format(args.max_processor))
+
+    if args.graph_location:
+        graph_location = str(args.graph_location)
+    if args.matrix_location:
+        matrix_location= str(args.matrix_location)
+    if args.comm:
+        max_comm_num = int(args.comm)
+        print("Maximum communication cost: {0}".format(args.comm))
+    if args.comp:
+        max_comp_num = int(args.comp)
+        print("Maximum computation cost: {0}".format(args.comp))
+    # make_plots()
+    # generate_slr()
+    # generate_speedup()
+
+    for val in [min_processor,max_processor+1]:  
+        run_hefts(val,graph_location,matrix_location,max_comp_num,max_comm_num)
+    # better_occurences()
 
