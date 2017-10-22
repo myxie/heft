@@ -284,7 +284,7 @@ class Heft(object):
         return cp_min
 
     def sequential_execution(self):
-        seq = 1000000
+        seq = 100000000
         
         for p in range(len(self.processors)):
             comp = 0 
@@ -334,7 +334,7 @@ class Heft(object):
                     available_slots.append((processor[x-1][1],processor[x][0]))
             
             # Add a very large number to the final time slot available, so we have a gap after 
-            available_slots.append((processor[len(processor)-1][1],1000000))
+            available_slots.append((processor[len(processor)-1][1],100000000))
 
         for avail in available_slots:
             if est < avail[0] and avail[0]+ self.comp_matrix[node.tid][processor_num] <= avail[1]:
@@ -362,7 +362,7 @@ class Heft(object):
                 self.processors[p].append((task.ast,task.aft,str(task.tid)))
             else:
                 # print 'in else'
-                aft = 1000000 # a big number
+                aft = 100000000 # a big number
                 for processor in range(len(self.processors)):
                     # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
                     est = self.calc_est(task, processor,r_sorted)
@@ -413,7 +413,7 @@ class Heft(object):
                 self.processors[p].append((task.ast,task.aft,str(task.tid)))
 
             else:
-                aft = 1000000 # a big number
+                aft = 100000000 # a big number
                 min_oeft = 100000
                 for processor in range(len(self.processors)):
                     if self.graph.predecessors(task):
@@ -467,7 +467,7 @@ class Heft(object):
                 # est = 100000
                 p = 0 
                 allowed_est = est
-                est = 1000000
+                est = 100000000
                 for processor in self.processors:
                     if len(self.processors[processor]) is not 0:
                         # This sorts the processor by the latest finish time on the processor, which is the earliest available time without searching for slots before

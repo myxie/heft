@@ -89,14 +89,14 @@ def run_hefts(processor_num,location,matrices,max_comp_num,max_comm_num):
             for val in results[res]:
                 file_headers = file_headers +','+val
             file_headers = file_headers+"\n"
-            with open('/home/croutons/Dropbox/results_comp_{0}_comm_{1}_{2}.csv'.format(max_comp_cost,max_comm_cost,processor_num),'w+') as f:
+            with open('/home/artichoke/Dropbox/results_comp_{0}_comm_{1}_{2}.csv'.format(max_comp_cost,max_comm_cost,processor_num),'w+') as f:
                 f.write(file_headers)
             count = count+1
         line = "{0},".format(res)
         for val in results[res]:
             line = line + str(results[res][val])+','
         line = line + '\n'
-        with open('/home/croutons/Dropbox/results_comp_{0}_comm_{1}_{2}.csv'.format(max_comp_cost,max_comm_cost,processor_num),'a') as f:
+        with open('/home/artichoke/Dropbox/results_comp_{0}_comm_{1}_{2}.csv'.format(max_comp_cost,max_comm_cost,processor_num),'a') as f:
             f.write(line)
 
 
@@ -185,7 +185,6 @@ if __name__ == '__main__':
     # generate_slr()
     # generate_speedup()
 
-    for val in [min_processor,max_processor+1]:  
-        run_hefts(val,graph_location,matrix_location,max_comp_num,max_comm_num)
+    run_hefts(min_processor,graph_location,matrix_location,max_comp_num,max_comm_num)
     # better_occurences()
 
