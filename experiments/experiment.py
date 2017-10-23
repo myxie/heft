@@ -181,11 +181,10 @@ if __name__ == '__main__':
     if args.comp:
         max_comp_num = int(args.comp)
         print("Maximum computation cost: {0}".format(args.comp))
-    # make_plots()
+    # make_plots() 
     # generate_slr()
     # generate_speedup()
 
-    for val in [min_processor,max_processor+1]:  
-        run_hefts(val,graph_location,matrix_location,max_comp_num,max_comm_num)
+    run_hefts(min_processor,graph_location,matrix_location,max_comp_num,max_comm_num)
     # better_occurences()
 
