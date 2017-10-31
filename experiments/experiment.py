@@ -181,7 +181,7 @@ if __name__ == '__main__':
     if args.comp:
         max_comp_num = int(args.comp)
         print("Maximum computation cost: {0}".format(args.comp))
-    # make_plots()
+    # make_plots() 
     # generate_slr()
     # generate_speedup()
 
