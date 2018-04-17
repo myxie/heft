@@ -48,7 +48,7 @@ def random_comm_matrix(nodes, lower, upper):
         for y in range(x+1,nodes):
             communication_matrix[x][y]=random.randint(lower,upper)
             communication_matrix[y][x]=communication_matrix[x][y]
-            print communication_matrix[x][y]
+            print (communication_matrix[x][y])
     if not os.path.isdir('/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/'.format(upper)):
         os.makedirs('/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/'.format(upper))
     name = '/home/artichoke/Dropbox/thesis/data/input/matrices/comm_{0}/comm_{1}.txt'.format(upper,nodes)    
@@ -137,7 +137,7 @@ def gen_test_graph():
     file.close()
 
     nx.write_graphml(graph, "unit_test.graphml")
-    print 'Test' + str(graph.nodes())
+    print ('Test' + str(graph.nodes()))
     return graph
 
 def gen_oct_graph():
@@ -189,7 +189,7 @@ def gen_oct_graph():
     for node in nodes[6:9]:
         graph.add_edge(node, nodes[9])
 
-    print graph.edges()
+    print (grape.edges())
 
     file = nx.write_graphml(graph,"tests/oct.graphml")
     return -1 
@@ -243,7 +243,7 @@ def gen_topcuoglu_graph():
     for node in nodes[6:9]:
         graph.add_edge(node, nodes[9])
 
-    print graph.edges()
+    print (graph.edges())
 
     file = nx.write_graphml(graph,"tests/topcuoglu.graphml")
 

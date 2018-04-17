@@ -8,7 +8,7 @@ import ast
 import networkx as nx
 
 from random import randint
-from Queue import *
+from queue import Queue
 # from pudb import set_trace
 
 def read_matrix(matrix):
@@ -50,6 +50,14 @@ class Task(object):
         if isinstance(task, self.__class__):
             return self.tid == task.tid
         return NotImplemented
+
+    def __lt__(self,task): 
+        if isinstance(task,self.__class__):
+            return self.tid < task.tid
+            
+    def __le__(self,task):
+        if isinstance(task,self.__class__):
+            return self.tid <= task.tid
 
     """
     Networkx requires an object to be iterable; given comp_cost is a list, 
@@ -116,7 +124,7 @@ class Heft(object):
     def show_rank(self):
 
         for node in list(self.graph.nodes()):
-            print node.rank
+            print (node.rank)
 
     def ave_comm_cost(self,node,successor):
         """
@@ -426,11 +434,14 @@ class Heft(object):
                     if oeft_matrix[(task.tid,processor)]  < min_oeft: 
                         min_oeft = oeft_matrix[(task.tid,processor)]
                         p = processor
+
                 task.aft =  eft_matrix[(task.tid,p)]  
                 task.ast = task.aft - eft_matrix[(task.tid,p)]
                 task.processor = p
+
                 if task.aft >= makespan:
                     makespan = task.aft
+                    
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0]) 
                 count = count + 1
