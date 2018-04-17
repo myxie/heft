@@ -133,38 +133,43 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
         return -1
     
     def test_rank(self):
-        rank_values = [106,75,79,78,67,62,42,35,43,14]
+        rank_values = [108,77,79,80,69,63,42,35,44,14]
 #       print rank_values
          
         self.heft.rank('up')
-        nodes = self.heft.graph.nodes()
+        sorted_nodes = self.heft.rank_sort
+        for count, node in enumerate(sorted_nodes):
+            # print(node,int(node.rank), rank_values[node.tid])
+            self.assertTrue(int(node.rank) == rank_values[node.tid])  
+
+        # nodes = self.heft.graph.nodes()
         #for x in range(0,10):
 #       for node in nodes:
 #           print (str(node.tid) + ': '+ str(node.rank))
             #self.assertTrue(nodes[x].rank == rank_values[x])
 
-    def test_insertion(self):
-        self.heft.rank('up')
-        retval = self.heft.insertion_policy()
-        print ('insertion ', str(retval))
+    # def test_insertion(self):
+    #     self.heft.rank('up')
+    #     retval = self.heft.insertion_policy()
+    #     print ('insertion ', str(retval))
 
-    def test_critical_path(self):
-        retval = self.heft.critical_path()
+    # def test_critical_path(self):
+    #     retval = self.heft.critical_path()
         
-        print ("critical_path" , str(retval))
-    def test_sequential_cost(self):
-        retval = self.heft.sequential_execution()
-        print ("sequential_exection " , str(retval))
+    #     print ("critical_path" , str(retval))
+    # def test_sequential_cost(self):
+    #     retval = self.heft.sequential_execution()
+    #     print ("sequential_exection " , str(retval))
 
-    def test_greedy(self):
-        self.heft.rank('up')
-        retval = self.heft.greedy_policy()
-        print ('greedy' , str(retval))
+    # def test_greedy(self):
+    #     self.heft.rank('up')
+    #     retval = self.heft.greedy_policy()
+    #     print ('greedy' , str(retval))
 
-    def test_rank_random(self):
-        self.heft.rank('random')
-        retval = self.heft.insertion_policy()
-        print ("random rank:" , str(retval))
+    # def test_rank_random(self):
+    #     self.heft.rank('random')
+    #     retval = self.heft.insertion_policy()
+    #     print ("random rank:" , str(retval))
         
 #@unittest.skip("In Development")
 class TestHeftMethodsOCT(unittest.TestCase):
