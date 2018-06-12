@@ -54,7 +54,7 @@ class Task(object):
     def __lt__(self,task): 
         if isinstance(task,self.__class__):
             return self.tid < task.tid
-            
+
     def __le__(self,task):
         if isinstance(task,self.__class__):
             return self.tid <= task.tid
@@ -220,10 +220,6 @@ class Heft(object):
         
         self.oct_rank_matrix[(node.tid,pk)] = max_successor
 
-    def rank_stochastic(self, node, pk):
-        return -1
-
-        
     
     def rank_sort_tasks(self):
         """ 
