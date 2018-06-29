@@ -1,6 +1,4 @@
 """
-Code to generate output for the CITS4008 Assignment 3
-
 This will contain functions to do the following:
 
 - Calculate rank for a pre-defined graph (not-random) for
@@ -59,7 +57,7 @@ def run_hefts(processor_num,location,matrices,max_comp_num,max_comm_num):
     for path in graphs:
         for heuristic in heuristics:
             for policy in policies:
-                    print path
+                    print(path)
                     local_results = dict()
                     if os.path.exists(path): 
                         graph = nx.read_graphml(path,Task)
@@ -143,7 +141,7 @@ def better_occurences():
             final_matrix[j][i] = 1-(float(count)/float(num-1))
 
 
-    print title
+    print(title)
     with open("output.csv", "wb") as f:
         writer = csv.writer(f)
         writer.writerows(final_matrix)

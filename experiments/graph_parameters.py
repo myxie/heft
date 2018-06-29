@@ -4,13 +4,7 @@ import collections
 import ast
 
 import networkx as nx
-# import matplotlib.pyplot as plt
 import argparse
-
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import rc
-rc('font',**{'family':'serif','serif':['Computer Modern']})
 
 from heft.heft import Task, Heft
 
