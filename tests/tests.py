@@ -55,7 +55,9 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
     def test_schedule(self):
         self.heft.rank('up')
         retval = self.heft.schedule('insertion')
+        print("Makespan is: ", retval)
         self.assertTrue(retval == 80)
+
                 
 class TestHeftMethodsOCT(unittest.TestCase):
 
@@ -84,6 +86,12 @@ class TestHeftMethodsOCT(unittest.TestCase):
         sorted_nodes = self.heft.rank_sort
         for count, node in enumerate(sorted_nodes):
             self.assertTrue(int(node.rank) == self.oct_rank_values[node.tid])  
+    
+    @unittest.skip('Unnecessary')
+    def test_oct_matrix(self):
+        self.heft.rank('oct')
+        for key in self.heft.oct_rank_matrix:
+            print(key, self.heft.oct_rank_matrix[key])
         
     def test_heft_schedule(self):
         self.heft.rank('up')

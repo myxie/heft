@@ -28,13 +28,10 @@ class Task(object):
 
     def __init__(self, tid, comp_cost=[]):
         self.tid = int(tid)# task id - this is unique
-        self.ave_comp = -1 # average computation cost 
         self.rank = -1 # This is updated during the 'Task Prioritisation' phase 
-        self.oct_rank = dict() 
         self.processor = -1
         self.ast = 0 
         self.aft = 0 
-        self.comp_cost = comp_cost # List of computation cost on each processor 
 
     def __repr__(self):
         return str(self.tid)
@@ -59,14 +56,6 @@ class Task(object):
         if isinstance(task,self.__class__):
             return self.tid <= task.tid
 
-    """
-    Networkx requires an object to be iterable; given comp_cost is a list, 
-    we might as well make that the return of the iteration as we can use it
-    in the HEFT algorithm
-    """
-    def __iter__(self):
-        return self.comp_cost
-
 class Heft(object):
     def __init__(self, comp, comm, graphml):
         self.graph = nx.read_graphml(graphml,Task)
@@ -75,7 +64,8 @@ class Heft(object):
         self.processors = dict()
         self.oct_processors = dict()
         num_processors = len(self.comp_matrix[0])
-        self.oct_matrix = dict()
+        # TODO have this matrix generated only when we are
+        # ranking/scheduling for this particular type of thing
         self.oct_rank_matrix = dict()
 
         keys =  [x for x in range(0,num_processors)]
@@ -167,8 +157,8 @@ class Heft(object):
             longest_rank = max(longest_rank, self.ave_comm_cost(node.tid,successor.tid)+\
                     successor.rank)
 
-        node.ave_comp = self.ave_comp_cost(node.tid)
-        node.rank = node.ave_comp + longest_rank
+        ave_comp = self.ave_comp_cost(node.tid)
+        node.rank = ave_comp + longest_rank
 
     def rank_up_random(self,node):
         """
@@ -185,13 +175,13 @@ class Heft(object):
 
         entropy = randint(0,1000)%3
         if entropy is 0:
-            node.ave_comp = self.ave_comp_cost(node.tid)
+            ave_comp = self.ave_comp_cost(node.tid)
         elif entropy is 1:
-            node.ave_comp = self.max_comp_cost(node.tid)
+            ave_comp = self.max_comp_cost(node.tid)
         elif entropy is 2: 
-            node.ave_comp = self.max_comp_cost(node.tid)
+            ave_comp = self.max_comp_cost(node.tid)
 
-        node.rank = node.ave_comp + longest_rank
+        node.rank = ave_comp + longest_rank
 
 
         return -1
@@ -201,7 +191,6 @@ class Heft(object):
         Optimistic cost table ranking heuristic outlined in 
         Arabnejad and Barbos (2014)
         """
-#       set_trace()
         max_successor = 0
         for successor in self.graph.successors(node):
             min_processor=1000
@@ -324,7 +313,7 @@ class Heft(object):
         processor = self.processors[processor_num] # return the list of allocated tasks
         available_slots = []
         if len(processor) == 0:
-            return est # Nothing in the time slots yet, so the earliest start time is whenever
+            return est # Nothing in the time slots yet 
         else:
             for x in range(len(processor)):
                 # For each start/finish time tuple that exists in the processor
@@ -338,13 +327,24 @@ class Heft(object):
                     available_slots.append((processor[x-1][1],processor[x][0]))
             
             # Add a very large number to the final time slot available, so we have a gap after 
-            available_slots.append((processor[len(processor)-1][1],100000000))
+            available_slots.append((processor[len(processor)-1][1],-1))
+            if node.tid==1 and processor_num==2:
+                print(available_slots)
 
-        for avail in available_slots:
-            if est < avail[0] and avail[0]+ self.comp_matrix[node.tid][processor_num] <= avail[1]:
-                return avail[0]
-            if est >= avail[0] and est + self.comp_matrix[node.tid][processor_num] <= avail[1]:
+        for slot in available_slots:
+            if est < slot[0] and slot[0] + self.comp_matrix[node.tid][processor_num] <= slot[1]:
+                return slot[0]
+            if (est >= slot[0]) and (est + \
+                    self.comp_matrix[node.tid][processor_num]<=slot[1]): 
                return est 
+            # At the 'end' of available slots
+            if (est >= slot[0]) and (slot[1]<0):
+                return est 
+            # This last case occurs when we have a low est but a high cost, so
+            # it doesn't fit in any gaps; hence we have to put it at the 'end'
+            # and start it late
+            if (est < slot[0]) and (slot[1]<0):
+                return slot[0] 
 
         return est
     
@@ -354,10 +354,13 @@ class Heft(object):
         in Tocuoglu et al.(2002)
         """
         nodes = list(self.graph.nodes())
+        # TODO The tasks below are from a list, not the global graph; so we do
+        # a lot of checking of both the list and the graph to get information. 
+        # Need to figure out a cleaner way of dealing with this. 
         r_sorted = self.rank_sort
         makespan = 0
         for task in r_sorted:
-            if task == r_sorted[0]:
+            if task == r_sorted[0]: 
                 w = min(self.comp_matrix[task.tid])
                 p = self.comp_matrix[task.tid].index(w)
                 task.processor = p
@@ -366,12 +369,16 @@ class Heft(object):
                 self.processors[p].append((task.ast,task.aft,str(task.tid)))
             else:
                 # print 'in else'
-                aft = 100000000 # a big number
+                aft = -1 # a big number
                 for processor in range(len(self.processors)):
                     # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
                     est = self.calc_est(task, processor,r_sorted)
                     # print str(task.tid) + ": " + str(est + self.comp_matrix[task.tid][processor])
-                    if est + self.comp_matrix[task.tid][processor] < aft:
+                    if aft == -1: # assign initial value of aft for this task
+                        aft = est + self.comp_matrix[task.tid][processor]
+                        p = processor
+                    # see if the next processor gives us an earlier finish time
+                    elif est + self.comp_matrix[task.tid][processor] < aft:
                         aft = est + self.comp_matrix[task.tid][processor]
                         p = processor
     
@@ -382,7 +389,7 @@ class Heft(object):
                    makespan = task.aft
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0])
-            # print self.processors
+            #print(self.processors)
 
         return makespan
 
