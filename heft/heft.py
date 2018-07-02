@@ -61,20 +61,12 @@ class Heft(object):
         self.graph = nx.read_graphml(graphml,Task)
         self.comp_matrix = read_matrix(comp)
         self.comm_matrix = read_matrix(comm)
-        self.processors = dict()
-        self.oct_processors = dict()
-        num_processors = len(self.comp_matrix[0])
+        self.num_processors = len(self.comp_matrix[0])
+        self.processors = [[] for x in range(0,self.num_processors)] 
         # TODO have this matrix generated only when we are
         # ranking/scheduling for this particular type of thing
         self.oct_rank_matrix = dict()
 
-        keys =  [x for x in range(0,num_processors)]
-        #for node in list(list(self.graph.nodes())):
-        #    node.oct_rank_dict = {key: -1 for key in keys}
-        for x in range(0,num_processors):
-            self.processors[x]=[]
-            self.oct_processors[x]=[]
-         
         self.rank_sort = []
         self.top_sort = []
 
@@ -102,10 +94,7 @@ class Heft(object):
                     if n is node.tid:
                         ave += self.oct_rank_matrix[(n,p)]
 
-                # if ave_list:         
                 node.rank = ave/len(self.processors)
-                # else: 
-                #     node.rank = sum(ave_list)/1
 
             self.rank_sort = self.rank_sort_tasks()
             self.top_sort = self.top_sort_tasks()
@@ -159,6 +148,8 @@ class Heft(object):
 
         ave_comp = self.ave_comp_cost(node.tid)
         node.rank = ave_comp + longest_rank
+        self.graph.nodes[node.tid]['rank'] = ave_comp + longest_rank
+
 
     def rank_up_random(self,node):
         """
@@ -277,13 +268,14 @@ class Heft(object):
         return cp_min
 
     def sequential_execution(self):
-        seq = 100000000
+        # TODO Add test case for this 
+        seq = -1
         
         for p in range(len(self.processors)):
             comp = 0 
             for task in list(self.graph.nodes()):
                 comp = comp + self.comp_matrix[task.tid][p]
-            if comp < seq:
+            if(seq is -1) or (comp < seq):
                 seq = comp
 
         return seq
@@ -353,14 +345,12 @@ class Heft(object):
         Allocate tasks to processors following the insertion based policy outline 
         in Tocuoglu et al.(2002)
         """
-        nodes = list(self.graph.nodes())
         # TODO The tasks below are from a list, not the global graph; so we do
         # a lot of checking of both the list and the graph to get information. 
         # Need to figure out a cleaner way of dealing with this. 
-        r_sorted = self.rank_sort
         makespan = 0
-        for task in r_sorted:
-            if task == r_sorted[0]: 
+        for task in self.rank_sort:
+            if task == self.rank_sort[0]: 
                 w = min(self.comp_matrix[task.tid])
                 p = self.comp_matrix[task.tid].index(w)
                 task.processor = p
@@ -368,12 +358,11 @@ class Heft(object):
                 task.aft = w
                 self.processors[p].append((task.ast,task.aft,str(task.tid)))
             else:
-                # print 'in else'
-                aft = -1 # a big number
-                for processor in range(len(self.processors)):
-                    # tasks in r_sorted are being updated, not self.graph; pass in r_sorted
-                    est = self.calc_est(task, processor,r_sorted)
-                    # print str(task.tid) + ": " + str(est + self.comp_matrix[task.tid][processor])
+                aft = -1 # Finish time for the current task
+                p = 0 
+                for processor in range(self.num_processors):
+                    # tasks in self.rank_sort are being updated, not self.graph;
+                    est = self.calc_est(task, processor,self.rank_sort)
                     if aft == -1: # assign initial value of aft for this task
                         aft = est + self.comp_matrix[task.tid][processor]
                         p = processor
@@ -400,23 +389,21 @@ class Heft(object):
         in Tocuoglu et al.(2002)
         """
 
-        nodes = list(self.graph.nodes())
-        r_sorted = self.rank_sort
         makespan = 0
         if not self.oct_rank_matrix:
             self.rank('oct')
         eft_matrix = dict()
         oeft_matrix = dict()
-        count = 0
         p=0
-        for task in r_sorted:
-            if task == r_sorted[0]:
+        for task in self.rank_sort:
+            if task == self.rank_sort[0]:
                 task.ast = 0
-                min_oeft = 1000
-                for processor in range(len(self.processors)):
+                min_oeft = -1
+                for processor in range(self.num_processors):
                     eft_matrix[(task.tid,processor)] = self.comp_matrix[task.tid][processor]
                     oeft_matrix[(task.tid,processor)]  =  eft_matrix[(task.tid,processor)] + self.oct_rank_matrix[(task.tid,processor)]
-                    if oeft_matrix[(task.tid,processor)]  < min_oeft: 
+                    if (min_oeft == -1) or \
+                            (oeft_matrix[(task.tid,processor)]  < min_oeft): 
                         min_oeft = oeft_matrix[(task.tid,processor)]
                         p = processor
                 task.aft = self.comp_matrix[task.tid][p]
@@ -424,17 +411,18 @@ class Heft(object):
                 self.processors[p].append((task.ast,task.aft,str(task.tid)))
 
             else:
-                aft = 100000000 # a big number
-                min_oeft = 100000
-                for processor in range(len(self.processors)):
+                min_oeft = -1
+                for processor in range(self.num_processors):
                     if self.graph.predecessors(task):
-                        est = self.calc_est(task,processor,r_sorted)
+                        est = self.calc_est(task,processor,self.rank_sort)
                     else:
                         est=0
                     eft = est + self.comp_matrix[task.tid][processor]
-                    eft_matrix[(task.tid,processor)] =eft
-                    oeft_matrix[(task.tid,processor)]  =  eft_matrix[(task.tid,processor)] + self.oct_rank_matrix[(task.tid,processor)]
-                    if oeft_matrix[(task.tid,processor)]  < min_oeft: 
+                    eft_matrix[(task.tid,processor)] = eft
+                    oeft_matrix[(task.tid,processor)] = eft_matrix[(task.tid,processor)]\
+                        + self.oct_rank_matrix[(task.tid,processor)]
+                    if (min_oeft ==-1) or \
+                            (oeft_matrix[(task.tid,processor)]  < min_oeft): 
                         min_oeft = oeft_matrix[(task.tid,processor)]
                         p = processor
 
@@ -447,87 +435,14 @@ class Heft(object):
                     
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0]) 
-                count = count + 1
 
         return makespan
-
-    def greedy_policy(self):
-        nodes = list(self.graph.nodes())
-        r_sorted = self.rank_sort
-        makespan = 0
-        for task in r_sorted:
-            if task == r_sorted[0]:
-                w = min(self.comp_matrix[task.tid])
-                p = self.comp_matrix[task.tid].index(w)
-                task.processor = p
-                task.ast = 0
-                task.aft = w
-                self.processors[p].append((task.ast, task.aft, str(task.tid)))                
-                    
-            else:
-                est = 0
-                tmp_task = None
-                for pretask in list(self.graph.predecessors(task)):
-                    index = r_sorted.index(pretask)
-                    tmp_task = r_sorted[index]
-                    aft = r_sorted[index].aft
-                    # print "Task {0} has pre-task {1} with aft: {2}".format(task.tid,tmp_task.tid,aft)
-                    tmp = aft
-                    if tmp >= est:
-                        est = tmp
-                        tmp_task = pretask
-
-                # print "Pre-task of task {2}with the highest AFT is Task{0}, with aft of {1}".format(tmp_task,est,task)
-                # est = 100000
-                p = 0 
-                allowed_est = est
-                est = 100000000
-                for processor in self.processors:
-                    if len(self.processors[processor]) is not 0:
-                        # This sorts the processor by the latest finish time on the processor, which is the earliest available time without searching for slots before
-                        # print self.processors[processor][0]
-                        self.processors[processor].sort(key=lambda x:x[1],reverse=True)
-                        time_slot = self.processors[processor][0]
-                        # print time_slot
-                        if (time_slot[1] >=allowed_est) and (time_slot[1] <= est): 
-                            est = time_slot[1]
-                            p = processor
-
-                # print "Est for task {0} is {1}".format(task, est)
-                for processor in self.processors:
-                    if len(self.processors[processor]) is 0:
-                        if est > allowed_est:
-                            est = allowed_est
-                            p = processor                   
-
-
-                comm_cost = 0
-                if list(self.graph.predecessors(task)):          
-                    if tmp_task.processor is not p:
-                        comm_cost = self.comm_matrix[tmp_task.tid][task.tid]
-                
-                w = self.comp_matrix[task.tid][p]
-                aft = w + comm_cost + est
-                task.aft = aft
-                task.ast = aft - w
-                if task.aft >= makespan:
-                   makespan = task.aft
-
-                self.processors[p].append((task.ast, task.aft,str(task.tid)))
-                self.processors[p].sort(key=lambda x: x[1],reverse=True)
-
-        # print self.processors
-
-        return makespan 
-
 
     def schedule(self, schedule='insertion'):
         if schedule is 'insertion':
             retval = self.insertion_policy()
         elif schedule is 'oct_schedule':
             retval = self.insertion_policy_oct()
-        elif schedule is 'greedy':
-            retval = self.greedy_policy()
 
         return retval
 
