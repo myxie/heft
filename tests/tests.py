@@ -2,8 +2,13 @@
 # Sunittest runner for the heft.py code 
 import unittest
 import networkx as nx
+from csv import reader
+
+import sys
+sys.path.insert(0, '../heft')
 
 from heft.heft import Task, Heft
+
 
 
 class TestTaskMethods(unittest.TestCase):
@@ -39,7 +44,7 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
         self.heft = Heft('tests/topcuoglu_comp.txt',\
             'tests/topcuoglu_comm.txt',\
             'tests/topcuoglu.graphml')
-         
+
 
     def tearDown(self):
         return -1
@@ -58,7 +63,7 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
         print("Makespan is: ", retval)
         self.assertTrue(retval == 80)
 
-                
+@unittest.skip( 'Smaller test case')                
 class TestHeftMethodsOCT(unittest.TestCase):
 
     """

@@ -11,3 +11,5 @@ data/input/tmp
 csv/
 mewts*
 tags
+.pydevproject
+.project

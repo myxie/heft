@@ -6,19 +6,26 @@ import time
 import ast
 
 import networkx as nx
-
+from csv import reader
 from random import randint
 from queue import Queue
 # from pudb import set_trace
 
 def read_matrix(matrix):
-    lines = [] 
-    with open(matrix) as f:
-        next(f)
-        for line in f:
-            line = ast.literal_eval(line)
-            lines.append(line)
-    return lines 
+#     lines = [] 
+#     with open(matrix) as f:
+#         next(f)
+#         for line in f:
+#             line = ast.literal_eval(line)
+#             lines.append(line)
+#     return lines 
+    lmatrix = []
+    f = open(matrix)
+    next(f)
+    csv_reader = reader(f)
+    for row in csv_reader:
+        lmatrix.append(list(map(int,row)))
+    return lmatrix 
 
 
 """
@@ -148,7 +155,7 @@ class Heft(object):
 
         ave_comp = self.ave_comp_cost(node.tid)
         node.rank = ave_comp + longest_rank
-        self.graph.nodes[node.tid]['rank'] = ave_comp + longest_rank
+        self.graph.nodes[node]['rank'] = ave_comp + longest_rank # Use node because networkx dictionary is expecting {Task(n): val} relationship 
 
 
     def rank_up_random(self,node):
