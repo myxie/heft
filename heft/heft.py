@@ -12,19 +12,13 @@ from queue import Queue
 # from pudb import set_trace
 
 def read_matrix(matrix):
-#     lines = [] 
-#     with open(matrix) as f:
-#         next(f)
-#         for line in f:
-#             line = ast.literal_eval(line)
-#             lines.append(line)
-#     return lines 
     lmatrix = []
     f = open(matrix)
     next(f)
     csv_reader = reader(f)
     for row in csv_reader:
         lmatrix.append(list(map(int,row)))
+    f.close()
     return lmatrix 
 
 

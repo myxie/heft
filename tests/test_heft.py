@@ -5,9 +5,10 @@ import networkx as nx
 from csv import reader
 
 import sys
-sys.path.insert(0, '../heft')
+# sys.path.append('../')
 
-from heft.heft import Task, Heft
+from heft.heft import Heft, Task
+
 
 
 
@@ -27,7 +28,7 @@ class TestTaskMethods(unittest.TestCase):
         a = Task(2)
         b = Task(2)
         self.assertTrue(b <= a)
-
+    
     def test_task_hash(self):
         a = Task(57) 
         hashval = hash(57)
@@ -41,9 +42,9 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
     """ 
      
     def setUp(self):
-        self.heft = Heft('tests/topcuoglu_comp.txt',\
-            'tests/topcuoglu_comm.txt',\
-            'tests/topcuoglu.graphml')
+        self.heft = Heft('data/topcuoglu_comp.txt',\
+            'data/topcuoglu_comm.txt',\
+            'data/topcuoglu.graphml')
 
 
     def tearDown(self):
@@ -71,9 +72,9 @@ class TestHeftMethodsOCT(unittest.TestCase):
     and Barbos
     """
     def setUp(self):
-        self.heft= Heft('tests/oct_comp.txt',\
-            'tests/oct_comm.txt',\
-            'tests/oct.graphml')
+        self.heft= Heft('data/oct_comp.txt',\
+            'data/oct_comm.txt',\
+            'data/oct.graphml')
         self.oct_rank_values = [72,41,37,43,31,41,17,20,16,0]
         self.up_rank_values = [169,114,102,110,129,119,52,92,42,20]
 
