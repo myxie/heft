@@ -1,4 +1,8 @@
+## DEPRECATED
+Please go to http://github.com/myxie/mosws for updated implementation of HEFT and improved testing/experimentation facilities
+
 # Heterogeneous Earliest-Finish-Time
+
 
 This repository contains source code for the purposes of comparing HEFT-based scheduling heuristics, and the impact workflow graphs have on the resultant makespan.
 
