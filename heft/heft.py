@@ -15,30 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.  
 
-
-
-
-
 import time
 import ast
 
 import networkx as nx
-from csv import reader
 
 from random import randint
 from queue import Queue
-# from pudb import set_trace
 
-def read_matrix(matrix):
-    lmatrix = []
-    f = open(matrix)
-    next(f)
-    csv_reader = reader(f)
-    for row in csv_reader:
-        lmatrix.append(list(map(int,row)))
-    f.close()
-    return lmatrix 
-
+from heft.utils import read_matrix
 
 """
 Task class for the HEFT algorithm

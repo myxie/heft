@@ -25,7 +25,7 @@ import sys
 # sys.path.append('../')
 
 from heft.heft import Heft, Task
-
+from heft.utils import read_matrix
 
 
 
@@ -59,9 +59,9 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
     """ 
      
     def setUp(self):
-        self.heft = Heft('data/topcuoglu_comp.txt',\
-            'data/topcuoglu_comm.txt',\
-            'data/topcuoglu.graphml')
+        self.heft = Heft('tests/data/topcuoglu_comp.txt',\
+            'tests/data/topcuoglu_comm.txt',\
+            'tests/data/topcuoglu.graphml')
 
 
     def tearDown(self):
@@ -74,6 +74,7 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
         sorted_nodes = self.heft.rank_sort
         for count, node in enumerate(sorted_nodes):
             self.assertTrue(int(node.rank) == rank_values[node.tid])  
+            self.assertTrue(int(self.heft.graph.nodes[node]['rank'])==rank_values[node.tid])
     
     def test_schedule(self):
         self.heft.rank('up')
@@ -89,9 +90,9 @@ class TestHeftMethodsOCT(unittest.TestCase):
     and Barbos
     """
     def setUp(self):
-        self.heft= Heft('data/oct_comp.txt',\
-            'data/oct_comm.txt',\
-            'data/oct.graphml')
+        self.heft= Heft('tests/data/oct_comp.txt',\
+            'tests/data/oct_comm.txt',\
+            'tests/data/oct.graphml')
         self.oct_rank_values = [72,41,37,43,31,41,17,20,16,0]
         self.up_rank_values = [169,114,102,110,129,119,52,92,42,20]
 

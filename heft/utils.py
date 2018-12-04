@@ -1,4 +1,6 @@
-# Copyright (C) 2017,2018  RW Bunney
+#utility functions to support heft.py but are not 'thematically' related
+
+# Copyright (C) 2018 RW Bunney
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,3 +14,17 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.  
+
+
+from csv import reader
+
+def read_matrix(matrix):
+    lmatrix = []
+    f = open(matrix)
+    next(f)
+    csv_reader = reader(f)
+    for row in csv_reader:
+        lmatrix.append(list(map(int,row)))
+    f.close()
+    return lmatrix 
+
