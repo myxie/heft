@@ -102,7 +102,7 @@ class Heft(object):
 
             self.rank_sort = self.rank_sort_tasks()
             self.top_sort = self.top_sort_tasks()
-
+            
 
     def show_rank(self):
 
@@ -152,8 +152,8 @@ class Heft(object):
 
         ave_comp = self.ave_comp_cost(node.tid)
         node.rank = ave_comp + longest_rank
-        self.graph.nodes[node]['rank'] = ave_comp + longest_rank # Use node because networkx dictionary is expecting {Task(n): val} relationship 
-
+        # Use node because networkx dictionary is expecting {Task(n): val} relationship 
+        self.graph.nodes[node]['rank'] = ave_comp + longest_rank 
 
     def rank_up_random(self,node):
         """
@@ -217,7 +217,8 @@ class Heft(object):
         """
         nodes = list(self.graph.nodes())
         nodes.sort(key=lambda x: x.rank, reverse=True)
-
+        nodes.sort(key=lambda x: self.graph.nodes[x]['rank'],reverse=True)
+        print(nodes)
         return nodes
     
 
@@ -431,7 +432,7 @@ class Heft(object):
                         p = processor
 
                 task.aft =  eft_matrix[(task.tid,p)]  
-                task.ast = task.aft - eft_matrix[(task.tid,p)]
+                task.ast = task.aft - matrix[(task.tid,p)]
                 task.processor = p
 
                 if task.aft >= makespan:
