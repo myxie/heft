@@ -52,6 +52,7 @@ class Task(object):
             return self.tid == task.tid
         return NotImplemented
 
+    
     def __lt__(self,task): 
         if isinstance(task,self.__class__):
             return self.tid < task.tid
@@ -109,6 +110,7 @@ class Heft(object):
         for node in list(self.graph.nodes()):
             print (node.rank)
 
+
     def ave_comm_cost(self,node,successor):
         """
         Returns the 'average' communication cost, which is just 
@@ -144,16 +146,17 @@ class Heft(object):
         """
         longest_rank = 0
         for successor in self.graph.successors(node):
-            if successor.rank is -1:
+            if not 'rank' in self.graph.nodes[successor]: # if we have not assigned a rank
+#            if successor.rank is -1:
                 self.rank_up(successor)
 
             longest_rank = max(longest_rank, self.ave_comm_cost(node.tid,successor.tid)+\
-                    successor.rank)
+                               self.graph.nodes[successor]['rank'])
 
         ave_comp = self.ave_comp_cost(node.tid)
-        node.rank = ave_comp + longest_rank
+        #node.rank = ave_comp + longest_rank
         # Use node because networkx dictionary is expecting {Task(n): val} relationship 
-        self.graph.nodes[node]['rank'] = ave_comp + longest_rank 
+        self.graph.nodes[node]['rank'] = ave_comp + longest_rank
 
     def rank_up_random(self,node):
         """
@@ -216,7 +219,7 @@ class Heft(object):
         this is a topological order of tasks
         """
         nodes = list(self.graph.nodes())
-        nodes.sort(key=lambda x: x.rank, reverse=True)
+        # nodes.sort(key=lambda x: x.rank, reverse=True)
         nodes.sort(key=lambda x: self.graph.nodes[x]['rank'],reverse=True)
         print(nodes)
         return nodes

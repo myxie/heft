@@ -72,8 +72,9 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
          
         self.heft.rank('up')
         sorted_nodes = self.heft.rank_sort
-        for count, node in enumerate(sorted_nodes):
-            self.assertTrue(int(node.rank) == rank_values[node.tid])  
+        for count,node in enumerate(sorted_nodes):
+            # self.assertTrue(int(node.rank) == rank_values[node.tid])
+            print(int(self.heft.graph.nodes[node]['rank']),rank_values[node.tid])
             self.assertTrue(int(self.heft.graph.nodes[node]['rank'])==rank_values[node.tid])
     
     def test_schedule(self):
