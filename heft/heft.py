@@ -16,7 +16,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.  
 
 import time
-import ast
 
 import networkx as nx
 
@@ -63,7 +62,7 @@ class Task(object):
 
 class Heft(object):
     def __init__(self, comp, comm, graphml):
-        self.graph = nx.read_graphml(graphml,Task)
+        self.graph = nx.read_graphml(graphml)#,Task)
         self.comp_matrix = read_matrix(comp)
         self.comm_matrix = read_matrix(comm)
         self.num_processors = len(self.comp_matrix[0])
@@ -99,7 +98,7 @@ class Heft(object):
                     if n is node.tid:
                         ave += self.oct_rank_matrix[(n,p)]
 
-                node.rank = ave/len(self.processors)
+                self.graph.nodes[node]['rank'] = ave/len(self.processors)
 
             self.rank_sort = self.rank_sort_tasks()
             self.top_sort = self.top_sort_tasks()
@@ -160,16 +159,18 @@ class Heft(object):
 
     def rank_up_random(self,node):
         """
-        Computes the upward rank based on either the average, max or minimum computational cost
+        Computes the upward rank based on either the average, max or minimum
+        computational cost
         """
 
         longest_rank = 0
         for successor in self.graph.successors(node):
-            if successor.rank is -1:
+            if not 'rank' in self.graph.nodes[successor]: # if we have not assigned a rank
+#            if successor.rank is -1:
                 self.rank_up(successor)
-
+            
             longest_rank = max(longest_rank, self.ave_comm_cost(node.tid,successor.tid)+\
-                    successor.rank)
+                    self.graph.nodes[successor]['rank'])
 
         entropy = randint(0,1000)%3
         if entropy is 0:
@@ -179,7 +180,8 @@ class Heft(object):
         elif entropy is 2: 
             ave_comp = self.max_comp_cost(node.tid)
 
-        node.rank = ave_comp + longest_rank
+        # node.rank = ave_comp + longest_rank
+        self.graph.nodes[node]['rank'] = ave_comp + longest_rank
 
 
         return -1
@@ -435,7 +437,7 @@ class Heft(object):
                         p = processor
 
                 task.aft =  eft_matrix[(task.tid,p)]  
-                task.ast = task.aft - matrix[(task.tid,p)]
+                task.ast = task.aft - self.comp_matrix[task.tid][processor]
                 task.processor = p
 
                 if task.aft >= makespan:
@@ -443,7 +445,7 @@ class Heft(object):
                     
                 self.processors[p].append((task.ast, task.aft,str(task.tid)))
                 self.processors[p].sort(key=lambda x: x[0]) 
-
+        print(self.processors)
         return makespan
 
     def schedule(self, schedule='insertion'):

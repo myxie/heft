@@ -1,3 +1,4 @@
+
 #!/usr/bin/env
 # Sunittest runner for the heft.py code 
 
@@ -83,7 +84,7 @@ class TestHeftMethodsTopcuoglu(unittest.TestCase):
         print("Makespan is: ", retval)
         self.assertTrue(retval == 80)
 
-@unittest.skip( 'Smaller test case')                
+#@unittest.skip( 'Smaller test case')                
 class TestHeftMethodsOCT(unittest.TestCase):
 
     """
@@ -104,13 +105,15 @@ class TestHeftMethodsOCT(unittest.TestCase):
         self.heft.rank('up')
         sorted_nodes = self.heft.rank_sort
         for count, node in enumerate(sorted_nodes):
-            self.assertTrue(int(node.rank) == self.up_rank_values[node.tid])  
+            self.assertTrue(self.heft.graph.nodes[node]['rank'] ==\
+                            self.up_rank_values[node.tid])  
 
     def test_oct_rank(self):
         self.heft.rank('oct')
         sorted_nodes = self.heft.rank_sort
         for count, node in enumerate(sorted_nodes):
-            self.assertTrue(int(node.rank) == self.oct_rank_values[node.tid])  
+            self.assertTrue(self.heft.graph.nodes[node]['rank'] ==\
+                            self.oct_rank_values[node.tid])  
     
     @unittest.skip('Unnecessary')
     def test_oct_matrix(self):
@@ -126,6 +129,7 @@ class TestHeftMethodsOCT(unittest.TestCase):
     def test_oct_schedule(self):
         self.heft.rank('oct')
         retval = self.heft.schedule('oct_schedule')
+        print('this is oct: ',retval)
         self.assertTrue(retval == 122)
 
        
